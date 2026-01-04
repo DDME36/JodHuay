@@ -28,16 +28,9 @@ body {
         #FFF176 75%,
         #B89B00 100%
     );
-    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: foilShine 3s ease-in-out infinite;
-}
-
-@keyframes foilShine {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
 }
 
 /* Brand Title */
@@ -54,12 +47,9 @@ body {
         #B89B00 80%,
         #E6C700 100%
     );
-    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: foilShine 4s ease-in-out infinite;
-    text-shadow: 0 2px 10px rgba(255, 221, 0, 0.3);
 }
 
 /* Brand Subtitle */
@@ -334,12 +324,6 @@ input:focus, select:focus {
         0 10px 40px rgba(0, 0, 0, 0.15),
         0 2px 10px rgba(0, 0, 0, 0.05);
     border: 1px solid #e5e7eb;
-    animation: paperFloat 3s ease-in-out infinite;
-}
-
-@keyframes paperFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
 }
 
 /* Date Display */
@@ -348,12 +332,6 @@ input:focus, select:focus {
     border: 2px solid rgba(255, 221, 0, 0.3);
     position: relative;
     overflow: hidden;
-    animation: dateGlow 2s ease-in-out infinite;
-}
-
-@keyframes dateGlow {
-    0%, 100% { box-shadow: 0 0 20px rgba(255, 221, 0, 0.1); }
-    50% { box-shadow: 0 0 30px rgba(255, 221, 0, 0.25); }
 }
 
 .date-display::before {
@@ -364,13 +342,6 @@ input:focus, select:focus {
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, #FFDD00, #FFF176, #FFDD00);
-    background-size: 200% 100%;
-    animation: gradientMove 2s linear infinite;
-}
-
-@keyframes gradientMove {
-    0% { background-position: 0% 0%; }
-    100% { background-position: 200% 0%; }
 }
 
 /* Toast */
