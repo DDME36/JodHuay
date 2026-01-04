@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jodhuay-v15';
+const CACHE_NAME = 'jodhuay-v11';
 const urlsToCache = [
     '/',
     '/index.html',
