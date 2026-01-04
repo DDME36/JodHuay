@@ -6,14 +6,8 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-html {
-    height: 100%;
-}
-
 body {
     background: linear-gradient(135deg, #fefefe 0%, #f8f6f0 50%, #f5f3eb 100%);
-    min-height: 100%;
-    overscroll-behavior-y: none;
 }
 
 /* Gold Gradient Text - ใช้เฉพาะ Logo */
