@@ -171,11 +171,9 @@ function toggleTodPrice() {
     
     if (showTodPrice) {
         section.classList.remove('hidden');
-        section.classList.add('flex');
         btn.textContent = '−';
     } else {
         section.classList.add('hidden');
-        section.classList.remove('flex');
         btn.textContent = '+';
         const todInput = document.getElementById('ugPriceTod');
         const todType = document.getElementById('ugTodType');

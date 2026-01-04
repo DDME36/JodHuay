@@ -87,8 +87,7 @@ body {
     transform: translate(-50%, -50%);
     color: #FFDD00;
     font-size: 8px;
-    background: linear-gradient(135deg, #fefefe 0%, #f8f6f0 50%, #f5f3eb 100%);
-    padding: 0 8px;
+    background: transparent;
 }
 
 /* Solid Gold Text - ใช้ทั่วไป */

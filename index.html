@@ -151,10 +151,11 @@
                 <!-- ราคา -->
                 <div class="mb-5">
                     <label class="block text-gray-600 text-sm mb-2 font-semibold text-center">ราคา</label>
-                    <div class="flex items-center justify-center gap-2 max-w-md mx-auto">
-                        <!-- ช่องตรง -->
+                    
+                    <!-- แถวแรก: ช่องตรง + ปุ่ม +/- -->
+                    <div class="flex items-center justify-center gap-2 max-w-sm mx-auto mb-2">
                         <div class="flex-1">
-                            <div class="flex items-center gap-1">
+                            <div class="flex items-center">
                                 <input type="tel" id="ugPriceDirect" placeholder="ตรง" readonly
                                     onclick="openPriceNumpad('ugPriceDirect', 'ราคาตรง')"
                                     class="w-full px-3 py-3 rounded-l-xl border-2 border-r-0 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-xl font-bold cursor-pointer">
@@ -166,28 +167,33 @@
                             </div>
                         </div>
                         
-                        <!-- ช่องโต๊ด (ซ่อนอยู่) -->
-                        <div id="todPriceSection" class="hidden flex-1">
-                            <div class="flex items-center gap-1">
-                                <span class="text-gold-500 font-bold text-xl px-1">x</span>
-                                <input type="tel" id="ugPriceTod" placeholder="โต๊ด" readonly
-                                    onclick="openPriceNumpad('ugPriceTod', 'ราคาโต๊ด')"
-                                    class="w-full px-3 py-3 rounded-l-xl border-2 border-r-0 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-xl font-bold cursor-pointer">
-                                <select id="ugTodType" onchange="onGlabChange('tod')" class="py-3 px-2 rounded-r-xl border-2 border-gray-200 bg-gray-50 text-sm font-semibold text-gray-600 focus:outline-none focus:border-gold-400">
-                                    <option value="">-</option>
-                                    <option value="ก.3">ก.3</option>
-                                    <option value="ก.6">ก.6</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <!-- ปุ่มเพิ่ม/ลบช่องโต๊ด (อยู่ขวาสุดเสมอ) -->
+                        <!-- ปุ่มเพิ่ม/ลบช่องโต๊ด -->
                         <button id="addTodBtn" onclick="toggleTodPrice()" 
                             class="w-10 h-10 flex-shrink-0 rounded-full border-2 border-gold-300 bg-gold-50 text-gold-600 font-bold text-xl flex items-center justify-center hover:bg-gold-100 transition-all">
                             +
                         </button>
                     </div>
-                    <p class="text-xs text-gray-400 mt-2 text-center">ก.3 = กลับ 3 ชุด | ก.6 = กลับ 6 ชุด</p>
+                    
+                    <!-- แถวที่สอง: ช่องโต๊ด (ซ่อนอยู่) -->
+                    <div id="todPriceSection" class="hidden max-w-sm mx-auto mb-2">
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="text-gold-500 font-bold text-lg">x</span>
+                            <div class="flex-1">
+                                <div class="flex items-center">
+                                    <input type="tel" id="ugPriceTod" placeholder="โต๊ด" readonly
+                                        onclick="openPriceNumpad('ugPriceTod', 'ราคาโต๊ด')"
+                                        class="w-full px-3 py-3 rounded-l-xl border-2 border-r-0 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-xl font-bold cursor-pointer">
+                                    <select id="ugTodType" onchange="onGlabChange('tod')" class="py-3 px-2 rounded-r-xl border-2 border-gray-200 bg-gray-50 text-sm font-semibold text-gray-600 focus:outline-none focus:border-gold-400">
+                                        <option value="">-</option>
+                                        <option value="ก.3">ก.3</option>
+                                        <option value="ก.6">ก.6</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-xs text-gray-400 text-center">ก.3 = กลับ 3 ชุด | ก.6 = กลับ 6 ชุด</p>
                 </div>
 
                 <button onclick="addUnderground()" class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg">
