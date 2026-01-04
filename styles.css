@@ -6,13 +6,17 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-html {
+html, body {
     overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
 }
 
 body {
     background: linear-gradient(135deg, #fefefe 0%, #f8f6f0 50%, #f5f3eb 100%);
-    overscroll-behavior: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
 }
 
 /* Gold Gradient Text - ใช้เฉพาะ Logo */
@@ -33,16 +37,9 @@ body {
         #FFF176 75%,
         #B89B00 100%
     );
-    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: foilShine 3s ease-in-out infinite;
-}
-
-@keyframes foilShine {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
 }
 
 /* Brand Title */
@@ -59,11 +56,9 @@ body {
         #B89B00 80%,
         #E6C700 100%
     );
-    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: foilShine 4s ease-in-out infinite;
 }
 
 /* Brand Subtitle */
@@ -356,13 +351,6 @@ input:focus, select:focus {
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, #FFDD00, #FFF176, #FFDD00);
-    background-size: 200% 100%;
-    animation: gradientMove 3s linear infinite;
-}
-
-@keyframes gradientMove {
-    0% { background-position: 0% 0%; }
-    100% { background-position: 200% 0%; }
 }
 
 /* Toast */
