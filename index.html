@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#FFDD00">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="JodHuay">
+    <meta name="description" content="JodHuay - จดหวย บันทึกเลขเด็ด หวยใต้ดิน หวยรัฐบาล">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
+    <title>JodHuay - จดหวย</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            50: '#FFFEF5', 100: '#FFFDE7', 200: '#FFF59D', 300: '#FFEE58',
+                            400: '#FFDD00', 500: '#FFDD00', 600: '#E6C700', 700: '#B89B00'
+                        }
+                    },
+                    fontFamily: { prompt: ['Prompt', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="font-prompt min-h-screen">
+    <div class="max-w-xl mx-auto px-4 py-8 pb-10 page-enter">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <div class="decorative-divider mx-auto mb-4"></div>
+            <h1 class="brand-title">JODHUAY</h1>
+            <p class="brand-subtitle">จดหวย & บันทึกเลขเด็ด</p>
+            <p class="text-gold-600 font-light text-sm tracking-widest mt-2">โชคลาภเงินทองไหลมาเทมา</p>
+            <div class="decorative-divider mx-auto mt-4"></div>
+        </header>
+
+        <!-- Date Display -->
+        <div class="date-display card rounded-2xl p-5 mb-8 text-center">
+            <p class="text-gray-500 text-sm mb-1">วันที่ออกใบจด</p>
+            <p id="todayDate" class="text-2xl font-bold text-gold-600"></p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex mb-8 bg-white rounded-2xl shadow-lg p-1.5 border border-gold-100">
+            <button id="tabGovernment" onclick="switchTab('government')" 
+                class="tab-btn flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 active">
+                หวยรัฐบาล
+            </button>
+            <button id="tabUnderground" onclick="switchTab('underground')" 
+                class="tab-btn flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300">
+                หวยใต้ดิน
+            </button>
+        </div>
+
+        <!-- Government Section -->
+        <div id="governmentSection" class="section-content">
+            <!-- Form -->
+            <div class="card rounded-2xl p-5 mb-6">
+                <h3 class="text-lg font-bold text-gold-700 mb-5 text-center">เพิ่มรายการใหม่</h3>
+                
+                <!-- ประเภท - Choice Chips -->
+                <div class="mb-5">
+                    <label class="block text-gray-600 text-sm mb-2 font-semibold text-center">ประเภท</label>
+                    <div class="choice-chips" id="govTypeChips">
+                        <button type="button" class="choice-chip active" data-value="6">6 ตัวตรง</button>
+                        <button type="button" class="choice-chip" data-value="front3">เลขหน้า 3 ตัว</button>
+                        <button type="button" class="choice-chip" data-value="back3">เลขท้าย 3 ตัว</button>
+                        <button type="button" class="choice-chip" data-value="back2">เลขท้าย 2 ตัว</button>
+                    </div>
+                    <input type="hidden" id="govType" value="6">
+                </div>
+                
+                <!-- เลข -->
+                <div class="text-center mb-5">
+                    <label class="block text-gray-600 text-sm mb-2 font-semibold">เลข</label>
+                    <input type="tel" id="govNumber" maxlength="6" placeholder="กดเพื่อกรอกเลข" readonly
+                        onclick="openGovNumpad()"
+                        class="w-full max-w-xs mx-auto px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-3xl font-bold tracking-widest cursor-pointer">
+                </div>
+                
+                <!-- จำนวน -->
+                <div class="text-center mb-5">
+                    <label class="block text-gray-600 text-sm mb-2 font-semibold">จำนวน</label>
+                    <div class="choice-chips" id="govQtyChips">
+                        <button type="button" class="choice-chip active" data-value="1">1 ใบ</button>
+                        <button type="button" class="choice-chip" data-value="2">2 ใบ</button>
+                        <button type="button" class="choice-chip" data-value="3">3 ใบ</button>
+                        <button type="button" class="choice-chip" data-value="5">5 ใบ</button>
+                        <button type="button" class="choice-chip" data-value="10">10 ใบ</button>
+                    </div>
+                    <input type="hidden" id="govQty" value="1">
+                </div>
+                
+                <button onclick="addGovernment()" class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg">
+                    เพิ่มรายการ
+                </button>
+            </div>
+
+            <!-- List -->
+            <div class="card rounded-2xl p-4">
+                <h3 class="text-base font-bold text-gold-700 mb-3 flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-gold-500 rounded-full"></span>
+                        รายการที่บันทึก
+                    </span>
+                    <span id="govCount" class="text-sm font-normal text-gray-400"></span>
+                </h3>
+                <div id="govList" class="space-y-2 max-h-64 overflow-y-auto">
+                    <p class="text-gray-400 text-center py-6 text-sm">ยังไม่มีรายการ</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Underground Section -->
+        <div id="undergroundSection" class="section-content hidden">
+            <!-- Form -->
+            <div class="card rounded-2xl p-5 mb-6">
+                <h3 class="text-lg font-bold text-gold-700 mb-5 text-center">เพิ่มรายการใหม่</h3>
+                
+                <!-- ประเภท - Choice Chips -->
+                <div class="mb-5">
+                    <label class="block text-gray-600 text-sm mb-2 font-semibold text-center">ประเภท</label>
+                    <div class="choice-chips" id="ugTypeChips">
+                        <button type="button" class="choice-chip active" data-value="3bon">3 ตัวบน</button>
+                        <button type="button" class="choice-chip" data-value="2bon">2 ตัวบน</button>
+                        <button type="button" class="choice-chip" data-value="2lang">2 ตัวล่าง</button>
+                        <button type="button" class="choice-chip" data-value="runBon">วิ่งบน</button>
+                        <button type="button" class="choice-chip" data-value="runLang">วิ่งล่าง</button>
+                    </div>
+                    <input type="hidden" id="ugType" value="3bon">
+                </div>
+                
+                <!-- เลข -->
+                <div class="text-center mb-5">
+                    <label class="block text-gray-600 text-sm mb-2 font-semibold">เลข</label>
+                    <input type="tel" id="ugNumber" maxlength="3" placeholder="กดเพื่อกรอกเลข" readonly
+                        onclick="openUgNumpad()"
+                        class="w-full max-w-xs mx-auto px-4 py-4 rounded-xl border-2 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-3xl font-bold tracking-widest cursor-pointer">
+                </div>
+
+                <!-- ราคา -->
+                <div class="mb-5">
+                    <label class="block text-gray-600 text-sm mb-2 font-semibold text-center">ราคา</label>
+                    <div class="flex items-center justify-center gap-2 max-w-md mx-auto">
+                        <!-- ช่องตรง -->
+                        <div class="flex-1">
+                            <div class="flex items-center gap-1">
+                                <input type="tel" id="ugPriceDirect" placeholder="ตรง" readonly
+                                    onclick="openPriceNumpad('ugPriceDirect', 'ราคาตรง')"
+                                    class="w-full px-3 py-3 rounded-l-xl border-2 border-r-0 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-xl font-bold cursor-pointer">
+                                <select id="ugDirectType" onchange="onGlabChange('direct')" class="py-3 px-2 rounded-r-xl border-2 border-gray-200 bg-gray-50 text-sm font-semibold text-gray-600 focus:outline-none focus:border-gold-400">
+                                    <option value="">-</option>
+                                    <option value="ก.3">ก.3</option>
+                                    <option value="ก.6">ก.6</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- ช่องโต๊ด (ซ่อนอยู่) -->
+                        <div id="todPriceSection" class="hidden flex-1">
+                            <div class="flex items-center gap-1">
+                                <span class="text-gold-500 font-bold text-xl px-1">x</span>
+                                <input type="tel" id="ugPriceTod" placeholder="โต๊ด" readonly
+                                    onclick="openPriceNumpad('ugPriceTod', 'ราคาโต๊ด')"
+                                    class="w-full px-3 py-3 rounded-l-xl border-2 border-r-0 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-xl font-bold cursor-pointer">
+                                <select id="ugTodType" onchange="onGlabChange('tod')" class="py-3 px-2 rounded-r-xl border-2 border-gray-200 bg-gray-50 text-sm font-semibold text-gray-600 focus:outline-none focus:border-gold-400">
+                                    <option value="">-</option>
+                                    <option value="ก.3">ก.3</option>
+                                    <option value="ก.6">ก.6</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- ปุ่มเพิ่ม/ลบช่องโต๊ด (อยู่ขวาสุดเสมอ) -->
+                        <button id="addTodBtn" onclick="toggleTodPrice()" 
+                            class="w-10 h-10 flex-shrink-0 rounded-full border-2 border-gold-300 bg-gold-50 text-gold-600 font-bold text-xl flex items-center justify-center hover:bg-gold-100 transition-all">
+                            +
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2 text-center">ก.3 = กลับ 3 ชุด | ก.6 = กลับ 6 ชุด</p>
+                </div>
+
+                <button onclick="addUnderground()" class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg">
+                    เพิ่มรายการ
+                </button>
+            </div>
+
+            <!-- List -->
+            <div class="card rounded-2xl p-4">
+                <h3 class="text-base font-bold text-gold-700 mb-3 flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-gold-500 rounded-full"></span>
+                        รายการที่บันทึก
+                    </span>
+                    <span id="ugCount" class="text-sm font-normal text-gray-400"></span>
+                </h3>
+                <div id="ugList" class="space-y-2 max-h-64 overflow-y-auto">
+                    <p class="text-gray-400 text-center py-6 text-sm">ยังไม่มีรายการ</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-8 space-y-4">
+            <button onclick="openPreviewModal()" class="gold-btn w-full py-5 rounded-2xl font-semibold text-white text-lg flex items-center justify-center gap-3 shadow-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                บันทึกเป็นรูปภาพ
+            </button>
+            <button onclick="clearData()" class="w-full py-4 rounded-2xl font-medium text-red-500 border-2 border-red-200 bg-white hover:bg-red-50 transition-all">
+                ล้างข้อมูลทั้งหมด
+            </button>
+        </div>
+
+        <!-- Custom NumPad -->
+        <div id="numpadOverlay" class="numpad-overlay hidden">
+            <div class="numpad-container">
+                <div class="numpad-display">
+                    <span id="numpadValue" class="text-3xl font-bold text-gold-700 tracking-widest"></span>
+                    <span id="numpadLabel" class="text-sm text-gray-500"></span>
+                </div>
+                <div class="numpad-grid">
+                    <button class="numpad-btn" onclick="numpadPress('1')">1</button>
+                    <button class="numpad-btn" onclick="numpadPress('2')">2</button>
+                    <button class="numpad-btn" onclick="numpadPress('3')">3</button>
+                    <button class="numpad-btn" onclick="numpadPress('4')">4</button>
+                    <button class="numpad-btn" onclick="numpadPress('5')">5</button>
+                    <button class="numpad-btn" onclick="numpadPress('6')">6</button>
+                    <button class="numpad-btn" onclick="numpadPress('7')">7</button>
+                    <button class="numpad-btn" onclick="numpadPress('8')">8</button>
+                    <button class="numpad-btn" onclick="numpadPress('9')">9</button>
+                    <button class="numpad-btn numpad-special" onclick="numpadClear()">C</button>
+                    <button class="numpad-btn" onclick="numpadPress('0')">0</button>
+                    <button class="numpad-btn numpad-special" onclick="numpadBackspace()">&#9003;</button>
+                </div>
+                <div class="numpad-actions">
+                    <button onclick="closeNumpad()" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold">ยกเลิก</button>
+                    <button onclick="confirmNumpad()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 text-white font-semibold">ตกลง</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-10">
+            <div class="decorative-divider mx-auto mb-4"></div>
+            <p class="text-gray-500 text-sm flex items-center justify-center gap-2">
+                <span class="text-gold-400">&#10022;</span>
+                ขอให้โชคดี เฮง ๆ ร่ำรวย
+                <span class="text-gold-400">&#10022;</span>
+            </p>
+            <p class="text-gray-400 text-xs mt-3">&copy; JodHuay</p>
+        </footer>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal-overlay fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div class="modal-content rounded-3xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
+            <!-- Modal Header -->
+            <div class="p-4 border-b border-gold-200 bg-gradient-to-r from-gold-50 to-white flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-bold text-gold-700">บันทึกเป็นรูปภาพ</h2>
+                    <p class="text-xs text-gray-500">เลือกรายการที่ต้องการบันทึก</p>
+                </div>
+                <button onclick="closePreviewModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 text-xl transition-all">&times;</button>
+            </div>
+            
+            <!-- Selection Area -->
+            <div class="p-4 border-b border-gray-100 bg-gray-50 flex-shrink-0">
+                <div class="flex gap-2 mb-3">
+                    <button onclick="selectAll()" class="px-4 py-2 bg-gold-500 text-white rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all">
+                        เลือกทั้งหมด
+                    </button>
+                    <button onclick="selectNone()" class="px-4 py-2 bg-white text-gray-600 rounded-full text-sm font-semibold border-2 border-gray-200 hover:border-gray-300 transition-all">
+                        ยกเลิก
+                    </button>
+                </div>
+                <div id="selectionList" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Preview Area -->
+            <div class="flex-1 overflow-auto p-4 bg-gradient-to-br from-gray-100 to-gray-200">
+                <div class="flex justify-center">
+                    <div id="a4Preview" class="paper-preview rounded-lg" style="width: 100%; max-width: 400px; min-height: 200px; padding: 24px;">
+                        <div class="text-center mb-4">
+                            <h1 class="text-xl font-bold text-gold-600 mb-1">JODHUAY</h1>
+                            <p class="text-xs text-gray-500">จดหวย & บันทึกเลขเด็ด</p>
+                            <div class="w-12 h-0.5 bg-gold-400 mx-auto my-2"></div>
+                            <p id="previewDate" class="text-gray-500 text-xs"></p>
+                        </div>
+                        <div id="previewContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-gray-100 bg-white flex gap-3">
+                <button onclick="closePreviewModal()" class="flex-1 py-3 rounded-xl font-semibold border-2 border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm">
+                    ยกเลิก
+                </button>
+                <button onclick="saveImage()" class="flex-1 py-3 rounded-xl font-semibold bg-gradient-to-r from-gold-500 to-gold-600 text-white shadow-lg hover:shadow-xl transition-all text-sm">
+                    บันทึกรูปภาพ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 text-white px-8 py-4 rounded-2xl shadow-2xl opacity-0 transition-all duration-300 pointer-events-none z-50">
+        <span id="toastMessage" class="font-medium"></span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

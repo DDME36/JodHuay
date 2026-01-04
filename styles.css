@@ -1,0 +1,674 @@
+/* ============================================
+   LUXURY GOLD THEME - หวยเด็ด
+   ============================================ */
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background: linear-gradient(135deg, #fefefe 0%, #f8f6f0 50%, #f5f3eb 100%);
+}
+
+/* Gold Gradient Text - ใช้เฉพาะ Logo */
+.gold-gradient-text {
+    background: linear-gradient(135deg, #FFDD00 0%, #FFF176 30%, #FFDD00 60%, #E6C700 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Gold Foil Text - Metallic Effect */
+.gold-foil-text {
+    background: linear-gradient(
+        135deg,
+        #E6C700 0%,
+        #FFF59D 25%,
+        #FFDD00 50%,
+        #FFF176 75%,
+        #B89B00 100%
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: foilShine 3s ease-in-out infinite;
+}
+
+@keyframes foilShine {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Brand Title */
+.brand-title {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    background: linear-gradient(
+        135deg,
+        #E6C700 0%,
+        #FFF59D 20%,
+        #FFDD00 40%,
+        #FFF176 60%,
+        #B89B00 80%,
+        #E6C700 100%
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: foilShine 4s ease-in-out infinite;
+    text-shadow: 0 2px 10px rgba(255, 221, 0, 0.3);
+}
+
+/* Brand Subtitle */
+.brand-subtitle {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #B89B00;
+    letter-spacing: 0.1em;
+    margin-top: 0.25rem;
+}
+
+/* Decorative Divider */
+.decorative-divider {
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #FFDD00, transparent);
+    position: relative;
+}
+
+.decorative-divider::before {
+    content: '◆';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #FFDD00;
+    font-size: 8px;
+    background: linear-gradient(135deg, #fefefe 0%, #f8f6f0 50%, #f5f3eb 100%);
+    padding: 0 8px;
+}
+
+/* Solid Gold Text - ใช้ทั่วไป */
+.text-gold-solid {
+    color: #B89B00;
+}
+
+/* Gold Button */
+.gold-btn {
+    background: linear-gradient(135deg, #FFDD00 0%, #E6C700 50%, #B89B00 100%);
+    box-shadow: 
+        0 4px 15px rgba(255, 221, 0, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 221, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.gold-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.gold-btn:hover::before {
+    left: 100%;
+}
+
+.gold-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 8px 25px rgba(255, 221, 0, 0.5),
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.gold-btn:active {
+    transform: translateY(-1px);
+    transition: transform 0.1s;
+}
+
+/* Tab Buttons */
+.tab-btn {
+    color: #9CA3AF;
+    background: transparent;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #FFDD00 0%, #E6C700 100%);
+    color: #000;
+    box-shadow: 
+        0 4px 15px rgba(255, 221, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    animation: tabPulse 0.4s ease;
+}
+
+@keyframes tabPulse {
+    0% { transform: scale(0.95); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+/* Cards */
+.card {
+    background: linear-gradient(180deg, #ffffff 0%, #fefefe 100%);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.05),
+        0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    animation: cardFadeIn 0.6s ease-out;
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card:hover {
+    box-shadow: 
+        0 8px 30px rgba(0, 0, 0, 0.08),
+        0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Input Fields */
+input, select {
+    transition: all 0.3s ease;
+    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+}
+
+input:focus, select:focus {
+    box-shadow: 
+        0 0 0 3px rgba(255, 221, 0, 0.15),
+        0 2px 8px rgba(255, 221, 0, 0.1);
+    border-color: #FFDD00;
+    background: #ffffff;
+    transform: scale(1.02);
+}
+
+/* List Items */
+.list-item {
+    background: linear-gradient(135deg, #FFFEF5 0%, #FFFDE7 100%);
+    border: 1px solid rgba(255, 221, 0, 0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.4s ease-out backwards;
+    width: 100%;
+}
+
+.list-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #FFDD00 0%, #E6C700 100%);
+    border-radius: 4px 0 0 4px;
+}
+
+/* Stagger animation for list items */
+.list-item:nth-child(1) { animation-delay: 0s; }
+.list-item:nth-child(2) { animation-delay: 0.05s; }
+.list-item:nth-child(3) { animation-delay: 0.1s; }
+.list-item:nth-child(4) { animation-delay: 0.15s; }
+.list-item:nth-child(5) { animation-delay: 0.2s; }
+.list-item:nth-child(6) { animation-delay: 0.25s; }
+.list-item:nth-child(7) { animation-delay: 0.3s; }
+.list-item:nth-child(8) { animation-delay: 0.35s; }
+
+/* Delete Button */
+.delete-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    box-shadow: 0 2px 6px rgba(238, 90, 90, 0.3);
+}
+
+.delete-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 10px rgba(238, 90, 90, 0.4);
+}
+
+/* Selection Chips */
+.chip {
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.chip-selected {
+    background: linear-gradient(135deg, #FFDD00 0%, #E6C700 100%);
+    color: #000;
+    box-shadow: 0 2px 8px rgba(255, 221, 0, 0.3);
+    animation: chipSelect 0.3s ease;
+}
+
+@keyframes chipSelect {
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.chip-unselected {
+    background: #f3f4f6;
+    color: #6b7280;
+    border-color: #e5e7eb;
+}
+
+.chip-unselected:hover {
+    background: #e5e7eb;
+    border-color: #d1d5db;
+    transform: translateY(-2px);
+}
+
+/* Modal */
+.modal-overlay {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.25),
+        0 10px 20px rgba(0, 0, 0, 0.1);
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Preview Paper */
+.paper-preview {
+    background: #ffffff;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.15),
+        0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+    animation: paperFloat 3s ease-in-out infinite;
+}
+
+@keyframes paperFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Date Display */
+.date-display {
+    background: linear-gradient(135deg, #FFFEF5 0%, #FFFDE7 100%);
+    border: 2px solid rgba(255, 221, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    animation: dateGlow 2s ease-in-out infinite;
+}
+
+@keyframes dateGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 221, 0, 0.1); }
+    50% { box-shadow: 0 0 30px rgba(255, 221, 0, 0.25); }
+}
+
+.date-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #FFDD00, #FFF176, #FFDD00);
+    background-size: 200% 100%;
+    animation: gradientMove 2s linear infinite;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+}
+
+/* Toast */
+.toast-show {
+    opacity: 1 !important;
+    transform: translate(-50%, 0) scale(1) !important;
+}
+
+#toast {
+    transform: translate(-50%, 20px) scale(0.9);
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Animated Line */
+.animated-line {
+    background: linear-gradient(90deg, transparent, #FFDD00, transparent);
+    background-size: 200% 100%;
+    animation: lineShimmer 2s ease-in-out infinite;
+}
+
+@keyframes lineShimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Scrollbar - Hidden */
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* Checkbox Custom */
+input[type="checkbox"] {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #FFDD00;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input[type="checkbox"]:checked {
+    background: linear-gradient(135deg, #FFDD00 0%, #E6C700 100%);
+    border-color: #E6C700;
+    animation: checkBounce 0.3s ease;
+}
+
+@keyframes checkBounce {
+    0% { transform: scale(0.8); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Page Enter Animation */
+.page-enter {
+    animation: pageEnter 0.8s ease-out;
+}
+
+@keyframes pageEnter {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .modal-content {
+        margin: 8px;
+        max-height: calc(100vh - 16px);
+    }
+    
+    .paper-preview {
+        width: 100% !important;
+        padding: 24px !important;
+        animation: none;
+    }
+}
+
+@media (hover: none) {
+    .list-item:hover {
+        transform: none;
+    }
+    
+    .delete-btn {
+        opacity: 1;
+    }
+    
+    .delete-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .gold-btn:hover {
+        transform: none;
+    }
+    
+    .paper-preview {
+        animation: none;
+    }
+}
+
+
+/* Choice Chips for Type Selection */
+.choice-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.choice-chip {
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid #e5e7eb;
+    background: #fff;
+    color: #6b7280;
+}
+
+.choice-chip:hover {
+    border-color: #FFDD00;
+    color: #B89B00;
+}
+
+.choice-chip.active {
+    background: linear-gradient(135deg, #FFDD00 0%, #E6C700 100%);
+    border-color: #FFDD00;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(255, 221, 0, 0.3);
+}
+
+
+/* Custom NumPad */
+.numpad-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 16px;
+}
+
+.numpad-overlay.hidden {
+    display: none;
+}
+
+.numpad-container {
+    background: white;
+    border-radius: 24px 24px 16px 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.numpad-display {
+    text-align: center;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #FFFEF5 0%, #FFFDE7 100%);
+    border-radius: 16px;
+    border: 2px solid rgba(255, 221, 0, 0.2);
+    min-height: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.numpad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.numpad-btn {
+    padding: 18px;
+    font-size: 24px;
+    font-weight: 600;
+    border-radius: 16px;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.numpad-btn:active {
+    transform: scale(0.95);
+    background: #e5e7eb;
+}
+
+.numpad-special {
+    background: linear-gradient(135deg, #FFDD00 0%, #E6C700 100%);
+    color: #000;
+}
+
+.numpad-special:active {
+    background: linear-gradient(135deg, #E6C700 0%, #B89B00 100%);
+}
+
+.numpad-actions {
+    display: flex;
+    gap: 12px;
+}
+
+
+/* iOS Safe Area */
+@supports (padding: env(safe-area-inset-bottom)) {
+    body {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .numpad-container {
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    }
+}
+
+/* Touch improvements */
+button, .choice-chip, .list-item, input, select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Prevent double-tap zoom on iOS */
+button, .choice-chip {
+    touch-action: manipulation;
+}
+
+/* Fix iOS input zoom */
+input[type="tel"], select {
+    font-size: 16px !important;
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Cursor pointer for clickable items */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Improve list item tap feedback */
+.list-item:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
