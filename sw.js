@@ -5,9 +5,7 @@ const urlsToCache = [
     '/styles.css',
     '/app.js',
     '/manifest.json',
-    '/icon.png',
-    '/icon-192.png',
-    '/icon-512.png'
+    '/icon.png'
 ];
 
 // Install
