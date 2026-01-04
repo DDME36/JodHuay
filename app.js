@@ -171,9 +171,11 @@ function toggleTodPrice() {
     
     if (showTodPrice) {
         section.classList.remove('hidden');
+        section.classList.add('flex');
         btn.textContent = '−';
     } else {
         section.classList.add('hidden');
+        section.classList.remove('flex');
         btn.textContent = '+';
         const todInput = document.getElementById('ugPriceTod');
         const todType = document.getElementById('ugTodType');
@@ -629,9 +631,9 @@ function renderUndergroundPreview(data, container) {
     if (groups['3bon'].length) {
         html += `
             <div class="mb-4 px-4">
-                <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">3 ตัวบน</div>
-                <div class="text-center text-sm">
-                    ${groups['3bon'].map(i => `<div class="py-0.5"><b>${i.number}</b> = ${i.price}</div>`).join('')}
+                <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">3 ตัวบน</div>
+                <div class="text-center" style="font-size:14px;">
+                    ${groups['3bon'].map(i => `<div class="py-1"><b>${i.number}</b> = ${i.price}</div>`).join('')}
                 </div>
             </div>
         `;
@@ -641,9 +643,9 @@ function renderUndergroundPreview(data, container) {
     if (groups['2bon'].length) {
         html += `
             <div class="mb-4 px-4">
-                <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">2 ตัวบน</div>
-                <div class="text-center text-sm">
-                    ${groups['2bon'].map(i => `<div class="py-0.5"><b>${i.number}</b> = ${i.price}</div>`).join('')}
+                <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">2 ตัวบน</div>
+                <div class="text-center" style="font-size:14px;">
+                    ${groups['2bon'].map(i => `<div class="py-1"><b>${i.number}</b> = ${i.price}</div>`).join('')}
                 </div>
             </div>
         `;
@@ -653,9 +655,9 @@ function renderUndergroundPreview(data, container) {
     if (groups['2lang'].length) {
         html += `
             <div class="mb-4 px-4">
-                <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">2 ตัวล่าง</div>
-                <div class="text-center text-sm">
-                    ${groups['2lang'].map(i => `<div class="py-0.5"><b>${i.number}</b> = ${i.price}</div>`).join('')}
+                <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">2 ตัวล่าง</div>
+                <div class="text-center" style="font-size:14px;">
+                    ${groups['2lang'].map(i => `<div class="py-1"><b>${i.number}</b> = ${i.price}</div>`).join('')}
                 </div>
             </div>
         `;
@@ -665,9 +667,9 @@ function renderUndergroundPreview(data, container) {
     if (groups['runBon'].length) {
         html += `
             <div class="mb-4 px-4">
-                <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">วิ่งบน</div>
-                <div class="text-center text-sm">
-                    ${groups['runBon'].map(i => `<div class="py-0.5"><b>${i.number}</b> = ${i.price}</div>`).join('')}
+                <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">วิ่งบน</div>
+                <div class="text-center" style="font-size:14px;">
+                    ${groups['runBon'].map(i => `<div class="py-1"><b>${i.number}</b> = ${i.price}</div>`).join('')}
                 </div>
             </div>
         `;
@@ -677,9 +679,9 @@ function renderUndergroundPreview(data, container) {
     if (groups['runLang'].length) {
         html += `
             <div class="mb-4 px-4">
-                <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">วิ่งล่าง</div>
-                <div class="text-center text-sm">
-                    ${groups['runLang'].map(i => `<div class="py-0.5"><b>${i.number}</b> = ${i.price}</div>`).join('')}
+                <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">วิ่งล่าง</div>
+                <div class="text-center" style="font-size:14px;">
+                    ${groups['runLang'].map(i => `<div class="py-1"><b>${i.number}</b> = ${i.price}</div>`).join('')}
                 </div>
             </div>
         `;
@@ -709,9 +711,9 @@ function renderGovernmentPreview(data, container) {
         if (groups[sec.key].length) {
             html += `
                 <div class="mb-4 px-4">
-                    <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">${sec.title}</div>
-                    <div class="text-center text-sm">
-                        ${groups[sec.key].map(i => `<div class="py-0.5"><b>${i.number}</b>${i.qty > 1 ? ` (${i.qty} ใบ)` : ''}</div>`).join('')}
+                    <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">${sec.title}</div>
+                    <div class="text-center" style="font-size:14px;">
+                        ${groups[sec.key].map(i => `<div class="py-1"><b>${i.number}</b>${i.qty > 1 ? ` (${i.qty} ใบ)` : ''}</div>`).join('')}
                     </div>
                 </div>
             `;
@@ -762,7 +764,7 @@ async function saveImage() {
                         files: [file],
                         title: 'JodHuay - จดหวย'
                     });
-                    showToast('แชร์สำเร็จ');
+                    showToast('บันทึกแล้ว');
                     closePreviewModal();
                     return;
                 }
