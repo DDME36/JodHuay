@@ -752,8 +752,10 @@ async function saveImage() {
         const dataUrl = canvas.toDataURL('image/png');
         const fileName = `JodHuay_${currentTab === 'underground' ? 'ใต้ดิน' : 'รัฐบาล'}_${getTodayKey()}.png`;
         
-        // Try Web Share API first (works on mobile Safari/Chrome)
-        if (navigator.share && navigator.canShare) {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
+        // iOS: ใช้ Web Share API เท่านั้น
+        if (isIOS && navigator.share && navigator.canShare) {
             try {
                 const blob = await (await fetch(dataUrl)).blob();
                 const file = new File([blob], fileName, { type: 'image/png' });
@@ -763,50 +765,27 @@ async function saveImage() {
                         title: 'JodHuay - จดหวย'
                     });
                     showToast('บันทึกแล้ว');
-                    closePreviewModal();
-                    return;
                 }
             } catch (e) {
-                // User cancelled or share failed, fall through to download
+                // User cancelled - ไม่ต้องทำอะไร
                 if (e.name !== 'AbortError') {
-                    console.log('Share failed:', e);
+                    showToast('เกิดข้อผิดพลาด');
                 }
             }
+            closePreviewModal();
+            return;
         }
         
-        // Fallback: Download (works on desktop and Android)
-        // For iOS Safari without share, open in new tab
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        
-        if (isIOS && !navigator.share) {
-            // iOS Safari fallback - open image in new tab
-            const newTab = window.open();
-            if (newTab) {
-                newTab.document.write(`
-                    <html>
-                    <head><title>${fileName}</title></head>
-                    <body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#f0f0f0;">
-                        <img src="${dataUrl}" style="max-width:100%;height:auto;" />
-                    </body>
-                    </html>
-                `);
-                newTab.document.close();
-                showToast('กดค้างที่รูปเพื่อบันทึก');
-            } else {
-                showToast('กรุณาอนุญาต popup');
-            }
-        } else {
-            // Standard download
-            const link = document.createElement('a');
-            link.download = fileName;
-            link.href = dataUrl;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast('บันทึกแล้ว');
-        }
-        
+        // Desktop/Android: Download โดยตรง
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('บันทึกแล้ว');
         closePreviewModal();
+        
     } catch (e) {
         console.error('Save image error:', e);
         showToast('เกิดข้อผิดพลาด กรุณาลองใหม่');
