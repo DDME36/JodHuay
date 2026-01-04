@@ -98,19 +98,6 @@ body {
     background: transparent;
 }
 
-/* Sparkle Animation */
-.sparkle {
-    color: #FFDD00;
-    font-size: 12px;
-    animation: sparkle 1.5s ease-in-out infinite;
-    display: inline-block;
-}
-
-@keyframes sparkle {
-    0%, 100% { opacity: 0.3; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.2); }
-}
-
 /* Solid Gold Text - ใช้ทั่วไป */
 .text-gold-solid {
     color: #B89B00;
