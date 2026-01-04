@@ -151,35 +151,40 @@
                 <!-- ราคา -->
                 <div class="mb-5">
                     <label class="block text-gray-600 text-sm mb-2 font-semibold text-center">ราคา</label>
-                    <div class="flex items-center gap-2 px-2">
-                        <!-- ช่องตรง -->
-                        <div class="flex items-center flex-1 min-w-0">
-                            <input type="tel" id="ugPriceDirect" placeholder="ตรง" readonly
-                                onclick="openPriceNumpad('ugPriceDirect', 'ราคาตรง')"
-                                class="w-full min-w-0 px-2 py-3 rounded-l-xl border-2 border-r-0 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-lg font-bold cursor-pointer">
-                            <select id="ugDirectType" onchange="onGlabChange('direct')" class="py-3 px-1 rounded-r-xl border-2 border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 focus:outline-none focus:border-gold-400 flex-shrink-0">
-                                <option value="">-</option>
-                                <option value="ก.3">ก.3</option>
-                                <option value="ก.6">ก.6</option>
-                            </select>
+                    <div class="flex items-center gap-3">
+                        <!-- ฝั่งซ้าย: ช่องราคา -->
+                        <div class="flex-1">
+                            <!-- ช่องตรง -->
+                            <div class="flex items-center">
+                                <input type="tel" id="ugPriceDirect" placeholder="ตรง" readonly
+                                    onclick="openPriceNumpad('ugPriceDirect', 'ราคาตรง')"
+                                    class="w-full px-3 py-3 rounded-l-xl border-2 border-r-0 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-xl font-bold cursor-pointer">
+                                <select id="ugDirectType" onchange="onGlabChange('direct')" class="py-3 px-2 rounded-r-xl border-2 border-gray-200 bg-gray-50 text-sm font-semibold text-gray-600 focus:outline-none focus:border-gold-400">
+                                    <option value="">-</option>
+                                    <option value="ก.3">ก.3</option>
+                                    <option value="ก.6">ก.6</option>
+                                </select>
+                            </div>
+                            
+                            <!-- ช่องโต๊ด (ซ่อนอยู่) -->
+                            <div id="todPriceSection" class="hidden">
+                                <div class="text-center text-gold-500 font-bold text-lg py-1">x</div>
+                                <div class="flex items-center">
+                                    <input type="tel" id="ugPriceTod" placeholder="โต๊ด" readonly
+                                        onclick="openPriceNumpad('ugPriceTod', 'ราคาโต๊ด')"
+                                        class="w-full px-3 py-3 rounded-l-xl border-2 border-r-0 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-xl font-bold cursor-pointer">
+                                    <select id="ugTodType" onchange="onGlabChange('tod')" class="py-3 px-2 rounded-r-xl border-2 border-gray-200 bg-gray-50 text-sm font-semibold text-gray-600 focus:outline-none focus:border-gold-400">
+                                        <option value="">-</option>
+                                        <option value="ก.3">ก.3</option>
+                                        <option value="ก.6">ก.6</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         
-                        <!-- ช่องโต๊ด (ซ่อนอยู่) -->
-                        <div id="todPriceSection" class="hidden items-center flex-1 min-w-0">
-                            <span class="text-gold-500 font-bold text-lg flex-shrink-0">x</span>
-                            <input type="tel" id="ugPriceTod" placeholder="โต๊ด" readonly
-                                onclick="openPriceNumpad('ugPriceTod', 'ราคาโต๊ด')"
-                                class="w-full min-w-0 px-2 py-3 rounded-l-xl border-2 border-r-0 border-gray-200 focus:border-gold-400 focus:outline-none text-center text-lg font-bold cursor-pointer">
-                            <select id="ugTodType" onchange="onGlabChange('tod')" class="py-3 px-1 rounded-r-xl border-2 border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 focus:outline-none focus:border-gold-400 flex-shrink-0">
-                                <option value="">-</option>
-                                <option value="ก.3">ก.3</option>
-                                <option value="ก.6">ก.6</option>
-                            </select>
-                        </div>
-                        
-                        <!-- ปุ่ม +/- -->
+                        <!-- ฝั่งขวา: ปุ่ม +/- -->
                         <button id="addTodBtn" onclick="toggleTodPrice()" 
-                            class="w-9 h-9 flex-shrink-0 rounded-full border-2 border-gold-300 bg-gold-50 text-gold-600 font-bold text-lg flex items-center justify-center">
+                            class="w-10 h-10 flex-shrink-0 rounded-full border-2 border-gold-300 bg-gold-50 text-gold-600 font-bold text-xl flex items-center justify-center">
                             +
                         </button>
                     </div>
