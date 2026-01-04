@@ -630,7 +630,7 @@ function renderUndergroundPreview(data, container) {
     // 3 ตัวบน
     if (groups['3bon'].length) {
         html += `
-            <div class="mb-4">
+            <div class="mb-4 px-4">
                 <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">3 ตัวบน</div>
                 <div class="text-center text-sm">
                     ${groups['3bon'].map(i => `<div class="py-0.5"><b>${i.number}</b> = ${i.price}</div>`).join('')}
@@ -642,7 +642,7 @@ function renderUndergroundPreview(data, container) {
     // 2 ตัวบน
     if (groups['2bon'].length) {
         html += `
-            <div class="mb-4">
+            <div class="mb-4 px-4">
                 <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">2 ตัวบน</div>
                 <div class="text-center text-sm">
                     ${groups['2bon'].map(i => `<div class="py-0.5"><b>${i.number}</b> = ${i.price}</div>`).join('')}
@@ -654,7 +654,7 @@ function renderUndergroundPreview(data, container) {
     // 2 ตัวล่าง
     if (groups['2lang'].length) {
         html += `
-            <div class="mb-4">
+            <div class="mb-4 px-4">
                 <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">2 ตัวล่าง</div>
                 <div class="text-center text-sm">
                     ${groups['2lang'].map(i => `<div class="py-0.5"><b>${i.number}</b> = ${i.price}</div>`).join('')}
@@ -666,7 +666,7 @@ function renderUndergroundPreview(data, container) {
     // วิ่งบน
     if (groups['runBon'].length) {
         html += `
-            <div class="mb-4">
+            <div class="mb-4 px-4">
                 <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">วิ่งบน</div>
                 <div class="text-center text-sm">
                     ${groups['runBon'].map(i => `<div class="py-0.5"><b>${i.number}</b> = ${i.price}</div>`).join('')}
@@ -678,7 +678,7 @@ function renderUndergroundPreview(data, container) {
     // วิ่งล่าง
     if (groups['runLang'].length) {
         html += `
-            <div class="mb-4">
+            <div class="mb-4 px-4">
                 <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">วิ่งล่าง</div>
                 <div class="text-center text-sm">
                     ${groups['runLang'].map(i => `<div class="py-0.5"><b>${i.number}</b> = ${i.price}</div>`).join('')}
@@ -702,18 +702,18 @@ function renderGovernmentPreview(data, container) {
     
     const sections = [
         { key: '6', title: '6 ตัวตรง' },
-        { key: 'front3', title: 'หน้า 3 ตัว' },
-        { key: 'back3', title: 'ท้าย 3 ตัว' },
-        { key: 'back2', title: 'ท้าย 2 ตัว' }
+        { key: 'front3', title: 'เลขหน้า 3 ตัว' },
+        { key: 'back3', title: 'เลขท้าย 3 ตัว' },
+        { key: 'back2', title: 'เลขท้าย 2 ตัว' }
     ];
     
     sections.forEach(sec => {
         if (groups[sec.key].length) {
             html += `
-                <div class="mb-4">
-                    <div class="text-center py-2 border-b-2 border-gold-400 text-gold-700 font-bold mb-2">${sec.title}</div>
-                    <div class="text-center">
-                        ${groups[sec.key].map(i => `<div class="py-1"><b>${i.number}</b>${i.qty > 1 ? ` (${i.qty} ใบ)` : ''}</div>`).join('')}
+                <div class="mb-4 px-4">
+                    <div class="text-center py-1 border-b-2 border-gold-400 text-gold-700 font-bold text-sm mb-2">${sec.title}</div>
+                    <div class="text-center text-sm">
+                        ${groups[sec.key].map(i => `<div class="py-0.5"><b>${i.number}</b>${i.qty > 1 ? ` (${i.qty} ใบ)` : ''}</div>`).join('')}
                     </div>
                 </div>
             `;
