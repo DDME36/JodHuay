@@ -196,15 +196,15 @@ function onGlabChange(field) {
     if (value === 'ก.3') {
         input.value = 'กลับ 3';
         input.disabled = true;
-        input.classList.add('bg-gold-50', 'text-gold-600');
+        input.classList.add('bg-gold-50', 'text-gray-800');
     } else if (value === 'ก.6') {
         input.value = 'กลับ 6';
         input.disabled = true;
-        input.classList.add('bg-gold-50', 'text-gold-600');
+        input.classList.add('bg-gold-50', 'text-gray-800');
     } else {
         input.value = '';
         input.disabled = false;
-        input.classList.remove('bg-gold-50', 'text-gold-600');
+        input.classList.remove('bg-gold-50', 'text-gray-800');
         input.placeholder = field === 'direct' ? 'ตรง' : 'โต๊ด';
     }
 }
@@ -319,12 +319,12 @@ function clearUndergroundForm() {
     if (ugPriceDirectEl) {
         ugPriceDirectEl.value = '';
         ugPriceDirectEl.disabled = false;
-        ugPriceDirectEl.classList.remove('bg-gold-50', 'text-gold-600');
+        ugPriceDirectEl.classList.remove('bg-gold-50', 'text-gray-800');
     }
     if (ugPriceTodEl) {
         ugPriceTodEl.value = '';
         ugPriceTodEl.disabled = false;
-        ugPriceTodEl.classList.remove('bg-gold-50', 'text-gold-600');
+        ugPriceTodEl.classList.remove('bg-gold-50', 'text-gray-800');
     }
     if (ugDirectTypeEl) ugDirectTypeEl.value = '';
     if (ugTodTypeEl) ugTodTypeEl.value = '';
