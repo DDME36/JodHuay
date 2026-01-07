@@ -648,65 +648,25 @@ function renderUndergroundPreview(data, container) {
     
     let html = '';
     
-    // 3 ตัวบน
-    if (groups['3bon'].length) {
-        html += `
-            <div class="mb-4 px-4">
-                <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">3 ตัวบน</div>
-                <div class="text-center" style="font-size:14px;">
-                    ${groups['3bon'].map(i => `<div class="py-1"><b>${i.number}</b> = ${i.price}</div>`).join('')}
+    const renderSection = (items, title) => {
+        if (!items.length) return '';
+        return `
+            <div style="margin-bottom:16px;padding:0 16px;">
+                <div style="text-align:center;padding:6px 0;border-bottom:1px solid #D4C4A8;margin-bottom:8px;">
+                    <span style="color:#6B5A45;font-weight:600;font-size:13px;letter-spacing:0.05em;">${title}</span>
+                </div>
+                <div style="text-align:center;font-size:13px;color:#5C5C52;">
+                    ${items.map(i => `<div style="padding:4px 0;"><b style="color:#6B5A45;">${i.number}</b> = ${i.price}</div>`).join('')}
                 </div>
             </div>
         `;
-    }
+    };
     
-    // 2 ตัวบน
-    if (groups['2bon'].length) {
-        html += `
-            <div class="mb-4 px-4">
-                <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">2 ตัวบน</div>
-                <div class="text-center" style="font-size:14px;">
-                    ${groups['2bon'].map(i => `<div class="py-1"><b>${i.number}</b> = ${i.price}</div>`).join('')}
-                </div>
-            </div>
-        `;
-    }
-    
-    // 2 ตัวล่าง
-    if (groups['2lang'].length) {
-        html += `
-            <div class="mb-4 px-4">
-                <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">2 ตัวล่าง</div>
-                <div class="text-center" style="font-size:14px;">
-                    ${groups['2lang'].map(i => `<div class="py-1"><b>${i.number}</b> = ${i.price}</div>`).join('')}
-                </div>
-            </div>
-        `;
-    }
-    
-    // วิ่งบน
-    if (groups['runBon'].length) {
-        html += `
-            <div class="mb-4 px-4">
-                <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">วิ่งบน</div>
-                <div class="text-center" style="font-size:14px;">
-                    ${groups['runBon'].map(i => `<div class="py-1"><b>${i.number}</b> = ${i.price}</div>`).join('')}
-                </div>
-            </div>
-        `;
-    }
-    
-    // วิ่งล่าง
-    if (groups['runLang'].length) {
-        html += `
-            <div class="mb-4 px-4">
-                <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">วิ่งล่าง</div>
-                <div class="text-center" style="font-size:14px;">
-                    ${groups['runLang'].map(i => `<div class="py-1"><b>${i.number}</b> = ${i.price}</div>`).join('')}
-                </div>
-            </div>
-        `;
-    }
+    html += renderSection(groups['3bon'], '3 ตัวบน');
+    html += renderSection(groups['2bon'], '2 ตัวบน');
+    html += renderSection(groups['2lang'], '2 ตัวล่าง');
+    html += renderSection(groups['runBon'], 'วิ่งบน');
+    html += renderSection(groups['runLang'], 'วิ่งล่าง');
     
     container.innerHTML = html;
 }
@@ -731,10 +691,12 @@ function renderGovernmentPreview(data, container) {
     sections.forEach(sec => {
         if (groups[sec.key].length) {
             html += `
-                <div class="mb-4 px-4">
-                    <div class="text-center py-2 border-b-2 border-gold-400 mb-3" style="color:#B89B00;font-weight:700;font-size:14px;">${sec.title}</div>
-                    <div class="text-center" style="font-size:14px;">
-                        ${groups[sec.key].map(i => `<div class="py-1"><b>${i.number}</b>${i.qty > 1 ? ` (${i.qty} ใบ)` : ''}</div>`).join('')}
+                <div style="margin-bottom:16px;padding:0 16px;">
+                    <div style="text-align:center;padding:6px 0;border-bottom:1px solid #D4C4A8;margin-bottom:8px;">
+                        <span style="color:#6B5A45;font-weight:600;font-size:13px;letter-spacing:0.05em;">${sec.title}</span>
+                    </div>
+                    <div style="text-align:center;font-size:13px;color:#5C5C52;">
+                        ${groups[sec.key].map(i => `<div style="padding:4px 0;"><b style="color:#6B5A45;">${i.number}</b>${i.qty > 1 ? ` (${i.qty} ใบ)` : ''}</div>`).join('')}
                     </div>
                 </div>
             `;
