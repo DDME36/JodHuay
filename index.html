@@ -132,11 +132,11 @@
                 <div class="mb-5">
                     <label class="block text-gray-600 text-sm mb-2 font-semibold text-center">ประเภท</label>
                     <div class="choice-chips" id="ugTypeChips">
-                        <button type="button" class="choice-chip active" data-value="3bon">3 ตัวบน</button>
-                        <button type="button" class="choice-chip" data-value="2bon">2 ตัวบน</button>
-                        <button type="button" class="choice-chip" data-value="2lang">2 ตัวล่าง</button>
-                        <button type="button" class="choice-chip" data-value="runBon">วิ่งบน</button>
-                        <button type="button" class="choice-chip" data-value="runLang">วิ่งล่าง</button>
+                        <button type="button" class="choice-chip chip-bon active" data-value="3bon">3 ตัวบน</button>
+                        <button type="button" class="choice-chip chip-bon" data-value="2bon">2 ตัวบน</button>
+                        <button type="button" class="choice-chip chip-lang" data-value="2lang">2 ตัวล่าง</button>
+                        <button type="button" class="choice-chip chip-bon" data-value="runBon">วิ่งบน</button>
+                        <button type="button" class="choice-chip chip-lang" data-value="runLang">วิ่งล่าง</button>
                     </div>
                     <input type="hidden" id="ugType" value="3bon">
                 </div>
@@ -208,6 +208,13 @@
                 </h3>
                 <div id="ugList" class="space-y-2 max-h-64 overflow-y-auto">
                     <p class="text-gray-400 text-center py-6 text-sm">ยังไม่มีรายการ</p>
+                </div>
+                <!-- สรุปยอด -->
+                <div id="ugSummary" class="hidden mt-3 pt-3 border-t border-gold-200">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">ยอดรวม</span>
+                        <span id="ugTotal" class="text-lg font-bold text-gold-700">0 บาท</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -306,12 +313,15 @@
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-4 border-t border-gray-100 bg-white flex gap-3">
-                <button onclick="closePreviewModal()" class="flex-1 py-3 rounded-xl font-semibold border-2 border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm">
-                    ยกเลิก
+            <div class="p-4 border-t border-gray-100 bg-white flex gap-2">
+                <button onclick="closePreviewModal()" class="py-3 px-4 rounded-xl font-semibold border-2 border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm">
+                    ปิด
+                </button>
+                <button onclick="copyAsText()" class="flex-1 py-3 rounded-xl font-semibold border-2 border-gold-300 text-gold-700 hover:bg-gold-50 transition-all text-sm">
+                    คัดลอกข้อความ
                 </button>
                 <button onclick="saveImage()" class="flex-1 py-3 rounded-xl font-semibold bg-gradient-to-r from-gold-500 to-gold-600 text-white shadow-lg hover:shadow-xl transition-all text-sm">
-                    บันทึกรูปภาพ
+                    บันทึกรูป
                 </button>
             </div>
         </div>

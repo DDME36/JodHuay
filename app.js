@@ -346,6 +346,8 @@ function deleteUnderground(id) {
 function renderUnderground() {
     const list = document.getElementById('ugList');
     const count = document.getElementById('ugCount');
+    const summary = document.getElementById('ugSummary');
+    const totalEl = document.getElementById('ugTotal');
     
     if (undergroundData.length === 0) {
         list.innerHTML = `
@@ -355,10 +357,31 @@ function renderUnderground() {
             </div>
         `;
         count.textContent = '';
+        summary.classList.add('hidden');
         return;
     }
     
     count.textContent = `${undergroundData.length} รายการ`;
+    
+    // Calculate total (only numeric prices)
+    let total = 0;
+    undergroundData.forEach(item => {
+        const prices = item.price.split(' x ');
+        prices.forEach(p => {
+            const num = parseInt(p);
+            if (!isNaN(num)) total += num;
+        });
+    });
+    
+    // Show summary
+    summary.classList.remove('hidden');
+    totalEl.textContent = total.toLocaleString() + ' บาท';
+    
+    // Determine type class (bon/lang)
+    const getTypeClass = (type) => {
+        if (type === '2lang' || type === 'runLang') return 'type-lang';
+        return 'type-bon';
+    };
     
     list.innerHTML = undergroundData.map((item, index) => `
         <div class="list-item cursor-pointer" style="animation-delay: ${index * 0.03}s" onclick="editUnderground(${item.id})">
@@ -366,8 +389,8 @@ function renderUnderground() {
                 <div class="flex items-center gap-4">
                     <span class="text-3xl font-bold text-gold-700 tracking-widest">${item.number}</span>
                     <div class="text-left">
-                        <div class="text-sm text-gray-500">${typeNames[item.type]}</div>
-                        <div class="text-sm text-gold-600 font-semibold">${item.price}</div>
+                        <span class="${getTypeClass(item.type)}">${typeNames[item.type]}</span>
+                        <div class="text-sm text-gray-700 font-semibold mt-1">${item.price}</div>
                     </div>
                 </div>
                 <button onclick="event.stopPropagation(); deleteUnderground(${item.id})" class="delete-btn">&times;</button>
@@ -844,6 +867,80 @@ window.selectAll = selectAll;
 window.selectNone = selectNone;
 window.toggleItem = toggleItem;
 window.saveImage = saveImage;
+
+// ============================================
+// COPY AS TEXT
+// ============================================
+
+function copyAsText() {
+    const data = currentTab === 'underground' ? undergroundData : governmentData;
+    const selected = data.filter(i => selectedItems.has(i.id));
+    
+    if (selected.length === 0) {
+        showToast('กรุณาเลือกรายการ');
+        return;
+    }
+    
+    let text = `JODHUAY - จดหวย\n`;
+    text += `วันที่ ${formatThaiDate(getTodayKey())}\n`;
+    text += `─────────────\n`;
+    
+    if (currentTab === 'underground') {
+        // Group by type
+        const groups = {
+            '3bon': selected.filter(i => i.type === '3bon'),
+            '2bon': selected.filter(i => i.type === '2bon'),
+            '2lang': selected.filter(i => i.type === '2lang'),
+            'runBon': selected.filter(i => i.type === 'runBon'),
+            'runLang': selected.filter(i => i.type === 'runLang')
+        };
+        
+        Object.keys(groups).forEach(type => {
+            if (groups[type].length) {
+                text += `\n[ ${typeNames[type]} ]\n`;
+                groups[type].forEach(item => {
+                    text += `${item.number} = ${item.price}\n`;
+                });
+            }
+        });
+    } else {
+        // Government
+        const groups = {
+            '6': selected.filter(i => i.type === '6'),
+            'front3': selected.filter(i => i.type === 'front3'),
+            'back3': selected.filter(i => i.type === 'back3'),
+            'back2': selected.filter(i => i.type === 'back2')
+        };
+        
+        Object.keys(groups).forEach(type => {
+            if (groups[type].length) {
+                text += `\n[ ${typeNames[type]} ]\n`;
+                groups[type].forEach(item => {
+                    text += `${item.number}${item.qty > 1 ? ` (${item.qty} ใบ)` : ''}\n`;
+                });
+            }
+        });
+    }
+    
+    text += `\n─────────────\n`;
+    text += `ขอให้โชคดี!`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('คัดลอกแล้ว');
+    }).catch(() => {
+        // Fallback for older browsers
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('คัดลอกแล้ว');
+    });
+}
+
+window.copyAsText = copyAsText;
 
 
 // ============================================
