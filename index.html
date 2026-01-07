@@ -14,7 +14,7 @@
     <title>JodHuay - จดหวย</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
@@ -41,20 +41,36 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="font-prompt min-h-screen">
+    <!-- ละอองทองศักดิ์สิทธิ์ -->
+    <div class="gold-particles">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    
     <div class="max-w-xl mx-auto px-4 py-8 pb-10 page-enter">
         <!-- Header -->
         <header class="text-center mb-8">
-            <div class="decorative-divider mx-auto mb-4"></div>
-            <h1 class="brand-title">JODHUAY</h1>
+            <div class="sacred-glow"></div>
+            <div class="flex items-center justify-center gap-3 mb-2">
+                <span class="text-gold-400 text-2xl" style="display:inline-block;transform:scaleX(-1);">๛</span>
+                <h1 class="brand-title">JODHUAY</h1>
+                <span class="text-gold-400 text-2xl">๛</span>
+            </div>
             <p class="brand-subtitle">จดหวย & บันทึกเลขเด็ด</p>
-            <p class="text-gold-600 font-light text-sm tracking-widest mt-2">โชคลาภเงินทองไหลมาเทมา</p>
-            <div class="decorative-divider mx-auto mt-4"></div>
+            <div class="sacred-divider-clean mx-auto mt-4"></div>
+            <p class="text-gold-600 font-light text-sm tracking-widest mt-3">โชคลาภเงินทองไหลมาเทมา</p>
         </header>
 
-        <!-- Date Display -->
+        <!-- Date Picker -->
         <div class="date-display card rounded-2xl p-5 mb-8 text-center">
             <p class="text-gray-500 text-sm mb-1">วันที่ออกใบจด</p>
-            <p id="todayDate" class="text-2xl font-bold text-gold-600"></p>
+            <div class="flex items-center justify-center gap-3">
+                <button onclick="changeDate(-1)" class="w-10 h-10 rounded-full bg-gold-100 text-gold-600 font-bold text-xl flex items-center justify-center hover:bg-gold-200 transition-all">&lt;</button>
+                <input type="date" id="selectedDate" onchange="onDateChange()" 
+                    class="text-xl font-bold text-gold-600 bg-transparent border-none text-center cursor-pointer focus:outline-none" style="width:auto;">
+                <button onclick="changeDate(1)" class="w-10 h-10 rounded-full bg-gold-100 text-gold-600 font-bold text-xl flex items-center justify-center hover:bg-gold-200 transition-all">&gt;</button>
+            </div>
+            <p id="thaiDateDisplay" class="text-sm text-gray-500 mt-2"></p>
         </div>
 
         <!-- Tabs -->
@@ -245,6 +261,13 @@
                     <span id="numpadValue" class="text-3xl font-bold text-gold-700 tracking-widest"></span>
                     <span id="numpadLabel" class="text-sm text-gray-500"></span>
                 </div>
+                <!-- ปุ่มราคาด่วน -->
+                <div id="quickPriceButtons" class="hidden grid grid-cols-4 gap-2 mb-3">
+                    <button onclick="quickPrice(10)" class="quick-price-btn">10</button>
+                    <button onclick="quickPrice(20)" class="quick-price-btn">20</button>
+                    <button onclick="quickPrice(50)" class="quick-price-btn">50</button>
+                    <button onclick="quickPrice(100)" class="quick-price-btn">100</button>
+                </div>
                 <div class="numpad-grid">
                     <button class="numpad-btn" onclick="numpadPress('1')">1</button>
                     <button class="numpad-btn" onclick="numpadPress('2')">2</button>
@@ -268,13 +291,13 @@
 
         <!-- Footer -->
         <footer class="text-center mt-10">
-            <div class="decorative-divider mx-auto mb-4"></div>
-            <p class="text-gray-500 text-sm flex items-center justify-center gap-2">
-                <span class="text-gold-400">&#10022;</span>
+            <div class="sacred-divider mx-auto mb-4"></div>
+            <p class="text-gold-600 text-sm flex items-center justify-center gap-2">
+                <span class="text-lg">๙</span>
                 ขอให้โชคดี เฮง ๆ ร่ำรวย
-                <span class="text-gold-400">&#10022;</span>
+                <span class="text-lg">๙</span>
             </p>
-            <p class="text-gray-400 text-xs mt-3">&copy; JodHuay</p>
+            <p class="text-gold-500 text-xs mt-3 opacity-60">&copy; JodHuay</p>
         </footer>
     </div>
 
@@ -306,31 +329,32 @@
             <!-- Preview Area -->
             <div class="flex-1 overflow-auto p-4 bg-gradient-to-br from-gray-100 to-gray-200">
                 <div class="flex justify-center">
-                    <div id="a4Preview" class="paper-preview rounded-lg" style="width: 100%; max-width: 400px; min-height: 200px; padding: 24px; font-family: 'Prompt', sans-serif; background: linear-gradient(180deg, #FDFCFA 0%, #F5F0E8 100%);">
+                    <div id="a4Preview" class="paper-preview rounded-lg" style="width: 100%; max-width: 400px; min-height: 200px; padding: 24px; font-family: 'Prompt', sans-serif; background: linear-gradient(180deg, #FFFCF5 0%, #FFF9F0 100%);">
                         <div class="text-center mb-6">
-                            <!-- Decorative top -->
-                            <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;">
-                                <div style="width:40px;height:1px;background:linear-gradient(90deg,transparent,#C4A052);"></div>
-                                <span style="color:#C4A052;font-size:10px;">&#10022;</span>
-                                <div style="width:40px;height:1px;background:linear-gradient(90deg,#C4A052,transparent);"></div>
+                            <!-- Sacred header -->
+                            <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;">
+                                <span style="color:#DAA520;font-size:16px;">๛</span>
+                                <div style="width:30px;height:1px;background:linear-gradient(90deg,transparent,#DAA520);"></div>
+                                <span style="color:#DAA520;font-size:10px;">◆</span>
+                                <div style="width:30px;height:1px;background:linear-gradient(90deg,#DAA520,transparent);"></div>
+                                <span style="color:#DAA520;font-size:16px;">๛</span>
                             </div>
-                            <h1 style="font-size:22px;font-weight:700;color:#6B5A45;letter-spacing:0.1em;margin-bottom:2px;">JODHUAY</h1>
-                            <p style="font-size:11px;color:#8B7355;letter-spacing:0.05em;">จดหวย & บันทึกเลขเด็ด</p>
-                            <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0;">
-                                <div style="width:30px;height:1px;background:#D4C4A8;"></div>
-                                <span style="color:#C4A052;font-size:8px;">&#9670;</span>
-                                <div style="width:30px;height:1px;background:#D4C4A8;"></div>
+                            <h1 style="font-family:'Charmonman',cursive;font-size:24px;font-weight:700;color:#8B6914;letter-spacing:0.05em;margin-bottom:2px;">JODHUAY</h1>
+                            <p style="font-size:11px;color:#8B7355;letter-spacing:0.08em;">จดหวย & บันทึกเลขเด็ด</p>
+                            <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin:10px 0;">
+                                <div style="width:40px;height:1px;background:linear-gradient(90deg,transparent,#D4C4A8);"></div>
+                                <span style="color:#DAA520;font-size:6px;">◆</span>
+                                <div style="width:40px;height:1px;background:linear-gradient(90deg,#D4C4A8,transparent);"></div>
                             </div>
                             <p id="previewDate" style="font-size:11px;color:#8B7355;"></p>
                         </div>
                         <div id="previewContent"></div>
-                        <!-- Decorative bottom -->
+                        <!-- Sacred footer -->
                         <div style="text-align:center;margin-top:16px;padding-top:12px;border-top:1px solid #E8DFD0;">
-                            <p style="font-size:10px;color:#8B7355;letter-spacing:0.1em;">ขอให้โชคดี มั่งมีศรีสุข</p>
-                            <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;">
-                                <span style="color:#C4A052;font-size:8px;">&#10022;</span>
-                                <span style="color:#D4C4A8;font-size:6px;">&#9670;</span>
-                                <span style="color:#C4A052;font-size:8px;">&#10022;</span>
+                            <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                                <span style="color:#DAA520;font-size:12px;">๙</span>
+                                <p style="font-size:10px;color:#8B7355;letter-spacing:0.08em;">ขอให้โชคดี มั่งมีศรีสุข</p>
+                                <span style="color:#DAA520;font-size:12px;">๙</span>
                             </div>
                         </div>
                     </div>

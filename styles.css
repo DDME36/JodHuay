@@ -1,6 +1,6 @@
 /* ============================================
-   THEME: สายบุญ - Serene Buddhist Gold
-   60% Cream | 30% Brown-Gold | 10% Deep Gold
+   THEME: Modern Sacred - พุทธศิลป์ร่วมสมัย
+   ขลัง สว่าง ศักดิ์สิทธิ์
    ============================================ */
 
 * {
@@ -8,61 +8,167 @@
 }
 
 body {
-    background: linear-gradient(180deg, #FAF8F5 0%, #F5F0E8 100%);
+    background-color: #FDFBF7;
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4c4a8' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* Brand Title */
+/* Sacred Glow - รัศมีทอง */
+.sacred-glow {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 200px;
+    background: radial-gradient(ellipse, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Brand Title - ฟอนต์วิจิตร + หายใจได้ */
 .brand-title {
-    font-size: 2.5rem;
+    font-family: 'Charmonman', cursive;
+    font-size: 2.8rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
-    color: #6B5A45;
-    text-shadow: 0 1px 2px rgba(107, 90, 69, 0.1);
+    letter-spacing: 0.05em;
+    background: linear-gradient(180deg, #DAA520 0%, #B8860B 50%, #8B6914 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3));
+    display: inline-block;
+    animation: breathing 4s ease-in-out infinite;
+}
+
+@keyframes breathing {
+    0% { transform: scale(1); filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3)); }
+    50% { transform: scale(1.02); filter: drop-shadow(0 0 15px rgba(218, 165, 32, 0.6)); }
+    100% { transform: scale(1); filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3)); }
 }
 
 /* Brand Subtitle */
 .brand-subtitle {
+    font-family: 'Prompt', sans-serif;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 400;
     color: #8B7355;
-    letter-spacing: 0.05em;
-    margin-top: 0.25rem;
+    letter-spacing: 0.1em;
 }
 
-/* Decorative Divider */
-.decorative-divider {
-    width: 60px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #C4A052, transparent);
+/* Sacred Divider - เส้นคั่นศักดิ์สิทธิ์ */
+.sacred-divider {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #DAA520, transparent);
     position: relative;
 }
 
-.decorative-divider::before {
+.sacred-divider::before {
     content: '◆';
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    color: #C4A052;
-    font-size: 6px;
-    background: transparent;
+    color: #DAA520;
+    font-size: 8px;
+    background: #FDFBF7;
+    padding: 0 8px;
 }
 
-/* Gold Button */
+/* Sacred Divider Clean - เส้นแหลมสองข้าง มีเพชรตรงกลาง */
+.sacred-divider-clean {
+    width: 160px;
+    height: 16px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sacred-divider-clean::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #DAA520 100%);
+    transform: translateY(-50%);
+}
+
+.sacred-divider-clean::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(90deg, #DAA520 0%, transparent 100%);
+    transform: translateY(-50%);
+}
+
+/* Decorative Divider (fallback) */
+.decorative-divider {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #C4A052, transparent);
+}
+
+/* Gold Button - ลงรักปิดทอง */
 .gold-btn {
-    background: linear-gradient(135deg, #C4A052 0%, #8B7355 100%);
-    box-shadow: 0 2px 8px rgba(139, 115, 85, 0.3);
+    background: linear-gradient(135deg, #FFD700 0%, #DAA520 50%, #B8860B 100%);
+    border: 1px solid #F0E68C;
+    box-shadow: 
+        0 4px 15px rgba(218, 165, 32, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
     transition: all 0.3s ease;
-    border: none;
+}
+
+.gold-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: rotate(45deg) translate(-100%, -100%);
+    transition: transform 0.6s;
+}
+
+.gold-btn:hover::after {
+    transform: rotate(45deg) translate(100%, 100%);
 }
 
 .gold-btn:hover {
+    box-shadow: 
+        0 6px 20px rgba(218, 165, 32, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(139, 115, 85, 0.4);
 }
 
 .gold-btn:active {
     transform: translateY(0);
+}
+
+/* Ripple Effect - คลื่นพลัง */
+.ripple {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-anim 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-anim {
+    to { transform: scale(4); opacity: 0; }
 }
 
 /* Tab Buttons */
@@ -70,40 +176,59 @@ body {
     color: #8B7355;
     background: transparent;
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .tab-btn.active {
-    background: linear-gradient(135deg, #C4A052 0%, #8B7355 100%);
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
     color: #fff;
-    box-shadow: 0 2px 8px rgba(139, 115, 85, 0.3);
+    box-shadow: 0 2px 10px rgba(218, 165, 32, 0.4);
 }
 
-/* Cards */
+/* Cards - กรอบศักดิ์สิทธิ์ */
 .card {
-    background: #FDFCFA;
+    background: #FFFFFF;
     border: 1px solid #E8DFD0;
-    box-shadow: 0 2px 8px rgba(139, 115, 85, 0.08);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(196, 160, 82, 0.12);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Input Fields */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #F5F0E8, #DAA520, #F5F0E8);
+}
+
+/* Input Fields - แผ่นจารึก */
 input, select {
-    transition: all 0.2s ease;
-    background: #FDFCFA;
-    border-color: #E8DFD0;
+    transition: all 0.3s ease;
+    background: #FFFCF5;
+    border-color: #D4C4A8;
 }
 
 input:focus, select:focus {
-    box-shadow: 0 0 0 2px rgba(196, 160, 82, 0.2);
-    border-color: #C4A052;
+    border-color: #DAA520;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
     background: #fff;
+}
+
+input[type="tel"] {
+    color: #6B5A45;
+    letter-spacing: 0.15em;
 }
 
 /* List Items */
 .list-item {
-    background: #FDFCFA;
+    background: linear-gradient(135deg, #FFFCF5 0%, #FFF9F0 100%);
     border: 1px solid #E8DFD0;
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 14px 16px;
     position: relative;
     overflow: hidden;
@@ -118,7 +243,7 @@ input:focus, select:focus {
     top: 0;
     bottom: 0;
     width: 3px;
-    background: linear-gradient(180deg, #C4A052 0%, #8B7355 100%);
+    background: linear-gradient(180deg, #FFD700 0%, #B8860B 100%);
     border-radius: 3px 0 0 3px;
 }
 
@@ -127,12 +252,23 @@ input:focus, select:focus {
     to { opacity: 1; transform: translateX(0); }
 }
 
+/* Holy Flash - แสงวาบศักดิ์สิทธิ์ */
+@keyframes holyFlash {
+    0% { box-shadow: 0 0 0 rgba(218, 165, 32, 0); }
+    30% { box-shadow: 0 0 25px rgba(218, 165, 32, 0.7); border-color: #DAA520; }
+    100% { box-shadow: 0 0 0 rgba(218, 165, 32, 0); }
+}
+
+.list-item.new-entry {
+    animation: slideIn 0.3s ease-out backwards, holyFlash 1.2s ease-out;
+}
+
 /* Delete Button */
 .delete-btn {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: #E8DFD0;
+    background: #F5EEE6;
     color: #8B7355;
     font-size: 16px;
     font-weight: bold;
@@ -145,7 +281,7 @@ input:focus, select:focus {
 }
 
 .delete-btn:hover {
-    background: #D4C4A8;
+    background: #EBE0D4;
     color: #6B5A45;
 }
 
@@ -161,50 +297,69 @@ input:focus, select:focus {
 }
 
 .chip-selected {
-    background: linear-gradient(135deg, #C4A052 0%, #8B7355 100%);
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
     color: #fff;
-    box-shadow: 0 2px 6px rgba(139, 115, 85, 0.3);
+    box-shadow: 0 2px 8px rgba(218, 165, 32, 0.4);
 }
 
 .chip-unselected {
-    background: #F5F0E8;
+    background: #FFF9F0;
     color: #8B7355;
     border-color: #E8DFD0;
 }
 
 .chip-unselected:hover {
-    background: #E8DFD0;
+    background: #F5EEE6;
+    border-color: #DAA520;
 }
 
 /* Modal */
 .modal-overlay {
-    background: rgba(107, 90, 69, 0.5);
+    background: rgba(107, 90, 69, 0.6);
     backdrop-filter: blur(4px);
 }
 
 .modal-content {
-    background: #FDFCFA;
+    background: linear-gradient(180deg, #FFFCF5 0%, #FFF9F0 100%);
     border: 1px solid #E8DFD0;
-    box-shadow: 0 10px 40px rgba(107, 90, 69, 0.2);
+    box-shadow: 0 10px 40px rgba(107, 90, 69, 0.25);
 }
 
 /* Preview Paper */
 .paper-preview {
-    background: #fff;
+    background: linear-gradient(180deg, #FFFCF5 0%, #FFF9F0 100%);
     box-shadow: 0 4px 20px rgba(107, 90, 69, 0.15);
     border: 1px solid #E8DFD0;
 }
 
 /* Date Display */
 .date-display {
-    background: #FDFCFA;
-    border: 1px solid #D4C4A8;
+    background: linear-gradient(135deg, #FFFCF5 0%, #FFF9F0 100%);
+    border: 1px solid #DAA520;
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.1);
+}
+
+/* Date Picker */
+input[type="date"] {
+    font-family: 'Prompt', sans-serif;
+    color: #8B6914;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 }
 
 /* Toast */
 #toast {
     background: linear-gradient(135deg, #6B5A45 0%, #8B7355 100%);
-    box-shadow: 0 4px 15px rgba(107, 90, 69, 0.3);
+    box-shadow: 0 4px 15px rgba(107, 90, 69, 0.4);
 }
 
 .toast-show {
@@ -228,113 +383,136 @@ input:focus, select:focus {
     cursor: pointer;
     transition: all 0.2s ease;
     border: 1px solid #E8DFD0;
-    background: #FDFCFA;
+    background: #FFFCF5;
     color: #8B7355;
 }
 
 .choice-chip:hover {
-    border-color: #C4A052;
-    background: #F5F0E8;
+    border-color: #DAA520;
+    background: #FFF9F0;
 }
 
 .choice-chip.active {
-    background: linear-gradient(135deg, #C4A052 0%, #8B7355 100%);
-    border-color: #8B7355;
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    border-color: #B8860B;
     color: #fff;
-    box-shadow: 0 2px 6px rgba(139, 115, 85, 0.3);
+    box-shadow: 0 2px 8px rgba(218, 165, 32, 0.4);
 }
 
-/* Color-coded chips for underground lottery */
+/* Color-coded chips - บน (แดงอิฐ) / ล่าง (น้ำเงินคราม) */
 .chip-bon:not(.active) {
-    border-color: #E8C4C4;
-    background: #FDF5F5;
+    border-color: #E8C4B8;
+    background: #FDF8F5;
     color: #8B4513;
 }
 
 .chip-bon:not(.active):hover {
-    border-color: #D4A8A8;
-    background: #F5E8E8;
+    border-color: #CD853F;
+    background: #FAF0EB;
 }
 
 .chip-bon.active {
-    background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+    background: linear-gradient(135deg, #CD853F 0%, #8B4513 100%);
     border-color: #8B4513;
     color: white;
-    box-shadow: 0 2px 6px rgba(139, 69, 19, 0.3);
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.4);
 }
 
 .chip-lang:not(.active) {
-    border-color: #C4D4E8;
-    background: #F5F8FD;
-    color: #4A6B8A;
+    border-color: #B8C4D4;
+    background: #F5F8FC;
+    color: #4A5568;
 }
 
 .chip-lang:not(.active):hover {
-    border-color: #A8C4D4;
-    background: #E8F0F5;
+    border-color: #718096;
+    background: #EDF2F7;
 }
 
 .chip-lang.active {
-    background: linear-gradient(135deg, #5A7A9A 0%, #4A6B8A 100%);
-    border-color: #4A6B8A;
+    background: linear-gradient(135deg, #5A6A7A 0%, #4A5568 100%);
+    border-color: #4A5568;
     color: white;
-    box-shadow: 0 2px 6px rgba(74, 107, 138, 0.3);
+    box-shadow: 0 2px 8px rgba(74, 85, 104, 0.4);
 }
 
 /* Type badge colors in list */
 .type-bon {
     color: #8B4513;
-    background: #FDF5F5;
+    background: #FDF8F5;
     padding: 2px 8px;
     border-radius: 8px;
     font-size: 12px;
+    border: 1px solid #E8C4B8;
 }
 
 .type-lang {
-    color: #4A6B8A;
-    background: #F5F8FD;
+    color: #4A5568;
+    background: #F5F8FC;
     padding: 2px 8px;
     border-radius: 8px;
     font-size: 12px;
+    border: 1px solid #B8C4D4;
 }
 
-/* Custom NumPad */
+/* Custom NumPad - กระดานชนวนศักดิ์สิทธิ์ */
 .numpad-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(107, 90, 69, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(4px);
     z-index: 100;
-    display: flex;
+    display: flex !important;
     align-items: flex-end;
     justify-content: center;
     padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.numpad-overlay.hidden {
-    display: none;
+.numpad-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .numpad-container {
-    background: #FDFCFA;
+    background: linear-gradient(180deg, #2C2C2C 0%, #1A1A1A 100%);
     border-radius: 24px 24px 16px 16px;
     padding: 20px;
     width: 100%;
     max-width: 360px;
-    box-shadow: 0 -4px 20px rgba(107, 90, 69, 0.2);
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.5);
+    border-top: 3px solid #DAA520;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.numpad-overlay.active .numpad-container {
+    transform: translateY(0);
 }
 
 .numpad-display {
     text-align: center;
     padding: 16px;
     margin-bottom: 16px;
-    background: #F5F0E8;
+    background: linear-gradient(135deg, #3D3D3D 0%, #2A2A2A 100%);
     border-radius: 16px;
-    border: 1px solid #E8DFD0;
+    border: 1px solid #4A4A4A;
     min-height: 70px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.numpad-display .text-3xl {
+    color: #F0E68C !important;
+}
+
+.numpad-display .text-sm {
+    color: #8B8B8B !important;
 }
 
 .numpad-grid {
@@ -349,30 +527,44 @@ input:focus, select:focus {
     font-size: 22px;
     font-weight: 600;
     border-radius: 12px;
-    background: #F5F0E8;
-    color: #6B5A45;
-    border: none;
+    background: #3D3D3D;
+    color: #F0E68C;
+    border: 1px solid #4A4A4A;
     cursor: pointer;
     transition: all 0.1s ease;
+    box-shadow: 0 4px 0 #111;
 }
 
 .numpad-btn:active {
-    transform: scale(0.95);
-    background: #E8DFD0;
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #111;
 }
 
 .numpad-special {
-    background: linear-gradient(135deg, #C4A052 0%, #8B7355 100%);
-    color: #fff;
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    color: #1A1A1A;
+    border: none;
+    box-shadow: 0 4px 0 #8B6914;
 }
 
 .numpad-special:active {
-    background: linear-gradient(135deg, #8B7355 0%, #6B5A45 100%);
+    box-shadow: 0 1px 0 #8B6914;
 }
 
 .numpad-actions {
     display: flex;
     gap: 12px;
+}
+
+.numpad-actions button:first-child {
+    background: #3D3D3D;
+    border: 1px solid #4A4A4A;
+    color: #F0E68C;
+}
+
+.numpad-actions button:last-child {
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    color: #1A1A1A;
 }
 
 /* Scrollbar - Hidden */
@@ -442,6 +634,61 @@ input[type="tel"], select {
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* ============================================
+   ละอองทองศักดิ์สิทธิ์ (Floating Gold Dust)
+   ============================================ */
+.gold-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.gold-particles span {
+    position: absolute;
+    display: block;
+    width: 4px;
+    height: 4px;
+    background: rgba(218, 165, 32, 0.5);
+    border-radius: 50%;
+    bottom: -10px;
+    animation: floatUp 15s linear infinite;
+    box-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+.gold-particles span:nth-child(1) { left: 5%; animation-duration: 14s; animation-delay: 0s; width: 5px; height: 5px; }
+.gold-particles span:nth-child(2) { left: 15%; animation-duration: 18s; animation-delay: 2s; }
+.gold-particles span:nth-child(3) { left: 25%; animation-duration: 12s; animation-delay: 4s; width: 6px; height: 6px; }
+.gold-particles span:nth-child(4) { left: 35%; animation-duration: 16s; animation-delay: 1s; }
+.gold-particles span:nth-child(5) { left: 50%; animation-duration: 20s; animation-delay: 3s; width: 5px; height: 5px; }
+.gold-particles span:nth-child(6) { left: 60%; animation-duration: 13s; animation-delay: 5s; }
+.gold-particles span:nth-child(7) { left: 70%; animation-duration: 17s; animation-delay: 0.5s; width: 4px; height: 4px; }
+.gold-particles span:nth-child(8) { left: 80%; animation-duration: 15s; animation-delay: 2.5s; }
+.gold-particles span:nth-child(9) { left: 90%; animation-duration: 19s; animation-delay: 1.5s; width: 6px; height: 6px; }
+.gold-particles span:nth-child(10) { left: 95%; animation-duration: 11s; animation-delay: 4.5s; }
+
+@keyframes floatUp {
+    0% { 
+        transform: translateY(0) rotate(0deg) scale(0); 
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 0.8;
+        transform: translateY(-10vh) rotate(36deg) scale(1);
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% { 
+        transform: translateY(-100vh) rotate(360deg) scale(0.5); 
+        opacity: 0; 
+    }
+}
+
 /* Responsive */
 @media (max-width: 640px) {
     .modal-content {
@@ -453,4 +700,36 @@ input[type="tel"], select {
         width: 100% !important;
         padding: 20px !important;
     }
+    
+    .brand-title {
+        font-size: 2.2rem;
+    }
+}
+
+
+/* Quick Price Buttons */
+.quick-price-btn {
+    padding: 10px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.quick-price-btn:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+}
+
+/* Glab Locked Input */
+.glab-locked {
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    border-color: #B8860B !important;
+    cursor: not-allowed !important;
 }
