@@ -205,7 +205,7 @@ function onGlabChange(field) {
         input.value = '';
         input.disabled = false;
         input.classList.remove('bg-gold-50', 'text-black');
-        input.placeholder = field === 'direct' ? 'ตรง' : 'โต๊ด';
+        input.placeholder = field === 'direct' ? 'เต็ง' : 'โต๊ด';
     }
 }
 
