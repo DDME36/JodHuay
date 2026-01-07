@@ -109,6 +109,12 @@ body {
     transform: translateY(-50%);
 }
 
+.sacred-divider-clean span {
+    color: #DAA520;
+    font-size: 10px;
+    z-index: 1;
+}
+
 /* Decorative Divider (fallback) */
 .decorative-divider {
     width: 80px;

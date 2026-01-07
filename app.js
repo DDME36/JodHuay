@@ -58,11 +58,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (govNumber) govNumber.addEventListener('keypress', e => { if (e.key === 'Enter') addGovernment(); });
 });
 
-// Update Thai date display (วัน เดือน ปี พ.ศ.)
+// Update Thai date display
+// ข้างบน: วัน/เดือน/ปีพ.ศ. (เช่น 08/01/2569)
+// ข้างล่าง: วัน เดือนภาษาไทย ปีพ.ศ. (เช่น 8 มกราคม 2569)
 function updateThaiDateDisplay() {
     const display = document.getElementById('thaiDateDisplay');
+    const textDisplay = document.getElementById('thaiDateText');
+    
     if (display) {
-        display.textContent = formatThaiDate(currentDate);
+        const date = new Date(currentDate);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear() + 543;
+        display.textContent = `${day}/${month}/${year}`;
+    }
+    
+    if (textDisplay) {
+        textDisplay.textContent = formatThaiDate(currentDate);
     }
 }
 
