@@ -5,8 +5,8 @@
     "start_url": "/JodHuay/",
     "scope": "/JodHuay/",
     "display": "standalone",
-    "background_color": "#F9FAFB",
-    "theme_color": "#FFDD00",
+    "background_color": "#FAF8F5",
+    "theme_color": "#8B7355",
     "orientation": "portrait",
     "icons": [
         {
