@@ -1072,7 +1072,7 @@ function numpadPress(num) {
     numpadValue += num;
     document.getElementById('numpadValue').textContent = numpadValue;
     
-    // Vibrate feedback
+    // Haptic feedback - สั่นเบาๆ
     if (navigator.vibrate) navigator.vibrate(10);
     
     // Auto confirm เมื่อกรอกครบ (เฉพาะเลขหวย ไม่ใช่ราคา)
