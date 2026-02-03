@@ -546,14 +546,14 @@ function onUgTypeChange() {
     
     if (type === '3bon') {
         input.maxLength = 3;
-        input.placeholder = '123';
+        input.placeholder = '_ _ _';
     } else if (type === '2bon' || type === '2lang') {
         input.maxLength = 2;
-        input.placeholder = '12';
+        input.placeholder = '_ _';
     } else {
         // วิ่ง
         input.maxLength = 1;
-        input.placeholder = '5';
+        input.placeholder = '_';
     }
     input.value = '';
 }
@@ -564,13 +564,13 @@ function onGovTypeChange() {
     const input = document.getElementById('govNumber');
     if (type === '6') {
         input.maxLength = 6;
-        input.placeholder = '123456';
+        input.placeholder = '_ _ _ _ _ _';
     } else if (type === 'front3' || type === 'back3') {
         input.maxLength = 3;
-        input.placeholder = '123';
+        input.placeholder = '_ _ _';
     } else {
         input.maxLength = 2;
-        input.placeholder = '12';
+        input.placeholder = '_ _';
     }
     input.value = '';
 }
@@ -2250,11 +2250,30 @@ function openNumpad(targetId, label, maxLen, callback) {
         numpadIsPrice = targetId.includes('Price');
         
         // สร้าง placeholder ตามจำนวนหลัก
-        const placeholder = '_'.repeat(maxLen);
+        let placeholder;
+        if (!numpadIsPrice) {
+            // เลขหวย: แสดงแบบมีช่องว่าง (เช่น _ _ _)
+            placeholder = Array(maxLen).fill('_').join(' ');
+        } else {
+            // ราคา: แสดงแบบติดกัน (เช่น ___)
+            placeholder = '_'.repeat(maxLen);
+        }
+        
         const valueDisplay = document.getElementById('numpadValue');
         const labelDisplay = document.getElementById('numpadLabel');
         
-        if (valueDisplay) valueDisplay.textContent = numpadValue || placeholder;
+        if (valueDisplay) {
+            if (numpadValue) {
+                // ถ้ามีค่าอยู่แล้ว แสดงแบบมีช่องว่าง (เฉพาะเลขหวย)
+                if (!numpadIsPrice) {
+                    valueDisplay.textContent = numpadValue.split('').join(' ');
+                } else {
+                    valueDisplay.textContent = numpadValue;
+                }
+            } else {
+                valueDisplay.textContent = placeholder;
+            }
+        }
         if (labelDisplay) labelDisplay.textContent = label;
         
         // แสดง/ซ่อนปุ่มราคาด่วน
@@ -2295,7 +2314,14 @@ function numpadPress(num) {
         numpadValue += num;
         
         const valueDisplay = document.getElementById('numpadValue');
-        if (valueDisplay) valueDisplay.textContent = numpadValue;
+        if (valueDisplay) {
+            // แสดงตัวเลขแบบมีช่องว่าง (เฉพาะเลขหวย ไม่ใช่ราคา)
+            if (!numpadIsPrice) {
+                valueDisplay.textContent = numpadValue.split('').join(' ');
+            } else {
+                valueDisplay.textContent = numpadValue;
+            }
+        }
         
         // Haptic feedback - สั่นเบาๆ
         if (navigator.vibrate) navigator.vibrate(10);
@@ -2312,9 +2338,16 @@ function numpadPress(num) {
 function numpadClear() {
     try {
         numpadValue = '';
-        const placeholder = '_'.repeat(numpadMaxLength);
         const valueDisplay = document.getElementById('numpadValue');
-        if (valueDisplay) valueDisplay.textContent = placeholder;
+        if (valueDisplay) {
+            // แสดง placeholder แบบมีช่องว่าง (เฉพาะเลขหวย)
+            if (!numpadIsPrice) {
+                const placeholder = Array(numpadMaxLength).fill('_').join(' ');
+                valueDisplay.textContent = placeholder;
+            } else {
+                valueDisplay.textContent = '_'.repeat(numpadMaxLength);
+            }
+        }
         if (navigator.vibrate) navigator.vibrate(20);
     } catch (error) {
         console.error('Numpad clear error:', error);
@@ -2324,9 +2357,20 @@ function numpadClear() {
 function numpadBackspace() {
     try {
         numpadValue = numpadValue.slice(0, -1);
-        const placeholder = '_'.repeat(numpadMaxLength);
         const valueDisplay = document.getElementById('numpadValue');
-        if (valueDisplay) valueDisplay.textContent = numpadValue || placeholder;
+        if (valueDisplay) {
+            if (!numpadIsPrice) {
+                // แสดงตัวเลขที่เหลือแบบมีช่องว่าง หรือ placeholder
+                if (numpadValue) {
+                    valueDisplay.textContent = numpadValue.split('').join(' ');
+                } else {
+                    const placeholder = Array(numpadMaxLength).fill('_').join(' ');
+                    valueDisplay.textContent = placeholder;
+                }
+            } else {
+                valueDisplay.textContent = numpadValue || '_'.repeat(numpadMaxLength);
+            }
+        }
         if (navigator.vibrate) navigator.vibrate(10);
     } catch (error) {
         console.error('Numpad backspace error:', error);
