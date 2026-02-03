@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#8B7355">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -13,11 +15,21 @@
     <link rel="icon" type="image/png" href="./assets/icon.png">
     <link rel="apple-touch-icon" href="./assets/icon.png">
     <title>JodHuay - จดหวย</title>
+
+    <!-- DNS Prefetch for faster resource loading -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://html2canvas.hertzen.com">
+
+    <!-- Font preconnect and loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <!-- html2canvas is now lazy-loaded when needed to improve initial load time -->
     <script>
         tailwind.config = {
             theme: {
@@ -41,13 +53,14 @@
     </script>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="font-prompt min-h-screen">
     <!-- ละอองทองศักดิ์สิทธิ์ -->
     <div class="gold-particles">
         <span></span><span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span><span></span>
     </div>
-    
+
     <div class="max-w-xl mx-auto px-4 py-8 pb-10 page-enter">
         <!-- Header -->
         <header class="text-center mb-8 relative">
@@ -55,18 +68,20 @@
             <!-- เลข ๙ มงคล -->
             <div class="absolute top-2 right-2 text-gold-400 text-xs opacity-40 font-light">๙</div>
             <div class="absolute top-2 left-2 text-gold-400 text-xs opacity-40 font-light">๙</div>
-            
+
             <div class="flex items-center justify-center gap-3 mb-2">
                 <span class="text-gold-400 text-2xl floating-symbol">๛</span>
                 <h1 class="brand-title">JODHUAY</h1>
-                <span class="text-gold-400 text-2xl floating-symbol" style="display:inline-block;transform:scaleX(-1);">๛</span>
+                <span class="text-gold-400 text-2xl floating-symbol"
+                    style="display:inline-block;transform:scaleX(-1);">๛</span>
             </div>
             <p class="brand-subtitle">จดหวย & บันทึกเลขเด็ด</p>
             <!-- จุดทองตกแต่ง -->
             <div class="flex items-center justify-center gap-2 mt-3 mb-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-gold-400 opacity-60 pulse-dot"></span>
                 <span class="w-2 h-2 rounded-full bg-gold-500 pulse-dot" style="animation-delay: 0.2s;"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-gold-400 opacity-60 pulse-dot" style="animation-delay: 0.4s;"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-gold-400 opacity-60 pulse-dot"
+                    style="animation-delay: 0.4s;"></span>
             </div>
             <p class="text-gold-600 font-light text-sm tracking-widest mt-2">โชคลาภเงินทองไหลมาเทมา</p>
             <p class="text-gold-500 text-xs mt-1 opacity-60">🙏 สิริมงคลจงบังเกิด 🙏</p>
@@ -74,11 +89,11 @@
 
         <!-- Tabs -->
         <div class="flex mb-8 bg-white rounded-2xl shadow-lg p-1.5 border border-gold-100">
-            <button id="tabGovernment" onclick="switchTab('government')" 
+            <button id="tabGovernment" onclick="switchTab('government')"
                 class="tab-btn flex-1 py-3.5 rounded-xl font-semibold active">
                 หวยรัฐบาล
             </button>
-            <button id="tabUnderground" onclick="switchTab('underground')" 
+            <button id="tabUnderground" onclick="switchTab('underground')"
                 class="tab-btn flex-1 py-3.5 rounded-xl font-semibold">
                 หวยใต้ดิน
             </button>
@@ -89,49 +104,61 @@
             <!-- Form -->
             <div class="card rounded-2xl p-5 mb-6">
                 <h3 class="text-lg font-bold text-gold-700 mb-5 text-center">เพิ่มรายการใหม่</h3>
-                
+
                 <!-- ประเภท - Horizontal Scroll -->
                 <div class="mb-6">
-                    <label class="block text-gold-700 text-sm mb-3 font-semibold text-center tracking-wide">ประเภทหวย</label>
-                    <div class="choice-chips flex gap-3 overflow-x-auto pb-2 px-1 -mx-4 px-5 snap-x scrollbar-hide" id="govTypeChips">
-                        <button type="button" class="choice-chip active flex-shrink-0 snap-center" data-value="6">6 ตัวตรง</button>
-                        <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="front3">เลขหน้า 3 ตัว</button>
-                        <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="back3">เลขท้าย 3 ตัว</button>
-                        <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="back2">เลขท้าย 2 ตัว</button>
+                    <label
+                        class="block text-gold-700 text-sm mb-3 font-semibold text-center tracking-wide">ประเภทหวย</label>
+                    <div class="choice-chips flex gap-3 overflow-x-auto pb-2 px-1 -mx-4 px-5 snap-x scrollbar-hide"
+                        id="govTypeChips">
+                        <button type="button" class="choice-chip active flex-shrink-0 snap-center" data-value="6">6
+                            ตัวตรง</button>
+                        <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="front3">เลขหน้า
+                            3 ตัว</button>
+                        <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="back3">เลขท้าย 3
+                            ตัว</button>
+                        <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="back2">เลขท้าย 2
+                            ตัว</button>
                     </div>
                     <input type="hidden" id="govType" value="6">
                 </div>
-                
+
                 <!-- เลข - Hero Display -->
                 <div class="mb-6">
                     <div class="hero-input-container relative group" onclick="handleNumberInput('govNumber')">
                         <div class="absolute inset-0 bg-white rounded-2xl shadow-inner hero-border"></div>
                         <div class="relative py-8 text-center">
-                            <label class="block text-gold-500 text-xs mb-2 font-medium tracking-widest uppercase">หมายเลข</label>
+                            <label
+                                class="block text-gold-500 text-xs mb-2 font-medium tracking-widest uppercase">หมายเลข</label>
                             <input type="tel" id="govNumber" maxlength="6" placeholder="_ _ _ _ _ _"
                                 class="w-full bg-white text-center text-5xl font-bold text-gold-700 placeholder-gold-300 border-0 outline-none"
                                 onkeypress="handleKeyPress(event, 'government')"
                                 onfocus="this.parentElement.parentElement.parentElement.classList.add('input-focused')"
                                 onblur="this.parentElement.parentElement.parentElement.classList.remove('input-focused')">
-                            <p class="text-xs text-gold-400 mt-3 font-light desktop-hint">พิมพ์เลขหรือแตะเพื่อเปิดแป้นตัวเลข</p>
+                            <p class="text-xs text-gold-400 mt-3 font-light desktop-hint">
+                                พิมพ์เลขหรือแตะเพื่อเปิดแป้นตัวเลข</p>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- จำนวน -->
                 <div class="mb-5">
                     <label class="block text-gray-600 text-sm mb-3 font-semibold text-center">จำนวน</label>
-                    <div class="choice-chips flex gap-3 overflow-x-auto pb-2 px-1 -mx-4 px-5 snap-x scrollbar-hide" id="govQtyChips">
-                        <button type="button" class="choice-chip active flex-shrink-0 snap-center" data-value="1">1 ใบ</button>
+                    <div class="choice-chips flex gap-3 overflow-x-auto pb-2 px-1 -mx-4 px-5 snap-x scrollbar-hide"
+                        id="govQtyChips">
+                        <button type="button" class="choice-chip active flex-shrink-0 snap-center" data-value="1">1
+                            ใบ</button>
                         <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="2">2 ใบ</button>
                         <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="3">3 ใบ</button>
                         <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="5">5 ใบ</button>
-                        <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="10">10 ใบ</button>
+                        <button type="button" class="choice-chip flex-shrink-0 snap-center" data-value="10">10
+                            ใบ</button>
                     </div>
                     <input type="hidden" id="govQty" value="1">
                 </div>
-                
-                <button onclick="addGovernment()" class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg shadow-lg">
+
+                <button onclick="addGovernment()"
+                    class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg shadow-lg">
                     เพิ่มรายการ
                 </button>
             </div>
@@ -145,19 +172,20 @@
                     </span>
                     <span id="govCount" class="text-sm font-normal text-gray-400"></span>
                 </h3>
-                
+
                 <!-- Search Bar -->
                 <div id="govSearchBar" class="hidden mb-3">
                     <div class="relative">
-                        <input type="text" id="govSearchInput" placeholder="ค้นหาเลข..." 
-                            oninput="filterGovernment()"
+                        <input type="text" id="govSearchInput" placeholder="ค้นหาเลข..." oninput="filterGovernment()"
                             class="w-full px-4 py-2 pl-10 rounded-xl border-2 border-gray-200 focus:border-gold-400 focus:outline-none text-sm">
-                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
                 </div>
-                
+
                 <div id="govList" class="space-y-2 max-h-64 overflow-y-auto">
                     <p class="text-gray-400 text-center py-6 text-sm">ยังไม่มีรายการ</p>
                 </div>
@@ -168,47 +196,58 @@
         <div id="undergroundSection" class="section-content hidden">
             <!-- Summary Dashboard -->
             <div class="grid grid-cols-2 gap-3 mb-6">
-                <div class="dashboard-card bg-gradient-to-br from-gold-50 to-white rounded-xl p-4 border-2 border-gold-300 shadow-sm">
+                <div
+                    class="dashboard-card bg-gradient-to-br from-gold-50 to-white rounded-xl p-4 border-2 border-gold-300 shadow-sm">
                     <p class="text-xs text-gray-500 mb-1 font-medium">รายการทั้งหมด</p>
                     <p id="ugDashTotal" class="text-2xl font-bold text-gold-700">0</p>
                     <p class="text-xs text-gold-500 mt-1">รายการ</p>
                 </div>
-                <div class="dashboard-card bg-gradient-to-br from-gold-50 to-white rounded-xl p-4 border-2 border-gold-300 shadow-sm">
+                <div
+                    class="dashboard-card bg-gradient-to-br from-gold-50 to-white rounded-xl p-4 border-2 border-gold-300 shadow-sm">
                     <p class="text-xs text-gray-500 mb-1 font-medium">ยอดเงิน</p>
                     <p id="ugDashAmount" class="text-2xl font-bold text-gold-700">0฿</p>
                     <p class="text-xs text-gold-500 mt-1">บาท</p>
                 </div>
             </div>
-            
+
             <!-- Form -->
             <div class="card rounded-2xl p-5 mb-6">
                 <h3 class="text-lg font-bold text-gold-700 mb-5 text-center">เพิ่มรายการใหม่</h3>
-                
+
                 <!-- ประเภท - Horizontal Scroll -->
                 <div class="mb-6">
-                    <label class="block text-gold-700 text-sm mb-3 font-semibold text-center tracking-wide">ประเภทหวย</label>
-                    <div class="choice-chips flex gap-3 overflow-x-auto pb-2 px-1 -mx-4 px-5 snap-x scrollbar-hide" id="ugTypeChips">
-                        <button type="button" class="choice-chip chip-bon active flex-shrink-0 snap-center" data-value="3bon">3 ตัวบน</button>
-                        <button type="button" class="choice-chip chip-bon flex-shrink-0 snap-center" data-value="2bon">2 ตัวบน</button>
-                        <button type="button" class="choice-chip chip-lang flex-shrink-0 snap-center" data-value="2lang">2 ตัวล่าง</button>
-                        <button type="button" class="choice-chip chip-bon flex-shrink-0 snap-center" data-value="runBon">วิ่งบน</button>
-                        <button type="button" class="choice-chip chip-lang flex-shrink-0 snap-center" data-value="runLang">วิ่งล่าง</button>
+                    <label
+                        class="block text-gold-700 text-sm mb-3 font-semibold text-center tracking-wide">ประเภทหวย</label>
+                    <div class="choice-chips flex gap-3 overflow-x-auto pb-2 px-1 -mx-4 px-5 snap-x scrollbar-hide"
+                        id="ugTypeChips">
+                        <button type="button" class="choice-chip chip-bon active flex-shrink-0 snap-center"
+                            data-value="3bon">3 ตัวบน</button>
+                        <button type="button" class="choice-chip chip-bon flex-shrink-0 snap-center" data-value="2bon">2
+                            ตัวบน</button>
+                        <button type="button" class="choice-chip chip-lang flex-shrink-0 snap-center"
+                            data-value="2lang">2 ตัวล่าง</button>
+                        <button type="button" class="choice-chip chip-bon flex-shrink-0 snap-center"
+                            data-value="runBon">วิ่งบน</button>
+                        <button type="button" class="choice-chip chip-lang flex-shrink-0 snap-center"
+                            data-value="runLang">วิ่งล่าง</button>
                     </div>
                     <input type="hidden" id="ugType" value="3bon">
                 </div>
-                
+
                 <!-- เลข - Hero Display -->
                 <div class="mb-6">
                     <div class="hero-input-container relative group" onclick="handleNumberInput('ugNumber')">
                         <div class="absolute inset-0 bg-white rounded-2xl shadow-inner hero-border"></div>
                         <div class="relative py-8 text-center">
-                            <label class="block text-gold-500 text-xs mb-2 font-medium tracking-widest uppercase">หมายเลข</label>
+                            <label
+                                class="block text-gold-500 text-xs mb-2 font-medium tracking-widest uppercase">หมายเลข</label>
                             <input type="tel" id="ugNumber" maxlength="3" placeholder="_ _ _"
                                 class="w-full bg-white text-center text-5xl font-bold text-gold-700 placeholder-gold-300 border-0 outline-none"
                                 onkeypress="handleKeyPress(event, 'underground')"
                                 onfocus="this.parentElement.parentElement.parentElement.classList.add('input-focused')"
                                 onblur="this.parentElement.parentElement.parentElement.classList.remove('input-focused')">
-                            <p class="text-xs text-gold-400 mt-3 font-light desktop-hint">พิมพ์เลขหรือแตะเพื่อเปิดแป้นตัวเลข</p>
+                            <p class="text-xs text-gold-400 mt-3 font-light desktop-hint">
+                                พิมพ์เลขหรือแตะเพื่อเปิดแป้นตัวเลข</p>
                         </div>
                     </div>
                 </div>
@@ -216,7 +255,7 @@
                 <!-- ราคา - Compact Input Group -->
                 <div class="mb-5">
                     <label class="block text-gray-600 text-sm mb-3 font-semibold text-center">ราคา</label>
-                    
+
                     <!-- เต็ง -->
                     <div class="mb-3">
                         <label class="block text-gray-500 text-xs mb-1.5 text-center font-medium">เต็ง</label>
@@ -227,54 +266,57 @@
                                 style="caret-color: transparent;">
                         </div>
                     </div>
-                    
+
                     <!-- ปุ่ม +/- โต๊ด -->
                     <div class="flex items-center justify-center my-4">
-                        <button id="addTodBtn" onclick="toggleTodPrice()" 
+                        <button id="addTodBtn" onclick="toggleTodPrice()"
                             class="w-10 h-10 rounded-full border-2 border-gold-300 bg-gold-50 text-gold-600 font-bold text-xl flex items-center justify-center hover:bg-gold-100 transition-all shadow-sm">
                             +
                         </button>
                     </div>
-                    
+
                     <!-- ปุ่มคัดลอกราคา (แสดงเมื่อเปิดโต๊ด) -->
                     <div id="copyPriceBtn" class="hidden flex justify-center items-center mb-3">
-                        <button type="button" onclick="copyPriceToTod()" 
+                        <button type="button" onclick="copyPriceToTod()"
                             class="bg-gold-100 hover:bg-gold-200 border border-gold-300 text-gold-700 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform transition hover:scale-110 flex items-center gap-1">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                             </svg>
                             เท่ากัน
                         </button>
                     </div>
-                    
+
                     <!-- โต๊ด (ซ่อนอยู่) -->
                     <div id="todPriceSection" class="hidden">
                         <label class="block text-gray-500 text-xs mb-1.5 text-center font-medium">โต๊ด</label>
                         <div class="relative max-w-sm mx-auto">
-                            <input type="tel" id="ugPriceTod" placeholder="ระบุราคา" readonly
-                                onclick="openTodNumpad()"
+                            <input type="tel" id="ugPriceTod" placeholder="ระบุราคา" readonly onclick="openTodNumpad()"
                                 class="w-full py-3 rounded-xl border-2 border-gray-300 text-center text-xl font-bold cursor-pointer bg-white text-gray-900 placeholder-gray-400"
                                 style="caret-color: transparent; padding-left: 100px; padding-right: 100px;">
                             <div class="absolute right-2 top-1/2 transform -translate-y-1/2">
-                                <select id="ugTodType" onchange="onTodGlabChange()" 
+                                <select id="ugTodType" onchange="onTodGlabChange()"
                                     class="py-2 px-3 rounded-lg bg-gray-50 text-sm font-bold text-gray-600 border-2 border-gray-300 cursor-pointer appearance-none pr-8">
                                     <option value="">-</option>
                                     <option value="ก.3">ก.3</option>
                                     <option value="ก.6">ก.6</option>
                                 </select>
                                 <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-                                    <svg class="fill-current h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                                    <svg class="fill-current h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                                     </svg>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <p class="text-xs text-gray-400 mt-3 text-center">ก.3 = กลับ 3 ชุด | ก.6 = กลับ 6 ชุด</p>
                 </div>
 
-                <button onclick="addUnderground()" class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg shadow-lg">
+                <button onclick="addUnderground()"
+                    class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg shadow-lg">
                     เพิ่มรายการ
                 </button>
             </div>
@@ -288,28 +330,33 @@
                     </span>
                     <span id="ugCount" class="text-sm font-normal text-gray-400"></span>
                 </h3>
-                
+
                 <!-- Search Bar -->
                 <div id="ugSearchBar" class="hidden mb-3">
                     <div class="relative">
-                        <input type="text" id="ugSearchInput" placeholder="ค้นหาเลข..." 
-                            oninput="filterUnderground()"
+                        <input type="text" id="ugSearchInput" placeholder="ค้นหาเลข..." oninput="filterUnderground()"
                             class="w-full px-4 py-2 pl-10 rounded-xl border-2 border-gray-200 focus:border-gold-400 focus:outline-none text-sm">
-                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
                     <!-- Filter Chips -->
                     <div class="flex gap-2 mt-2 overflow-x-auto pb-1 scrollbar-hide">
-                        <button onclick="filterByType('all')" class="filter-chip active" data-filter="all">ทั้งหมด</button>
+                        <button onclick="filterByType('all')" class="filter-chip active"
+                            data-filter="all">ทั้งหมด</button>
                         <button onclick="filterByType('3bon')" class="filter-chip" data-filter="3bon">3 ตัวบน</button>
                         <button onclick="filterByType('2bon')" class="filter-chip" data-filter="2bon">2 ตัวบน</button>
-                        <button onclick="filterByType('2lang')" class="filter-chip" data-filter="2lang">2 ตัวล่าง</button>
-                        <button onclick="filterByType('runBon')" class="filter-chip" data-filter="runBon">วิ่งบน</button>
-                        <button onclick="filterByType('runLang')" class="filter-chip" data-filter="runLang">วิ่งล่าง</button>
+                        <button onclick="filterByType('2lang')" class="filter-chip" data-filter="2lang">2
+                            ตัวล่าง</button>
+                        <button onclick="filterByType('runBon')" class="filter-chip"
+                            data-filter="runBon">วิ่งบน</button>
+                        <button onclick="filterByType('runLang')" class="filter-chip"
+                            data-filter="runLang">วิ่งล่าง</button>
                     </div>
                 </div>
-                
+
                 <div id="ugList" class="space-y-2 max-h-64 overflow-y-auto">
                     <p class="text-gray-400 text-center py-6 text-sm">ยังไม่มีรายการ</p>
                 </div>
@@ -325,14 +372,18 @@
 
         <!-- Action Buttons -->
         <div class="mt-8 space-y-4">
-            <button onclick="openPreviewModal()" class="gold-btn w-full py-5 rounded-2xl font-semibold text-white text-lg flex items-center justify-center gap-3 shadow-xl">
+            <button onclick="openPreviewModal()"
+                class="gold-btn w-full py-5 rounded-2xl font-semibold text-white text-lg flex items-center justify-center gap-3 shadow-xl">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z">
+                    </path>
                 </svg>
                 บันทึก / แชร์
             </button>
-            
-            <button onclick="clearData()" class="w-full py-4 rounded-2xl font-medium text-red-500 border-2 border-red-200 bg-white hover:bg-red-50 transition-all">
+
+            <button onclick="clearData()"
+                class="w-full py-4 rounded-2xl font-medium text-red-500 border-2 border-red-200 bg-white hover:bg-red-50 transition-all">
                 ล้างข้อมูลทั้งหมด
             </button>
         </div>
@@ -364,7 +415,9 @@
                     <button class="numpad-btn numpad-special" onclick="numpadClear()">C</button>
                     <button class="numpad-btn" onclick="numpadPress('0')">0</button>
                     <button class="numpad-btn numpad-special" onclick="numpadBackspace()">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="display:inline-block;vertical-align:middle;">
                             <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
                             <line x1="18" y1="9" x2="12" y2="15"></line>
                             <line x1="12" y1="9" x2="18" y2="15"></line>
@@ -372,8 +425,10 @@
                     </button>
                 </div>
                 <div class="numpad-actions">
-                    <button onclick="closeNumpad()" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold">ยกเลิก</button>
-                    <button onclick="confirmNumpad()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 text-white font-semibold">ตกลง</button>
+                    <button onclick="closeNumpad()"
+                        class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold">ยกเลิก</button>
+                    <button onclick="confirmNumpad()"
+                        class="flex-1 py-3 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 text-white font-semibold">ตกลง</button>
                 </div>
             </div>
         </div>
@@ -381,7 +436,9 @@
         <!-- Footer -->
         <footer class="text-center mt-10">
             <!-- เส้นทองไล่สี -->
-            <div class="w-32 h-px mx-auto mb-4 bg-gradient-to-r from-transparent via-gold-400 to-transparent opacity-50"></div>
+            <div
+                class="w-32 h-px mx-auto mb-4 bg-gradient-to-r from-transparent via-gold-400 to-transparent opacity-50">
+            </div>
             <p class="text-gold-600 text-sm flex items-center justify-center gap-2">
                 <span class="text-lg">๙</span>
                 ขอให้โชคดี เฮง ๆ ร่ำรวย
@@ -396,28 +453,34 @@
     <div id="previewModal" class="modal-overlay fixed inset-0 z-50 hidden flex items-center justify-center p-4">
         <div class="modal-content rounded-3xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
             <!-- Modal Header -->
-            <div class="p-4 border-b border-gold-200 bg-gradient-to-r from-gold-50 to-white flex justify-between items-center">
+            <div
+                class="p-4 border-b border-gold-200 bg-gradient-to-r from-gold-50 to-white flex justify-between items-center">
                 <div>
                     <h2 class="text-lg font-bold text-gold-700">บันทึก / แชร์</h2>
                     <p class="text-xs text-gray-500">เลือกรายการที่ต้องการ</p>
                 </div>
-                <button onclick="closePreviewModal()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 text-2xl font-bold transition-all hover:scale-110">&times;</button>
+                <button onclick="closePreviewModal()"
+                    class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 text-2xl font-bold transition-all hover:scale-110">&times;</button>
             </div>
-            
+
             <!-- Selection Area - Compact -->
             <div class="p-3 border-b border-gray-100 bg-gray-50 flex-shrink-0">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-sm font-medium text-gray-700">เลือกแล้ว <span id="selectedCount" class="font-bold text-gold-700">0</span> รายการ</span>
+                        <span class="text-sm font-medium text-gray-700">เลือกแล้ว <span id="selectedCount"
+                                class="font-bold text-gold-700">0</span> รายการ</span>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="toggleSelectionPanel()" id="toggleSelectionBtn" class="px-3 py-1.5 bg-white text-gray-600 rounded-lg text-xs font-semibold border border-gray-300 hover:bg-gray-50 transition-all">
+                        <button onclick="toggleSelectionPanel()" id="toggleSelectionBtn"
+                            class="px-3 py-1.5 bg-white text-gray-600 rounded-lg text-xs font-semibold border border-gray-300 hover:bg-gray-50 transition-all">
                             แก้ไข
                         </button>
-                        <button onclick="selectAll()" class="px-3 py-1.5 bg-gold-500 text-white rounded-lg text-xs font-semibold hover:bg-gold-600 transition-all">
+                        <button onclick="selectAll()"
+                            class="px-3 py-1.5 bg-gold-500 text-white rounded-lg text-xs font-semibold hover:bg-gold-600 transition-all">
                             ทั้งหมด
                         </button>
                     </div>
@@ -425,7 +488,8 @@
                 <!-- Expandable Selection List -->
                 <div id="selectionPanel" class="hidden mt-3 pt-3 border-t border-gray-200">
                     <div id="selectionList" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto"></div>
-                    <button onclick="selectNone()" class="mt-2 w-full py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200 transition-all">
+                    <button onclick="selectNone()"
+                        class="mt-2 w-full py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200 transition-all">
                         ยกเลิกทั้งหมด
                     </button>
                 </div>
@@ -434,21 +498,34 @@
             <!-- Preview Area -->
             <div class="flex-1 overflow-auto p-4 bg-gradient-to-br from-gray-100 to-gray-200">
                 <div class="flex justify-center">
-                    <div id="a4Preview" class="paper-preview rounded-lg" style="width: 100%; max-width: 794px; min-height: 200px; padding: 32px 24px; font-family: 'Prompt', sans-serif; background: linear-gradient(180deg, #FFFCF5 0%, #FFF9F0 100%);">
+                    <div id="a4Preview" class="paper-preview rounded-lg"
+                        style="width: 100%; max-width: 794px; min-height: 200px; padding: 32px 24px; font-family: 'Prompt', sans-serif; background: linear-gradient(180deg, #FFFCF5 0%, #FFF9F0 100%);">
                         <div class="text-center mb-6">
                             <!-- Sacred header -->
-                            <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
-                                <span style="color:#DAA520;font-size:14px;display:inline-block;transform:scaleX(-1);">๛</span>
-                                <div style="width:30px;height:1px;background:linear-gradient(90deg,transparent,#DAA520);"></div>
+                            <div
+                                style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
+                                <span
+                                    style="color:#DAA520;font-size:14px;display:inline-block;transform:scaleX(-1);">๛</span>
+                                <div
+                                    style="width:30px;height:1px;background:linear-gradient(90deg,transparent,#DAA520);">
+                                </div>
                                 <span style="color:#DAA520;font-size:8px;">◆</span>
-                                <div style="width:30px;height:1px;background:linear-gradient(90deg,#DAA520,transparent);"></div>
+                                <div
+                                    style="width:30px;height:1px;background:linear-gradient(90deg,#DAA520,transparent);">
+                                </div>
                                 <span style="color:#DAA520;font-size:14px;">๛</span>
                             </div>
-                            <h1 style="font-family:'Charmonman',cursive;font-size:24px;font-weight:700;color:#8B6914;letter-spacing:0.05em;margin-bottom:6px;">JODHUAY</h1>
+                            <h1
+                                style="font-family:'Charmonman',cursive;font-size:24px;font-weight:700;color:#8B6914;letter-spacing:0.05em;margin-bottom:6px;">
+                                JODHUAY</h1>
                             <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 0;">
-                                <div style="width:40px;height:1px;background:linear-gradient(90deg,transparent,#D4C4A8);"></div>
+                                <div
+                                    style="width:40px;height:1px;background:linear-gradient(90deg,transparent,#D4C4A8);">
+                                </div>
                                 <span style="color:#DAA520;font-size:6px;">◆</span>
-                                <div style="width:40px;height:1px;background:linear-gradient(90deg,#D4C4A8,transparent);"></div>
+                                <div
+                                    style="width:40px;height:1px;background:linear-gradient(90deg,#D4C4A8,transparent);">
+                                </div>
                             </div>
                         </div>
                         <div id="previewContent"></div>
@@ -460,37 +537,50 @@
             <div class="p-3 border-t border-gray-100 bg-white">
                 <!-- Mode Toggle -->
                 <div class="flex gap-1.5 mb-2 p-0.5 bg-gray-100 rounded-lg">
-                    <button onclick="switchModalMode('text')" id="modeText" class="modal-mode-btn active flex-1 py-2 rounded-md font-semibold text-xs transition-all flex items-center justify-center gap-1.5">
+                    <button onclick="switchModalMode('text')" id="modeText"
+                        class="modal-mode-btn active flex-1 py-2 rounded-md font-semibold text-xs transition-all flex items-center justify-center gap-1.5">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
                         </svg>
                         ข้อความ
                     </button>
-                    <button onclick="switchModalMode('image')" id="modeImage" class="modal-mode-btn flex-1 py-2 rounded-md font-semibold text-xs transition-all flex items-center justify-center gap-1.5">
+                    <button onclick="switchModalMode('image')" id="modeImage"
+                        class="modal-mode-btn flex-1 py-2 rounded-md font-semibold text-xs transition-all flex items-center justify-center gap-1.5">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
                         </svg>
                         รูปภาพ
                     </button>
                 </div>
-                
+
                 <!-- Action Buttons -->
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="handleCopyOrSave()" id="btnCopyOrSave" class="py-3 rounded-xl font-semibold border-2 border-gold-300 text-gold-700 hover:bg-gold-50 transition-all text-sm flex items-center justify-center gap-2">
+                    <button onclick="handleCopyOrSave()" id="btnCopyOrSave"
+                        class="py-3 rounded-xl font-semibold border-2 border-gold-300 text-gold-700 hover:bg-gold-50 transition-all text-sm flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                            </path>
                         </svg>
                         <span id="btnCopyOrSaveText">คัดลอก</span>
                     </button>
-                    <button onclick="handleShare()" id="btnShare" class="py-3 rounded-xl font-semibold bg-gradient-to-r from-gold-500 to-gold-600 text-white shadow-lg hover:shadow-xl transition-all text-sm flex items-center justify-center gap-2">
+                    <button onclick="handleShare()" id="btnShare"
+                        class="py-3 rounded-xl font-semibold bg-gradient-to-r from-gold-500 to-gold-600 text-white shadow-lg hover:shadow-xl transition-all text-sm flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z">
+                            </path>
                         </svg>
                         <span id="btnShareText">แชร์</span>
                     </button>
                 </div>
-                
-                <button onclick="closePreviewModal()" class="w-full mt-2 py-2 rounded-xl font-medium border-2 border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm">
+
+                <button onclick="closePreviewModal()"
+                    class="w-full mt-2 py-2 rounded-xl font-medium border-2 border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm">
                     ปิด
                 </button>
             </div>
@@ -498,27 +588,35 @@
     </div>
 
     <!-- Toast -->
-    <div id="toast" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 text-white px-8 py-4 rounded-2xl shadow-2xl opacity-0 transition-all duration-300 pointer-events-none z-50">
+    <div id="toast"
+        class="fixed bottom-24 left-1/2 transform -translate-x-1/2 text-white px-8 py-4 rounded-2xl shadow-2xl opacity-0 transition-all duration-300 pointer-events-none z-50">
         <span id="toastMessage" class="font-medium"></span>
     </div>
 
     <!-- Confirm Delete Modal -->
-    <div id="confirmModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl transform transition-all scale-95 opacity-0" id="confirmModalContent">
+    <div id="confirmModal"
+        class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl transform transition-all scale-95 opacity-0"
+            id="confirmModalContent">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
                     </svg>
                 </div>
                 <h3 class="text-xl font-bold text-gray-800 mb-2">ยืนยันการล้างข้อมูล</h3>
-                <p class="text-gray-600 text-sm">คุณแน่ใจหรือไม่ว่าต้องการลบรายการทั้งหมด?<br>การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+                <p class="text-gray-600 text-sm">
+                    คุณแน่ใจหรือไม่ว่าต้องการลบรายการทั้งหมด?<br>การกระทำนี้ไม่สามารถย้อนกลับได้</p>
             </div>
             <div class="flex gap-3">
-                <button onclick="closeConfirmModal()" class="flex-1 py-3 px-4 rounded-xl border-2 border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-all">
+                <button onclick="closeConfirmModal()"
+                    class="flex-1 py-3 px-4 rounded-xl border-2 border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-all">
                     ยกเลิก
                 </button>
-                <button onclick="confirmClearData()" class="flex-1 py-3 px-4 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-600 transition-all shadow-lg">
+                <button onclick="confirmClearData()"
+                    class="flex-1 py-3 px-4 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-600 transition-all shadow-lg">
                     ลบทั้งหมด
                 </button>
             </div>
@@ -526,14 +624,18 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-xl shadow-lg opacity-0 transition-all duration-300 z-50">
+    <div id="toast"
+        class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-xl shadow-lg opacity-0 transition-all duration-300 z-50">
         <span id="toastMessage"></span>
     </div>
 
     <!-- Offline Indicator -->
-    <div id="offlineIndicator" class="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg hidden z-50 flex items-center gap-2">
+    <div id="offlineIndicator"
+        class="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg hidden z-50 flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414">
+            </path>
         </svg>
         <span class="text-sm font-medium">ออฟไลน์</span>
     </div>
@@ -543,4 +645,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>

@@ -1,10 +1,28 @@
 /* ============================================
    THEME: Modern Sacred - พุทธศิลป์ร่วมสมัย
    ขลัง สว่าง ศักดิ์สิทธิ์
+   
+   PERFORMANCE OPTIMIZATIONS:
+   - will-change hints for animated elements
+   - content-visibility for off-screen content
+   - contain property for better compositing
    ============================================ */
 
 * {
     -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 /* Accessible focus styles - only hide outline for mouse users */
@@ -21,24 +39,22 @@
 /* Remove tap highlight on mobile */
 button:active,
 input:active {
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 body {
     background-color: #FDFBF7;
-    background-image: 
+    background-image:
         /* รัศมีทองด้านบน */
         radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.35) 0%, rgba(218, 165, 32, 0.15) 30%, transparent 60%),
         /* รัศมีทองด้านล่าง */
         radial-gradient(circle at 50% 100%, rgba(218, 165, 32, 0.25) 0%, transparent 50%),
         /* ลายเส้นทแยงมุม */
-        repeating-linear-gradient(
-            45deg,
+        repeating-linear-gradient(45deg,
             transparent,
             transparent 80px,
             rgba(218, 165, 32, 0.03) 80px,
-            rgba(218, 165, 32, 0.03) 160px
-        ),
+            rgba(218, 165, 32, 0.03) 160px),
         /* ลายดอกบัวศักดิ์สิทธิ์ */
         url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23DAA520' fill-opacity='0.15'%3E%3Ccircle cx='50' cy='50' r='3'/%3E%3Cpath d='M50 30 L50 20 M50 70 L50 80 M30 50 L20 50 M70 50 L80 50' stroke='%23DAA520' stroke-width='2' stroke-opacity='0.15'/%3E%3Cpath d='M35 35 L28 28 M65 35 L72 28 M35 65 L28 72 M65 65 L72 72' stroke='%23C4A052' stroke-width='1.5' stroke-opacity='0.12'/%3E%3C/g%3E%3C/svg%3E"),
         /* ลายจุดเล็กๆ */
@@ -46,18 +62,18 @@ body {
         radial-gradient(circle at 80% 70%, rgba(196, 160, 82, 0.08) 0%, transparent 3%),
         radial-gradient(circle at 40% 80%, rgba(218, 165, 32, 0.06) 0%, transparent 2%),
         radial-gradient(circle at 70% 20%, rgba(196, 160, 82, 0.06) 0%, transparent 2%);
-    background-size: 
-        100% 100%, 
-        100% 100%, 
+    background-size:
+        100% 100%,
+        100% 100%,
         100% 100%,
         100px 100px,
         800px 800px,
         800px 800px,
         600px 600px,
         600px 600px;
-    background-position: 
-        center top, 
-        center bottom, 
+    background-position:
+        center top,
+        center bottom,
         0 0,
         0 0,
         0 0,
@@ -113,18 +129,33 @@ header {
     display: inline-block;
     animation: breathing 4s ease-in-out infinite;
     position: relative;
+    will-change: transform, filter;
+    /* GPU acceleration */
 }
 
 @keyframes breathing {
-    0% { transform: scale(1); filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3)); }
-    50% { transform: scale(1.02); filter: drop-shadow(0 0 15px rgba(218, 165, 32, 0.6)); }
-    100% { transform: scale(1); filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3)); }
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3));
+    }
+
+    50% {
+        transform: scale(1.02);
+        filter: drop-shadow(0 0 15px rgba(218, 165, 32, 0.6));
+    }
+
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3));
+    }
 }
 
 /* Floating Symbol - สัญลักษณ์ลอย */
 .floating-symbol {
     display: inline-block;
     animation: floating 3s ease-in-out infinite;
+    will-change: transform;
+    /* GPU acceleration */
 }
 
 .floating-symbol:last-child {
@@ -132,23 +163,48 @@ header {
 }
 
 @keyframes floating {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
 }
 
 @keyframes floatingFlipped {
-    0%, 100% { transform: translateY(0) scaleX(-1); }
-    50% { transform: translateY(-5px) scaleX(-1); }
+
+    0%,
+    100% {
+        transform: translateY(0) scaleX(-1);
+    }
+
+    50% {
+        transform: translateY(-5px) scaleX(-1);
+    }
 }
 
 /* Pulse Dots - จุดเต้น */
 .pulse-dot {
     animation: pulseDot 2s ease-in-out infinite;
+    will-change: transform, opacity;
+    /* GPU acceleration */
 }
 
 @keyframes pulseDot {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.3); opacity: 1; }
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: scale(1.3);
+        opacity: 1;
+    }
 }
 
 /* Brand Subtitle */
@@ -229,7 +285,7 @@ header {
 .gold-btn {
     background: linear-gradient(135deg, #FFD700 0%, #DAA520 50%, #B8860B 100%);
     border: 1px solid #F0E68C;
-    box-shadow: 
+    box-shadow:
         0 4px 15px rgba(218, 165, 32, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
     color: #fff;
@@ -256,7 +312,7 @@ header {
 }
 
 .gold-btn:hover {
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(218, 165, 32, 0.6),
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
     transform: translateY(-2px) scale(1.02);
@@ -264,7 +320,7 @@ header {
 
 .gold-btn:active {
     transform: translateY(0) scale(0.98);
-    box-shadow: 
+    box-shadow:
         0 2px 10px rgba(218, 165, 32, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
@@ -280,7 +336,10 @@ header {
 }
 
 @keyframes ripple-anim {
-    to { transform: scale(4); opacity: 0; }
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
 }
 
 /* Tab Buttons */
@@ -371,13 +430,15 @@ header {
 }
 
 /* Input Fields - แผ่นจารึก */
-input, select {
+input,
+select {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: #FFFCF5;
     border-color: #D4C4A8;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     border-color: #DAA520;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), 0 0 0 3px rgba(218, 165, 32, 0.1);
     background: #fff;
@@ -424,35 +485,38 @@ input[type="tel"] {
 }
 
 @keyframes slideIn {
-    from { 
-        opacity: 0; 
-        transform: translateX(-30px) scale(0.95); 
+    from {
+        opacity: 0;
+        transform: translateX(-30px) scale(0.95);
     }
-    to { 
-        opacity: 1; 
-        transform: translateX(0) scale(1); 
+
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
     }
 }
 
 /* Holy Flash - แสงวาบศักดิ์สิทธิ์ */
 @keyframes holyFlash {
-    0% { 
-        box-shadow: 0 0 0 rgba(218, 165, 32, 0); 
+    0% {
+        box-shadow: 0 0 0 rgba(218, 165, 32, 0);
         border-color: #E8DFD0;
     }
-    30% { 
-        box-shadow: 0 0 30px rgba(218, 165, 32, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); 
+
+    30% {
+        box-shadow: 0 0 30px rgba(218, 165, 32, 0.8), 0 0 60px rgba(255, 215, 0, 0.4);
         border-color: #FFD700;
     }
-    100% { 
-        box-shadow: 0 0 0 rgba(218, 165, 32, 0); 
+
+    100% {
+        box-shadow: 0 0 0 rgba(218, 165, 32, 0);
         border-color: #E8DFD0;
     }
 }
 
 .list-item.new-entry {
-    animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards, 
-               holyFlash 1.5s ease-out;
+    animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards,
+        holyFlash 1.5s ease-out;
 }
 
 /* Delete Button */
@@ -567,6 +631,7 @@ input[type="tel"] {
         opacity: 0;
         transform: translateY(50px) scale(0.9);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -609,9 +674,11 @@ input[type="tel"] {
         transform: translate(-50%, 100px) scale(0.8);
         opacity: 0;
     }
+
     50% {
         transform: translate(-50%, -10px) scale(1.05);
     }
+
     100% {
         transform: translate(-50%, 0) scale(1);
         opacity: 1;
@@ -698,9 +765,17 @@ input[type="tel"] {
 }
 
 @keyframes chipActivate {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.08); }
-    100% { transform: scale(1.05); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+
+    100% {
+        transform: scale(1.05);
+    }
 }
 
 /* Color-coded chips - บน (แดงอิฐ) / ล่าง (น้ำเงินคราม) */
@@ -807,7 +882,7 @@ input[type="tel"] {
     .numpad-overlay {
         align-items: flex-end;
     }
-    
+
     .numpad-container {
         border-radius: 24px 24px 0 0;
         max-width: 100%;
@@ -950,10 +1025,13 @@ input[type="tel"] {
 
 /* Pulse animation for gold button */
 @keyframes pulse-gold {
-    0%, 100% { 
+
+    0%,
+    100% {
         box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
     }
-    50% { 
+
+    50% {
         box-shadow: 0 4px 25px rgba(218, 165, 32, 0.6), 0 0 0 8px rgba(218, 165, 32, 0.1);
     }
 }
@@ -977,9 +1055,11 @@ input[type="tel"] {
         opacity: 0;
         transform: scale(0.8) translateY(20px);
     }
+
     60% {
         transform: scale(1.05) translateY(-5px);
     }
+
     100% {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -1000,8 +1080,15 @@ input[type="tel"] {
 
 /* Empty state animation */
 @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .empty-state-icon {
@@ -1060,15 +1147,30 @@ input[type="tel"] {
 }
 
 @keyframes chipPop {
-    0% { transform: scale(0.9); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1.05); }
+    0% {
+        transform: scale(0.9);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1.05);
+    }
 }
 
 /* Fade in animation */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .fade-in {
@@ -1077,9 +1179,19 @@ input[type="tel"] {
 
 /* Shake animation for errors */
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
 }
 
 .shake {
@@ -1088,9 +1200,17 @@ input[type="tel"] {
 
 /* Success checkmark animation */
 @keyframes checkmark {
-    0% { transform: scale(0) rotate(45deg); }
-    50% { transform: scale(1.2) rotate(45deg); }
-    100% { transform: scale(1) rotate(45deg); }
+    0% {
+        transform: scale(0) rotate(45deg);
+    }
+
+    50% {
+        transform: scale(1.2) rotate(45deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(45deg);
+    }
 }
 
 .checkmark {
@@ -1099,8 +1219,15 @@ input[type="tel"] {
 
 /* Bounce animation */
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
 }
 
 .bounce {
@@ -1112,14 +1239,18 @@ input[type="tel"] {
     body {
         padding-bottom: env(safe-area-inset-bottom);
     }
-    
+
     .numpad-container {
         padding-bottom: calc(20px + env(safe-area-inset-bottom));
     }
 }
 
 /* Touch improvements */
-button, .choice-chip, .list-item, input, select {
+button,
+.choice-chip,
+.list-item,
+input,
+select {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
@@ -1127,14 +1258,22 @@ button, .choice-chip, .list-item, input, select {
 }
 
 /* Fix iOS input zoom */
-input[type="tel"], select {
+input[type="tel"],
+select {
     font-size: 16px !important;
 }
 
 /* Loading animation */
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .animate-pulse {
@@ -1158,8 +1297,15 @@ input[type="tel"], select {
 }
 
 @keyframes pageEnter {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ============================================
@@ -1195,32 +1341,94 @@ body.transitioning .gold-particles {
     box-shadow: 0 0 4px rgba(255, 215, 0, 0.3);
 }
 
-.gold-particles span:nth-child(1) { left: 5%; animation-duration: 14s; animation-delay: 0s; width: 5px; height: 5px; }
-.gold-particles span:nth-child(2) { left: 15%; animation-duration: 18s; animation-delay: 2s; }
-.gold-particles span:nth-child(3) { left: 25%; animation-duration: 12s; animation-delay: 4s; width: 6px; height: 6px; }
-.gold-particles span:nth-child(4) { left: 35%; animation-duration: 16s; animation-delay: 1s; }
-.gold-particles span:nth-child(5) { left: 50%; animation-duration: 20s; animation-delay: 3s; width: 5px; height: 5px; }
-.gold-particles span:nth-child(6) { left: 60%; animation-duration: 13s; animation-delay: 5s; }
-.gold-particles span:nth-child(7) { left: 70%; animation-duration: 17s; animation-delay: 0.5s; width: 4px; height: 4px; }
-.gold-particles span:nth-child(8) { left: 80%; animation-duration: 15s; animation-delay: 2.5s; }
-.gold-particles span:nth-child(9) { left: 90%; animation-duration: 19s; animation-delay: 1.5s; width: 6px; height: 6px; }
-.gold-particles span:nth-child(10) { left: 95%; animation-duration: 11s; animation-delay: 4.5s; }
+.gold-particles span:nth-child(1) {
+    left: 5%;
+    animation-duration: 14s;
+    animation-delay: 0s;
+    width: 5px;
+    height: 5px;
+}
+
+.gold-particles span:nth-child(2) {
+    left: 15%;
+    animation-duration: 18s;
+    animation-delay: 2s;
+}
+
+.gold-particles span:nth-child(3) {
+    left: 25%;
+    animation-duration: 12s;
+    animation-delay: 4s;
+    width: 6px;
+    height: 6px;
+}
+
+.gold-particles span:nth-child(4) {
+    left: 35%;
+    animation-duration: 16s;
+    animation-delay: 1s;
+}
+
+.gold-particles span:nth-child(5) {
+    left: 50%;
+    animation-duration: 20s;
+    animation-delay: 3s;
+    width: 5px;
+    height: 5px;
+}
+
+.gold-particles span:nth-child(6) {
+    left: 60%;
+    animation-duration: 13s;
+    animation-delay: 5s;
+}
+
+.gold-particles span:nth-child(7) {
+    left: 70%;
+    animation-duration: 17s;
+    animation-delay: 0.5s;
+    width: 4px;
+    height: 4px;
+}
+
+.gold-particles span:nth-child(8) {
+    left: 80%;
+    animation-duration: 15s;
+    animation-delay: 2.5s;
+}
+
+.gold-particles span:nth-child(9) {
+    left: 90%;
+    animation-duration: 19s;
+    animation-delay: 1.5s;
+    width: 6px;
+    height: 6px;
+}
+
+.gold-particles span:nth-child(10) {
+    left: 95%;
+    animation-duration: 11s;
+    animation-delay: 4.5s;
+}
 
 @keyframes floatUp {
-    0% { 
-        transform: translateY(0) rotate(0deg) scale(0); 
-        opacity: 0; 
+    0% {
+        transform: translateY(0) rotate(0deg) scale(0);
+        opacity: 0;
     }
-    10% { 
+
+    10% {
         opacity: 0.8;
         transform: translateY(-10vh) rotate(36deg) scale(1);
     }
+
     90% {
         opacity: 0.6;
     }
-    100% { 
-        transform: translateY(-100vh) rotate(360deg) scale(0.5); 
-        opacity: 0; 
+
+    100% {
+        transform: translateY(-100vh) rotate(360deg) scale(0.5);
+        opacity: 0;
     }
 }
 
@@ -1230,68 +1438,68 @@ body.transitioning .gold-particles {
         margin: 8px;
         max-height: calc(100vh - 16px);
     }
-    
+
     .paper-preview {
         width: 100% !important;
         padding: 20px !important;
         font-size: 12px !important;
     }
-    
+
     .brand-title {
         font-size: 2.2rem;
     }
-    
+
     /* ปรับ header ให้เล็กลงบนมือถือ */
     header {
         padding: 0.75rem;
         margin-bottom: 1.5rem;
     }
-    
+
     /* ปรับ card padding */
     .card {
         padding: 1rem !important;
     }
-    
+
     /* ปรับ choice chips ให้เล็กลง */
     .choice-chip {
         padding: 8px 12px;
         font-size: 13px;
     }
-    
+
     /* ปรับ list items ให้อ่านง่ายขึ้น */
     .list-item {
         padding: 12px 14px;
     }
-    
+
     /* ปรับ font sizes */
     .list-item .text-3xl {
         font-size: 1.75rem;
     }
-    
+
     .list-item .text-sm {
         font-size: 0.8rem;
     }
-    
+
     /* ปรับ dashboard cards */
     .dashboard-card {
         padding: 0.75rem !important;
     }
-    
+
     .dashboard-card .text-2xl {
         font-size: 1.5rem;
     }
-    
+
     /* ปรับ modal buttons */
     .modal-mode-btn {
         font-size: 0.75rem;
         padding: 0.5rem 0.75rem;
     }
-    
+
     /* ปรับ numpad */
     .numpad-container {
         padding: 16px;
     }
-    
+
     .numpad-btn {
         padding: 14px;
         font-size: 20px;
@@ -1303,28 +1511,28 @@ body.transitioning .gold-particles {
     .max-w-xl {
         max-width: 600px;
     }
-    
+
     /* ปรับ choice chips ให้ใหญ่ขึ้นบน tablet */
     .choice-chip {
         padding: 10px 18px;
         font-size: 15px;
     }
-    
+
     /* ปรับ list items */
     .list-item {
         padding: 16px 18px;
     }
-    
+
     /* ปรับ modal */
     .modal-content {
         max-width: 600px;
     }
-    
+
     /* ปรับ numpad */
     .numpad-container {
         max-width: 400px;
     }
-    
+
     .numpad-btn {
         padding: 18px;
         font-size: 24px;
@@ -1336,26 +1544,26 @@ body.transitioning .gold-particles {
     .max-w-xl {
         max-width: 640px;
     }
-    
+
     /* เพิ่ม shadow ให้ชัดขึ้นบนจอใหญ่ */
     .card {
         box-shadow: 0 6px 30px rgba(196, 160, 82, 0.15);
     }
-    
+
     /* ปรับ hover effects ให้เด่นขึ้น */
     .choice-chip:hover {
         transform: translateY(-2px);
     }
-    
+
     .list-item:hover {
         transform: translateY(-1px);
     }
-    
+
     /* ปรับ modal ให้ใหญ่ขึ้น */
     .modal-content {
         max-width: 700px;
     }
-    
+
     /* ปรับ paper preview */
     .paper-preview {
         max-width: 600px !important;
@@ -1368,26 +1576,26 @@ body.transitioning .gold-particles {
         padding: 0.5rem;
         margin-bottom: 1rem;
     }
-    
+
     .brand-title {
         font-size: 1.8rem;
     }
-    
+
     .modal-content {
         max-height: calc(100vh - 8px);
     }
-    
+
     /* ปรับ numpad ให้พอดีกับหน้าจอ landscape */
     .numpad-container {
         max-height: 90vh;
         overflow-y: auto;
     }
-    
+
     .numpad-btn {
         padding: 12px;
         font-size: 18px;
     }
-    
+
     /* ลด padding ของ cards */
     .card {
         padding: 0.75rem !important;
@@ -1399,11 +1607,11 @@ body.transitioning .gold-particles {
     .card {
         border: 2px solid #8B7355;
     }
-    
+
     .choice-chip {
         border-width: 2px;
     }
-    
+
     .list-item {
         border-width: 2px;
     }
@@ -1416,15 +1624,15 @@ body.transitioning .gold-particles {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
-    
+
     .gold-particles {
         display: none;
     }
-    
+
     .floating-symbol {
         animation: none;
     }
-    
+
     .pulse-dot {
         animation: none;
     }
@@ -1503,9 +1711,11 @@ body.transitioning .gold-particles {
     0% {
         box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
     }
+
     70% {
         box-shadow: 0 0 0 15px rgba(34, 197, 94, 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
     }
@@ -1529,37 +1739,38 @@ body.transitioning .gold-particles {
     .hero-input-container {
         cursor: text;
     }
-    
+
     .hero-input-container input[type="tel"] {
         cursor: text;
         pointer-events: auto !important;
     }
-    
+
     /* แสดงข้อความ hint บน Desktop */
     .desktop-hint {
         display: block !important;
     }
-    
+
     /* Focus state สำหรับ Desktop */
     .hero-input-container.input-focused .hero-border {
         border-color: #DAA520 !important;
-        box-shadow: 
+        box-shadow:
             0 0 0 3px rgba(218, 165, 32, 0.1),
             0 4px 20px rgba(218, 165, 32, 0.3) !important;
     }
 }
 
 /* Mobile: ซ่อน cursor และใช้ numpad */
-@media (max-width: 767px), (hover: none) {
+@media (max-width: 767px),
+(hover: none) {
     .hero-input-container {
         cursor: pointer;
     }
-    
+
     .hero-input-container input[type="tel"] {
         cursor: pointer;
         pointer-events: none !important;
     }
-    
+
     /* ซ่อนข้อความ hint บน Mobile */
     .desktop-hint {
         display: none !important;
@@ -1609,14 +1820,14 @@ body.transitioning .gold-particles {
 
 .hero-input-container:hover .hero-border {
     border-color: #DAA520;
-    box-shadow: 
+    box-shadow:
         0 4px 16px rgba(218, 165, 32, 0.2),
         inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .hero-input-container:active .hero-border {
     border-color: #B8860B;
-    box-shadow: 
+    box-shadow:
         0 2px 8px rgba(218, 165, 32, 0.15),
         inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -1656,9 +1867,11 @@ body.transitioning .gold-particles {
         transform: scale(0.8);
         opacity: 0;
     }
+
     50% {
         transform: scale(1.1);
     }
+
     100% {
         transform: scale(1);
         opacity: 1;
@@ -1671,7 +1884,9 @@ body.transitioning .gold-particles {
 
 /* Loading Spinner */
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .spinner {
@@ -1683,22 +1898,54 @@ body.transitioning .gold-particles {
     animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
 }
 
-.stagger-item:nth-child(1) { animation-delay: 0.05s; }
-.stagger-item:nth-child(2) { animation-delay: 0.1s; }
-.stagger-item:nth-child(3) { animation-delay: 0.15s; }
-.stagger-item:nth-child(4) { animation-delay: 0.2s; }
-.stagger-item:nth-child(5) { animation-delay: 0.25s; }
-.stagger-item:nth-child(6) { animation-delay: 0.3s; }
-.stagger-item:nth-child(7) { animation-delay: 0.35s; }
-.stagger-item:nth-child(8) { animation-delay: 0.4s; }
-.stagger-item:nth-child(9) { animation-delay: 0.45s; }
-.stagger-item:nth-child(10) { animation-delay: 0.5s; }
+.stagger-item:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.stagger-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.stagger-item:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.stagger-item:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.stagger-item:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.stagger-item:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.stagger-item:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.stagger-item:nth-child(8) {
+    animation-delay: 0.4s;
+}
+
+.stagger-item:nth-child(9) {
+    animation-delay: 0.45s;
+}
+
+.stagger-item:nth-child(10) {
+    animation-delay: 0.5s;
+}
 
 /* Glow effect for important elements */
 @keyframes glow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 5px rgba(218, 165, 32, 0.5);
     }
+
     50% {
         box-shadow: 0 0 20px rgba(218, 165, 32, 0.8), 0 0 30px rgba(255, 215, 0, 0.4);
     }
@@ -1714,6 +1961,7 @@ body.transitioning .gold-particles {
         transform: translateY(-100vh) rotate(0deg);
         opacity: 1;
     }
+
     100% {
         transform: translateY(100vh) rotate(720deg);
         opacity: 0;
@@ -1838,8 +2086,8 @@ input[type="tel"] {
 
 /* Smooth tab transitions */
 .section-content {
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 1;
     transform: translateY(0);
 }
@@ -1863,6 +2111,7 @@ input[type="tel"] {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1897,8 +2146,14 @@ button,
 input,
 select,
 label,
-h1, h2, h3, h4, h5, h6,
-p, span {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span {
     position: relative;
     z-index: inherit;
 }

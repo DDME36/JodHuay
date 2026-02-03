@@ -1,8 +1,8 @@
-const CACHE_NAME = 'jodhuay-v42';
+const CACHE_NAME = 'jodhuay-v43'; // Updated version for cache refresh
 const urlsToCache = [
     './',
     './index.html',
-    './css/styles.css',
+    './styles.css',  // Fixed: was ./css/styles.css
     './app.js',
     './manifest.json',
     './assets/icon.png'
