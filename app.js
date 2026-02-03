@@ -188,37 +188,244 @@ function switchTab(tab) {
 
 window.switchTab = switchTab;
 
+// ============================================
+// DATA VERSION & MIGRATION
+// ============================================
+
+const DATA_VERSION = '1.1'; // เวอร์ชันข้อมูลปัจจุบัน
+
 function getStorageKey(type) {
     return `lottery_${type}`;
 }
 
+function getVersionKey() {
+    return 'lottery_data_version';
+}
+
+// ตรวจสอบและแปลงข้อมูลเก่า
+function migrateData() {
+    const currentVersion = localStorage.getItem(getVersionKey()) || '1.0';
+    
+    if (currentVersion === DATA_VERSION) {
+        return; // ข้อมูลเป็นเวอร์ชันล่าสุดแล้ว
+    }
+    
+    console.log(`Migrating data from ${currentVersion} to ${DATA_VERSION}`);
+    
+    try {
+        // Migration จาก 1.0 -> 1.1: เพิ่ม amount field
+        if (currentVersion === '1.0') {
+            migrateToV1_1();
+        }
+        
+        // บันทึกเวอร์ชันใหม่
+        localStorage.setItem(getVersionKey(), DATA_VERSION);
+        console.log('Migration completed successfully');
+    } catch (error) {
+        console.error('Migration error:', error);
+        showToast('⚠️ กำลังอัปเดตข้อมูล...');
+    }
+}
+
+// Migration จาก 1.0 -> 1.1
+function migrateToV1_1() {
+    const undergroundRaw = localStorage.getItem(getStorageKey('underground'));
+    
+    if (!undergroundRaw) return;
+    
+    try {
+        const data = JSON.parse(undergroundRaw);
+        
+        if (!Array.isArray(data)) return;
+        
+        let migrated = false;
+        
+        data.forEach(item => {
+            // ถ้ายังไม่มี amount field ให้คำนวณใหม่
+            if (!item.amount || item.amount === 0) {
+                item.amount = calculateAmountFromPrice(item.price);
+                migrated = true;
+            }
+        });
+        
+        if (migrated) {
+            localStorage.setItem(getStorageKey('underground'), JSON.stringify(data));
+            console.log('Migrated underground data to v1.1');
+        }
+    } catch (error) {
+        console.error('Migration v1.1 error:', error);
+    }
+}
+
+// คำนวณ amount จาก price string (สำหรับข้อมูลเก่า)
+function calculateAmountFromPrice(priceStr) {
+    if (!priceStr) return 0;
+    
+    try {
+        const prices = priceStr.split(' x ');
+        const firstPrice = parseInt(prices[0].trim(), 10);
+        
+        if (isNaN(firstPrice)) return 0;
+        
+        if (prices.length === 1) {
+            // มีแค่เต็งอย่างเดียว
+            return firstPrice;
+        } else if (prices.length === 2) {
+            const secondPart = prices[1].trim();
+            
+            if (secondPart === 'กลับ 3') {
+                return firstPrice * 3;
+            } else if (secondPart === 'กลับ 6') {
+                return firstPrice * 6;
+            } else {
+                const secondPrice = parseInt(secondPart, 10);
+                if (!isNaN(secondPrice)) {
+                    return firstPrice + secondPrice;
+                }
+            }
+        }
+        
+        return firstPrice;
+    } catch (error) {
+        console.error('Calculate amount error:', error);
+        return 0;
+    }
+}
+
+// ตรวจสอบและซ่อมแซมข้อมูลที่เสียหาย
+function validateAndFixData(data, type) {
+    if (!Array.isArray(data)) return [];
+    
+    return data.filter(item => {
+        // ตรวจสอบ required fields
+        if (!item || typeof item !== 'object') return false;
+        if (!item.id) return false;
+        if (!item.number || typeof item.number !== 'string') return false;
+        
+        if (type === 'underground') {
+            if (!item.type || !typeNames[item.type]) return false;
+            if (!item.price) return false;
+            
+            // ถ้าไม่มี amount ให้คำนวณใหม่
+            if (!item.amount || item.amount === 0) {
+                item.amount = calculateAmountFromPrice(item.price);
+            }
+        } else if (type === 'government') {
+            if (!item.type || !typeNames[item.type]) return false;
+            if (!item.qty || item.qty <= 0) item.qty = 1;
+        }
+        
+        return true;
+    });
+}
+
 function loadData() {
     try {
-        undergroundData = JSON.parse(localStorage.getItem(getStorageKey('underground')) || '[]');
-        governmentData = JSON.parse(localStorage.getItem(getStorageKey('government')) || '[]');
+        // ทำ migration ก่อน
+        migrateData();
         
-        // Validate data structure
-        if (!Array.isArray(undergroundData)) undergroundData = [];
-        if (!Array.isArray(governmentData)) governmentData = [];
+        // โหลดข้อมูล
+        const undergroundRaw = localStorage.getItem(getStorageKey('underground')) || '[]';
+        const governmentRaw = localStorage.getItem(getStorageKey('government')) || '[]';
+        
+        undergroundData = JSON.parse(undergroundRaw);
+        governmentData = JSON.parse(governmentRaw);
+        
+        // Validate และซ่อมแซมข้อมูล
+        undergroundData = validateAndFixData(undergroundData, 'underground');
+        governmentData = validateAndFixData(governmentData, 'government');
+        
+        // ถ้ามีการแก้ไข ให้บันทึกกลับ
+        if (undergroundRaw !== JSON.stringify(undergroundData) || 
+            governmentRaw !== JSON.stringify(governmentData)) {
+            saveData();
+            console.log('Data validated and fixed');
+        }
+        
     } catch (error) {
         console.error('Load data error:', error);
+        
+        // ถ้าโหลดไม่ได้ ให้สำรองข้อมูลและรีเซ็ต
+        backupCorruptedData();
         undergroundData = [];
         governmentData = [];
-        showToast('⚠️ ไม่สามารถโหลดข้อมูลได้');
+        
+        showToast('⚠️ พบข้อมูลเสียหาย กำลังรีเซ็ต...');
+    }
+}
+
+// สำรองข้อมูลที่เสียหาย
+function backupCorruptedData() {
+    try {
+        const timestamp = Date.now();
+        const undergroundRaw = localStorage.getItem(getStorageKey('underground'));
+        const governmentRaw = localStorage.getItem(getStorageKey('government'));
+        
+        if (undergroundRaw) {
+            localStorage.setItem(`lottery_underground_backup_${timestamp}`, undergroundRaw);
+        }
+        if (governmentRaw) {
+            localStorage.setItem(`lottery_government_backup_${timestamp}`, governmentRaw);
+        }
+        
+        console.log('Corrupted data backed up with timestamp:', timestamp);
+    } catch (error) {
+        console.error('Backup error:', error);
     }
 }
 
 function saveData() {
     try {
-        localStorage.setItem(getStorageKey('underground'), JSON.stringify(undergroundData));
-        localStorage.setItem(getStorageKey('government'), JSON.stringify(governmentData));
+        // ตรวจสอบข้อมูลก่อนบันทึก
+        const undergroundValid = validateAndFixData(undergroundData, 'underground');
+        const governmentValid = validateAndFixData(governmentData, 'government');
+        
+        // บันทึกข้อมูล
+        localStorage.setItem(getStorageKey('underground'), JSON.stringify(undergroundValid));
+        localStorage.setItem(getStorageKey('government'), JSON.stringify(governmentValid));
+        
+        // อัปเดตข้อมูลในหน่วยความจำ
+        undergroundData = undergroundValid;
+        governmentData = governmentValid;
+        
     } catch (error) {
         console.error('Save data error:', error);
+        
         if (error.name === 'QuotaExceededError') {
-            showToast('⚠️ พื้นที่เก็บข้อมูลเต็ม กรุณาลบรายการเก่า');
+            // พื้นที่เต็ม - ลองลบ backup เก่า
+            cleanupOldBackups();
+            
+            // ลองบันทึกอีกครั้ง
+            try {
+                localStorage.setItem(getStorageKey('underground'), JSON.stringify(undergroundData));
+                localStorage.setItem(getStorageKey('government'), JSON.stringify(governmentData));
+                showToast('✓ บันทึกสำเร็จ (ลบข้อมูลสำรองเก่า)');
+            } catch (retryError) {
+                showToast('⚠️ พื้นที่เต็ม กรุณาลบรายการเก่า');
+            }
         } else {
             showToast('⚠️ ไม่สามารถบันทึกข้อมูลได้');
         }
+    }
+}
+
+// ลบ backup เก่าที่เกิน 7 วัน
+function cleanupOldBackups() {
+    try {
+        const now = Date.now();
+        const sevenDays = 7 * 24 * 60 * 60 * 1000;
+        
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('lottery_') && key.includes('_backup_')) {
+                const timestamp = parseInt(key.split('_backup_')[1], 10);
+                if (!isNaN(timestamp) && (now - timestamp) > sevenDays) {
+                    localStorage.removeItem(key);
+                    console.log('Removed old backup:', key);
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Cleanup error:', error);
     }
 }
 
@@ -1222,23 +1429,56 @@ async function saveImage() {
         
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         
-        // iOS: ใช้ Web Share API เท่านั้น
-        if (isIOS && navigator.share && navigator.canShare) {
+        // iOS: พยายามใช้ Web Share API ก่อน
+        if (isIOS) {
             try {
                 const blob = await (await fetch(dataUrl)).blob();
                 const file = new File([blob], fileName, { type: 'image/png' });
-                if (navigator.canShare({ files: [file] })) {
+                
+                // ลองใช้ Share API
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                     await navigator.share({ 
                         files: [file],
                         title: 'JodHuay - จดหวย'
                     });
-                    showToast('บันทึกแล้ว');
+                    showToast('✓ บันทึกแล้ว');
+                    closePreviewModal();
+                    return;
                 }
             } catch (e) {
-                // User cancelled - ไม่ต้องทำอะไร
+                // ถ้า Share ไม่ได้ ให้ลองดาวน์โหลดแทน
                 if (e.name !== 'AbortError') {
-                    showToast('เกิดข้อผิดพลาด');
+                    console.log('Share failed, trying download:', e);
                 }
+            }
+            
+            // ถ้า Share ไม่ได้ ให้เปิดรูปในแท็บใหม่แทน (iOS Safari)
+            const newWindow = window.open();
+            if (newWindow) {
+                newWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>JodHuay - บันทึกรูป</title>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <style>
+                            body { margin: 0; padding: 20px; background: #f5f5f5; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+                            img { max-width: 100%; height: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px; background: white; }
+                            .info { margin: 20px 0; color: #666; font-size: 14px; }
+                            .btn { display: inline-block; margin: 10px; padding: 12px 24px; background: #DAA520; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>🎉 สร้างรูปสำเร็จ!</h2>
+                        <p class="info">กดค้างที่รูป แล้วเลือก "บันทึกรูปภาพ"</p>
+                        <img src="${dataUrl}" alt="JodHuay">
+                        <br>
+                        <a href="#" onclick="window.close()" class="btn">ปิดหน้าต่าง</a>
+                    </body>
+                    </html>
+                `);
+                showToast('✓ เปิดรูปในแท็บใหม่แล้ว');
+            } else {
+                showToast('⚠️ กรุณาอนุญาตให้เปิดหน้าต่างใหม่');
             }
             closePreviewModal();
             return;
@@ -1337,6 +1577,184 @@ window.clearData = clearData;
 window.openConfirmModal = openConfirmModal;
 window.closeConfirmModal = closeConfirmModal;
 window.confirmClearData = confirmClearData;
+
+// ============================================
+// DATA EXPORT / IMPORT (สำหรับกู้คืนข้อมูล)
+// ============================================
+
+// Export ข้อมูลเป็น JSON
+function exportData() {
+    try {
+        const exportData = {
+            version: DATA_VERSION,
+            timestamp: Date.now(),
+            date: new Date().toISOString(),
+            underground: undergroundData,
+            government: governmentData
+        };
+        
+        const dataStr = JSON.stringify(exportData, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `JodHuay_Backup_${Date.now()}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        showToast('✓ Export สำเร็จ');
+    } catch (error) {
+        console.error('Export error:', error);
+        showToast('⚠️ ไม่สามารถ Export ได้');
+    }
+}
+
+// Import ข้อมูลจาก JSON
+function importData(file) {
+    if (!file) return;
+    
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            const importData = JSON.parse(e.target.result);
+            
+            // ตรวจสอบโครงสร้างข้อมูล
+            if (!importData.underground || !importData.government) {
+                throw new Error('Invalid data structure');
+            }
+            
+            // Validate และแก้ไขข้อมูล
+            const undergroundValid = validateAndFixData(importData.underground, 'underground');
+            const governmentValid = validateAndFixData(importData.government, 'government');
+            
+            // ถามยืนยันก่อน import
+            if (confirm(`พบข้อมูล:\n- หวยใต้ดิน: ${undergroundValid.length} รายการ\n- หวยรัฐบาล: ${governmentValid.length} รายการ\n\nต้องการ Import หรือไม่? (ข้อมูลเดิมจะถูกแทนที่)`)) {
+                // สำรองข้อมูลเก่าก่อน
+                backupCorruptedData();
+                
+                // Import ข้อมูลใหม่
+                undergroundData = undergroundValid;
+                governmentData = governmentValid;
+                
+                saveData();
+                renderAll();
+                
+                showToast('✓ Import สำเร็จ');
+            }
+        } catch (error) {
+            console.error('Import error:', error);
+            showToast('⚠️ ไฟล์ไม่ถูกต้อง');
+        }
+    };
+    
+    reader.onerror = function() {
+        showToast('⚠️ ไม่สามารถอ่านไฟล์ได้');
+    };
+    
+    reader.readAsText(file);
+}
+
+// เปิด file picker สำหรับ import
+function openImportDialog() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (file) importData(file);
+    };
+    input.click();
+}
+
+window.exportData = exportData;
+window.openImportDialog = openImportDialog;
+
+// ============================================
+// DEBUG TOOLS (สำหรับแก้ปัญหา)
+// ============================================
+
+// แสดงข้อมูล debug ใน console
+function debugInfo() {
+    console.log('=== JodHuay Debug Info ===');
+    console.log('Data Version:', localStorage.getItem(getVersionKey()) || 'Not set');
+    console.log('Underground Data:', undergroundData);
+    console.log('Government Data:', governmentData);
+    console.log('LocalStorage Keys:', Object.keys(localStorage).filter(k => k.startsWith('lottery_')));
+    console.log('Storage Used:', JSON.stringify(localStorage).length, 'bytes');
+    console.log('========================');
+}
+
+// ซ่อมแซมข้อมูลทั้งหมด
+function repairAllData() {
+    try {
+        console.log('Starting data repair...');
+        
+        // โหลดข้อมูลใหม่
+        loadData();
+        
+        // Validate และแก้ไข
+        undergroundData = validateAndFixData(undergroundData, 'underground');
+        governmentData = validateAndFixData(governmentData, 'government');
+        
+        // บันทึกกลับ
+        saveData();
+        
+        // Render ใหม่
+        renderAll();
+        
+        console.log('Data repair completed');
+        showToast('✓ ซ่อมแซมข้อมูลเสร็จสิ้น');
+    } catch (error) {
+        console.error('Repair error:', error);
+        showToast('⚠️ ไม่สามารถซ่อมแซมได้');
+    }
+}
+
+// รีเซ็ตข้อมูลทั้งหมด (รวม version)
+function resetAllData() {
+    if (confirm('⚠️ คำเตือน!\n\nจะลบข้อมูลทั้งหมด รวมถึง backup\nต้องการดำเนินการต่อหรือไม่?')) {
+        try {
+            // ลบข้อมูลทั้งหมด
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('lottery_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            
+            // รีเซ็ตตัวแปร
+            undergroundData = [];
+            governmentData = [];
+            
+            // Render ใหม่
+            renderAll();
+            
+            console.log('All data reset');
+            showToast('✓ รีเซ็ตข้อมูลทั้งหมดแล้ว');
+            
+            // Reload หน้าเว็บ
+            setTimeout(() => location.reload(), 1000);
+        } catch (error) {
+            console.error('Reset error:', error);
+            showToast('⚠️ ไม่สามารถรีเซ็ตได้');
+        }
+    }
+}
+
+// เปิดใช้งาน debug mode
+window.JodHuayDebug = {
+    info: debugInfo,
+    repair: repairAllData,
+    reset: resetAllData,
+    export: exportData,
+    import: openImportDialog,
+    version: DATA_VERSION
+};
+
+console.log('💡 Debug Tools: พิมพ์ JodHuayDebug ใน console เพื่อดูคำสั่ง');
 
 // Copy all to clipboard
 function copyAllToClipboard() {
