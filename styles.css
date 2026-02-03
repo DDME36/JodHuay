@@ -1521,6 +1521,49 @@ body.transitioning .gold-particles {
     outline: none !important;
     position: relative;
     isolation: isolate;
+    cursor: pointer;
+}
+
+/* Desktop: แสดง cursor text เมื่อ hover */
+@media (min-width: 768px) and (hover: hover) {
+    .hero-input-container {
+        cursor: text;
+    }
+    
+    .hero-input-container input[type="tel"] {
+        cursor: text;
+        pointer-events: auto !important;
+    }
+    
+    /* แสดงข้อความ hint บน Desktop */
+    .desktop-hint {
+        display: block !important;
+    }
+    
+    /* Focus state สำหรับ Desktop */
+    .hero-input-container.input-focused .hero-border {
+        border-color: #DAA520 !important;
+        box-shadow: 
+            0 0 0 3px rgba(218, 165, 32, 0.1),
+            0 4px 20px rgba(218, 165, 32, 0.3) !important;
+    }
+}
+
+/* Mobile: ซ่อน cursor และใช้ numpad */
+@media (max-width: 767px), (hover: none) {
+    .hero-input-container {
+        cursor: pointer;
+    }
+    
+    .hero-input-container input[type="tel"] {
+        cursor: pointer;
+        pointer-events: none !important;
+    }
+    
+    /* ซ่อนข้อความ hint บน Mobile */
+    .desktop-hint {
+        display: none !important;
+    }
 }
 
 .hero-input-container *,

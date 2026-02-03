@@ -104,13 +104,16 @@
                 
                 <!-- เลข - Hero Display -->
                 <div class="mb-6">
-                    <div class="hero-input-container relative group cursor-pointer" onclick="openGovNumpad()">
+                    <div class="hero-input-container relative group" onclick="handleNumberInput('govNumber')">
                         <div class="absolute inset-0 bg-white rounded-2xl shadow-inner hero-border"></div>
                         <div class="relative py-8 text-center">
                             <label class="block text-gold-500 text-xs mb-2 font-medium tracking-widest uppercase">หมายเลข</label>
-                            <input type="tel" id="govNumber" maxlength="6" placeholder="_ _ _ _ _ _" readonly
-                                class="w-full bg-white text-center text-5xl font-bold text-gold-700 placeholder-gold-300 pointer-events-none border-0 outline-none">
-                            <p class="text-xs text-gold-400 mt-3 font-light">แตะเพื่อระบุตัวเลข</p>
+                            <input type="tel" id="govNumber" maxlength="6" placeholder="_ _ _ _ _ _"
+                                class="w-full bg-white text-center text-5xl font-bold text-gold-700 placeholder-gold-300 border-0 outline-none"
+                                onkeypress="handleKeyPress(event, 'government')"
+                                onfocus="this.parentElement.parentElement.parentElement.classList.add('input-focused')"
+                                onblur="this.parentElement.parentElement.parentElement.classList.remove('input-focused')">
+                            <p class="text-xs text-gold-400 mt-3 font-light desktop-hint">พิมพ์เลขหรือแตะเพื่อเปิดแป้นตัวเลข</p>
                         </div>
                     </div>
                 </div>
@@ -196,13 +199,16 @@
                 
                 <!-- เลข - Hero Display -->
                 <div class="mb-6">
-                    <div class="hero-input-container relative group cursor-pointer" onclick="openUgNumpad()">
+                    <div class="hero-input-container relative group" onclick="handleNumberInput('ugNumber')">
                         <div class="absolute inset-0 bg-white rounded-2xl shadow-inner hero-border"></div>
                         <div class="relative py-8 text-center">
                             <label class="block text-gold-500 text-xs mb-2 font-medium tracking-widest uppercase">หมายเลข</label>
-                            <input type="tel" id="ugNumber" maxlength="3" placeholder="_ _ _" readonly
-                                class="w-full bg-white text-center text-5xl font-bold text-gold-700 placeholder-gold-300 pointer-events-none border-0 outline-none">
-                            <p class="text-xs text-gold-400 mt-3 font-light">แตะเพื่อระบุตัวเลข</p>
+                            <input type="tel" id="ugNumber" maxlength="3" placeholder="_ _ _"
+                                class="w-full bg-white text-center text-5xl font-bold text-gold-700 placeholder-gold-300 border-0 outline-none"
+                                onkeypress="handleKeyPress(event, 'underground')"
+                                onfocus="this.parentElement.parentElement.parentElement.classList.add('input-focused')"
+                                onblur="this.parentElement.parentElement.parentElement.classList.remove('input-focused')">
+                            <p class="text-xs text-gold-400 mt-3 font-light desktop-hint">พิมพ์เลขหรือแตะเพื่อเปิดแป้นตัวเลข</p>
                         </div>
                     </div>
                 </div>

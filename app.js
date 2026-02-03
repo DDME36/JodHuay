@@ -117,6 +117,98 @@ function openUgNumpad() {
 window.openGovNumpad = openGovNumpad;
 window.openUgNumpad = openUgNumpad;
 
+// ============================================
+// SMART INPUT HANDLING (Desktop vs Mobile)
+// ============================================
+
+// ตรวจสอบว่าเป็น Desktop หรือ Mobile
+function isDesktop() {
+    return window.innerWidth >= 768 && !('ontouchstart' in window);
+}
+
+// จัดการ input ตามแพลตฟอร์ม
+function handleNumberInput(inputId) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    
+    if (isDesktop()) {
+        // Desktop: ให้ focus เพื่อพิมพ์ได้เลย
+        input.focus();
+    } else {
+        // Mobile: เปิด numpad
+        if (inputId === 'govNumber') {
+            openGovNumpad();
+        } else if (inputId === 'ugNumber') {
+            openUgNumpad();
+        }
+    }
+}
+
+// จัดการ keypress (เฉพาะตัวเลข + Enter)
+function handleKeyPress(event, type) {
+    // อนุญาตเฉพาะตัวเลข 0-9
+    const charCode = event.which || event.keyCode;
+    
+    // Enter key
+    if (charCode === 13) {
+        event.preventDefault();
+        if (type === 'government') {
+            addGovernment();
+        } else if (type === 'underground') {
+            // Focus ไปที่ราคา
+            const priceInput = document.getElementById('ugPriceDirect');
+            if (priceInput) priceInput.focus();
+        }
+        return false;
+    }
+    
+    // ตัวเลข 0-9
+    if (charCode >= 48 && charCode <= 57) {
+        return true;
+    }
+    
+    // บล็อกตัวอักษรอื่นๆ
+    event.preventDefault();
+    return false;
+}
+
+// Format input แบบมีช่องว่าง (เมื่อพิมพ์บน Desktop)
+function formatNumberInput(input) {
+    if (!input) return;
+    
+    // เอาเฉพาะตัวเลข
+    let value = input.value.replace(/\D/g, '');
+    
+    // จำกัดความยาว
+    if (value.length > input.maxLength) {
+        value = value.slice(0, input.maxLength);
+    }
+    
+    // แสดงแบบมีช่องว่าง
+    input.value = value.split('').join(' ');
+}
+
+// เพิ่ม event listener สำหรับ input
+document.addEventListener('DOMContentLoaded', function() {
+    const govNumber = document.getElementById('govNumber');
+    const ugNumber = document.getElementById('ugNumber');
+    
+    if (govNumber) {
+        govNumber.addEventListener('input', function() {
+            formatNumberInput(this);
+        });
+    }
+    
+    if (ugNumber) {
+        ugNumber.addEventListener('input', function() {
+            formatNumberInput(this);
+        });
+    }
+});
+
+window.handleNumberInput = handleNumberInput;
+window.handleKeyPress = handleKeyPress;
+
 // Open NumPad for Price
 function openPriceNumpad(targetId, label) {
     openNumpad(targetId, label, 5);
@@ -578,7 +670,9 @@ function onGovTypeChange() {
 // Add underground
 function addUnderground() {
     const type = document.getElementById('ugType')?.value;
-    const number = document.getElementById('ugNumber')?.value.trim();
+    const numberRaw = document.getElementById('ugNumber')?.value.trim();
+    // ลบช่องว่างออก (กรณีพิมพ์บน Desktop)
+    const number = numberRaw.replace(/\s/g, '');
     const priceDirectInput = document.getElementById('ugPriceDirect');
     const priceTodInput = document.getElementById('ugPriceTod');
     const todTypeSelect = document.getElementById('ugTodType');
@@ -980,7 +1074,9 @@ window.editUnderground = editUnderground;
 function addGovernment() {
     try {
         const type = document.getElementById('govType')?.value;
-        const number = document.getElementById('govNumber')?.value.trim();
+        const numberRaw = document.getElementById('govNumber')?.value.trim();
+        // ลบช่องว่างออก (กรณีพิมพ์บน Desktop)
+        const number = numberRaw.replace(/\s/g, '');
         const qtyInput = document.getElementById('govQty')?.value;
         const qty = parseInt(qtyInput, 10) || 1;
         
