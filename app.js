@@ -574,17 +574,33 @@ function renderUnderground() {
     try {
         undergroundData.forEach(item => {
             if (item.amount && !isNaN(item.amount)) {
+                // ใช้ amount ที่เก็บไว้ (ถูกต้องแล้ว)
                 total += item.amount;
             } else {
                 // Fallback for old data - parse from price string
                 const prices = item.price.split(' x ');
-                prices.forEach(p => {
-                    // ข้ามถ้าเป็น "กลับ 3" หรือ "กลับ 6"
-                    if (p.includes('กลับ')) return;
+                const firstPrice = parseInt(prices[0].trim(), 10);
+                
+                if (prices.length === 1) {
+                    // มีแค่เต็งอย่างเดียว
+                    if (!isNaN(firstPrice)) total += firstPrice;
+                } else if (prices.length === 2) {
+                    const secondPart = prices[1].trim();
                     
-                    const num = parseInt(p.trim(), 10);
-                    if (!isNaN(num) && num > 0) total += num;
-                });
+                    if (secondPart === 'กลับ 3') {
+                        // กลับ 3: เอาเต็งคูณ 3
+                        total += firstPrice * 3;
+                    } else if (secondPart === 'กลับ 6') {
+                        // กลับ 6: เอาเต็งคูณ 6
+                        total += firstPrice * 6;
+                    } else {
+                        // ตัวเลขธรรมดา: บวกกัน
+                        const secondPrice = parseInt(secondPart, 10);
+                        if (!isNaN(firstPrice) && !isNaN(secondPrice)) {
+                            total += firstPrice + secondPrice;
+                        }
+                    }
+                }
             }
         });
     } catch (error) {
