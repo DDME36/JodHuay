@@ -410,13 +410,13 @@ function addUnderground() {
         
         if (priceTod) {
             if (todType === 'ก.3') {
-                // กลับ 3: เอาเต็งคูณ 3
+                // กลับ 3: เอาเต็งคูณ 3 (ไม่บวกเต็ง)
                 priceStr += ' x กลับ 3';
-                amount += directAmount * 3;
+                amount = directAmount * 3;
             } else if (todType === 'ก.6') {
-                // กลับ 6: เอาเต็งคูณ 6
+                // กลับ 6: เอาเต็งคูณ 6 (ไม่บวกเต็ง)
                 priceStr += ' x กลับ 6';
-                amount += directAmount * 6;
+                amount = directAmount * 6;
             } else if (/^\d+$/.test(priceTod)) {
                 // ตัวเลขธรรมดา: บวกกัน
                 const todAmount = parseInt(priceTod, 10);
