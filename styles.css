@@ -1,0 +1,1896 @@
+/* ============================================
+   THEME: Modern Sacred - พุทธศิลป์ร่วมสมัย
+   ขลัง สว่าง ศักดิ์สิทธิ์
+   ============================================ */
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Accessible focus styles - only hide outline for mouse users */
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Show clear focus for keyboard navigation */
+*:focus-visible {
+    outline: 2px solid #DAA520;
+    outline-offset: 2px;
+}
+
+/* Remove tap highlight on mobile */
+button:active,
+input:active {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+body {
+    background-color: #FDFBF7;
+    background-image: 
+        /* รัศมีทองด้านบน */
+        radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.35) 0%, rgba(218, 165, 32, 0.15) 30%, transparent 60%),
+        /* รัศมีทองด้านล่าง */
+        radial-gradient(circle at 50% 100%, rgba(218, 165, 32, 0.25) 0%, transparent 50%),
+        /* ลายเส้นทแยงมุม */
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 80px,
+            rgba(218, 165, 32, 0.03) 80px,
+            rgba(218, 165, 32, 0.03) 160px
+        ),
+        /* ลายดอกบัวศักดิ์สิทธิ์ */
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23DAA520' fill-opacity='0.15'%3E%3Ccircle cx='50' cy='50' r='3'/%3E%3Cpath d='M50 30 L50 20 M50 70 L50 80 M30 50 L20 50 M70 50 L80 50' stroke='%23DAA520' stroke-width='2' stroke-opacity='0.15'/%3E%3Cpath d='M35 35 L28 28 M65 35 L72 28 M35 65 L28 72 M65 65 L72 72' stroke='%23C4A052' stroke-width='1.5' stroke-opacity='0.12'/%3E%3C/g%3E%3C/svg%3E"),
+        /* ลายจุดเล็กๆ */
+        radial-gradient(circle at 20% 30%, rgba(218, 165, 32, 0.08) 0%, transparent 3%),
+        radial-gradient(circle at 80% 70%, rgba(196, 160, 82, 0.08) 0%, transparent 3%),
+        radial-gradient(circle at 40% 80%, rgba(218, 165, 32, 0.06) 0%, transparent 2%),
+        radial-gradient(circle at 70% 20%, rgba(196, 160, 82, 0.06) 0%, transparent 2%);
+    background-size: 
+        100% 100%, 
+        100% 100%, 
+        100% 100%,
+        100px 100px,
+        800px 800px,
+        800px 800px,
+        600px 600px,
+        600px 600px;
+    background-position: 
+        center top, 
+        center bottom, 
+        0 0,
+        0 0,
+        0 0,
+        100% 100%,
+        50% 0,
+        0 50%;
+    background-attachment: fixed;
+}
+
+/* Main container - ensure it's above background */
+.max-w-xl {
+    position: relative;
+    z-index: 5;
+}
+
+/* Sacred Glow - รัศมีทอง */
+.sacred-glow {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 200px;
+    background: radial-gradient(ellipse, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Header section */
+header {
+    position: relative;
+    z-index: 10;
+    background: rgba(253, 251, 247, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(232, 223, 208, 0.4);
+}
+
+/* Brand Title - ฟอนต์วิจิตร + หายใจได้ */
+.brand-title {
+    font-family: 'Charmonman', cursive;
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: linear-gradient(180deg, #DAA520 0%, #B8860B 50%, #8B6914 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3));
+    display: inline-block;
+    animation: breathing 4s ease-in-out infinite;
+    position: relative;
+}
+
+@keyframes breathing {
+    0% { transform: scale(1); filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3)); }
+    50% { transform: scale(1.02); filter: drop-shadow(0 0 15px rgba(218, 165, 32, 0.6)); }
+    100% { transform: scale(1); filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3)); }
+}
+
+/* Floating Symbol - สัญลักษณ์ลอย */
+.floating-symbol {
+    display: inline-block;
+    animation: floating 3s ease-in-out infinite;
+}
+
+.floating-symbol:last-child {
+    animation: floatingFlipped 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes floatingFlipped {
+    0%, 100% { transform: translateY(0) scaleX(-1); }
+    50% { transform: translateY(-5px) scaleX(-1); }
+}
+
+/* Pulse Dots - จุดเต้น */
+.pulse-dot {
+    animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.3); opacity: 1; }
+}
+
+/* Brand Subtitle */
+.brand-subtitle {
+    font-family: 'Prompt', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #8B7355;
+    letter-spacing: 0.1em;
+}
+
+/* Sacred Divider - เส้นคั่นศักดิ์สิทธิ์ */
+.sacred-divider {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #DAA520, transparent);
+    position: relative;
+}
+
+.sacred-divider::before {
+    content: '◆';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #DAA520;
+    font-size: 8px;
+    background: #FDFBF7;
+    padding: 0 8px;
+}
+
+/* Sacred Divider Clean - เส้นแหลมสองข้าง มีเพชรตรงกลาง */
+.sacred-divider-clean {
+    width: 160px;
+    height: 16px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sacred-divider-clean::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #DAA520 100%);
+    transform: translateY(-50%);
+}
+
+.sacred-divider-clean::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(90deg, #DAA520 0%, transparent 100%);
+    transform: translateY(-50%);
+}
+
+.sacred-divider-clean span {
+    color: #DAA520;
+    font-size: 10px;
+    z-index: 1;
+}
+
+/* Decorative Divider (fallback) */
+.decorative-divider {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #C4A052, transparent);
+}
+
+/* Gold Button - ลงรักปิดทอง */
+.gold-btn {
+    background: linear-gradient(135deg, #FFD700 0%, #DAA520 50%, #B8860B 100%);
+    border: 1px solid #F0E68C;
+    box-shadow: 
+        0 4px 15px rgba(218, 165, 32, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gold-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: rotate(45deg) translate(-100%, -100%);
+    transition: transform 0.8s ease;
+}
+
+.gold-btn:hover::after {
+    transform: rotate(45deg) translate(100%, 100%);
+}
+
+.gold-btn:hover {
+    box-shadow: 
+        0 8px 25px rgba(218, 165, 32, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.gold-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 
+        0 2px 10px rgba(218, 165, 32, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Ripple Effect - คลื่นพลัง */
+.ripple {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-anim 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-anim {
+    to { transform: scale(4); opacity: 0; }
+}
+
+/* Tab Buttons */
+.tab-btn {
+    color: #8B7355 !important;
+    background: transparent !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    overflow: hidden;
+    outline: none !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    z-index: 10;
+}
+
+.tab-btn:focus,
+.tab-btn:focus-visible,
+.tab-btn:active,
+.tab-btn:focus-within {
+    outline: none !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+.tab-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.tab-btn:hover:not(.active) {
+    background: rgba(218, 165, 32, 0.1) !important;
+    color: #6B5A45 !important;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(218, 165, 32, 0.5) !important;
+    transform: scale(1.02) !important;
+}
+
+.tab-btn.active::before {
+    opacity: 1;
+}
+
+/* Cards - กรอบศักดิ์สิทธิ์ */
+.card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(232, 223, 208, 0.6);
+    box-shadow: 0 4px 20px rgba(196, 160, 82, 0.12);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(245, 240, 232, 0.5), rgba(218, 165, 32, 0.6), rgba(245, 240, 232, 0.5));
+}
+
+.card:hover {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 30px rgba(196, 160, 82, 0.18);
+    transform: translateY(-2px);
+}
+
+/* Section content */
+.section-content {
+    position: relative;
+    z-index: 10;
+}
+
+/* Input Fields - แผ่นจารึก */
+input, select {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #FFFCF5;
+    border-color: #D4C4A8;
+}
+
+input:focus, select:focus {
+    border-color: #DAA520;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), 0 0 0 3px rgba(218, 165, 32, 0.1);
+    background: #fff;
+    transform: scale(1.01);
+}
+
+input[type="tel"] {
+    color: #6B5A45;
+    letter-spacing: 0.15em;
+}
+
+/* List Items */
+.list-item {
+    background: linear-gradient(135deg, #FFFCF5 0%, #FFF9F0 100%);
+    border: 1px solid #E8DFD0;
+    border-radius: 16px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.list-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #FFD700 0%, #B8860B 100%);
+    border-radius: 3px 0 0 3px;
+    transition: width 0.3s ease;
+}
+
+.list-item:hover::before {
+    width: 6px;
+}
+
+.list-item:hover {
+    box-shadow: 0 4px 16px rgba(218, 165, 32, 0.15);
+    border-color: #DAA520;
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateX(-30px) scale(0.95); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateX(0) scale(1); 
+    }
+}
+
+/* Holy Flash - แสงวาบศักดิ์สิทธิ์ */
+@keyframes holyFlash {
+    0% { 
+        box-shadow: 0 0 0 rgba(218, 165, 32, 0); 
+        border-color: #E8DFD0;
+    }
+    30% { 
+        box-shadow: 0 0 30px rgba(218, 165, 32, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); 
+        border-color: #FFD700;
+    }
+    100% { 
+        box-shadow: 0 0 0 rgba(218, 165, 32, 0); 
+        border-color: #E8DFD0;
+    }
+}
+
+.list-item.new-entry {
+    animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards, 
+               holyFlash 1.5s ease-out;
+}
+
+/* Delete Button */
+.delete-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #F5EEE6;
+    color: #8B7355;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    /* เพิ่มพื้นที่กดให้ใหญ่ขึ้นด้วย padding (invisible) */
+    padding: 8px;
+    margin: -8px;
+}
+
+.delete-btn::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    background: radial-gradient(circle, rgba(220, 38, 38, 0.2) 0%, transparent 70%);
+    transform: scale(0);
+    transition: transform 0.3s ease;
+    border-radius: 50%;
+}
+
+.delete-btn:hover {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    color: #DC2626;
+    transform: scale(1.15) rotate(90deg);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.delete-btn:hover::before {
+    transform: scale(1);
+}
+
+.delete-btn:active {
+    transform: scale(0.95) rotate(90deg);
+}
+
+/* Selection Chips */
+.chip {
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.chip-selected {
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(218, 165, 32, 0.4);
+}
+
+.chip-unselected {
+    background: #FFF9F0;
+    color: #8B7355;
+    border-color: #E8DFD0;
+}
+
+.chip-unselected:hover {
+    background: #F5EEE6;
+    border-color: #DAA520;
+}
+
+/* Modal */
+.modal-overlay {
+    background: rgba(107, 90, 69, 0.6);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    background: linear-gradient(180deg, #FFFCF5 0%, #FFF9F0 100%);
+    border: 1px solid #E8DFD0;
+    box-shadow: 0 10px 40px rgba(107, 90, 69, 0.25);
+    animation: modalSlideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Modal Mode Toggle Buttons */
+.modal-mode-btn {
+    background: transparent;
+    color: #6B7280;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-mode-btn.active {
+    background: white;
+    color: #8B6914;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-mode-btn:hover:not(.active) {
+    color: #4B5563;
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Preview Paper */
+.paper-preview {
+    background: linear-gradient(180deg, #FFFCF5 0%, #FFF9F0 100%);
+    box-shadow: 0 4px 20px rgba(107, 90, 69, 0.15);
+    border: 1px solid #E8DFD0;
+}
+
+/* Toast */
+#toast {
+    background: linear-gradient(135deg, #6B5A45 0%, #8B7355 100%);
+    box-shadow: 0 8px 20px rgba(107, 90, 69, 0.5);
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translate(-50%, 100px) scale(0.8);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1000;
+    padding: 12px 24px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.toast-show {
+    opacity: 1 !important;
+    transform: translate(-50%, 0) scale(1) !important;
+    animation: toastBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes toastBounce {
+    0% {
+        transform: translate(-50%, 100px) scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -10px) scale(1.05);
+    }
+    100% {
+        transform: translate(-50%, 0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Choice Chips */
+.choice-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 4px 0;
+}
+
+.choice-chip {
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    border: 1px solid #E8DFD0;
+    background: #FFFCF5;
+    color: #8B7355;
+    position: relative;
+    overflow: hidden;
+    transform: scale(1);
+    outline: none !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Remove ALL focus states */
+.choice-chip:focus,
+.choice-chip:focus-visible,
+.choice-chip:active,
+.choice-chip:focus-within {
+    outline: none !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    -webkit-tap-highlight-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Ripple effect on click */
+.choice-chip::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease-out, height 0.4s ease-out;
+}
+
+.choice-chip:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.choice-chip:hover {
+    border-color: #DAA520;
+    background: #FFF9F0;
+    box-shadow: 0 4px 12px rgba(218, 165, 32, 0.15);
+}
+
+.choice-chip:active {
+    transform: scale(0.95);
+}
+
+.choice-chip.active {
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    border-color: #B8860B;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(218, 165, 32, 0.5);
+    transform: scale(1.05);
+    animation: chipActivate 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes chipActivate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1.05); }
+}
+
+/* Color-coded chips - บน (แดงอิฐ) / ล่าง (น้ำเงินคราม) */
+.chip-bon:not(.active) {
+    border-color: #E8C4B8;
+    background: #FDF8F5;
+    color: #8B4513;
+}
+
+.chip-bon:not(.active):hover {
+    border-color: #CD853F;
+    background: #FAF0EB;
+    box-shadow: 0 4px 12px rgba(205, 133, 63, 0.2);
+}
+
+.chip-bon.active {
+    background: linear-gradient(135deg, #CD853F 0%, #8B4513 100%);
+    border-color: #8B4513;
+    color: white;
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.5);
+    transform: scale(1.05);
+}
+
+.chip-lang:not(.active) {
+    border-color: #B8C4D4;
+    background: #F5F8FC;
+    color: #4A5568;
+}
+
+.chip-lang:not(.active):hover {
+    border-color: #718096;
+    background: #EDF2F7;
+    box-shadow: 0 4px 12px rgba(113, 128, 150, 0.2);
+}
+
+.chip-lang.active {
+    background: linear-gradient(135deg, #5A6A7A 0%, #4A5568 100%);
+    border-color: #4A5568;
+    color: white;
+    box-shadow: 0 4px 12px rgba(74, 85, 104, 0.5);
+    transform: scale(1.05);
+}
+
+/* Type badge colors in list */
+.type-bon {
+    color: #8B4513;
+    background: #FDF8F5;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    border: 1px solid #E8C4B8;
+}
+
+.type-lang {
+    color: #4A5568;
+    background: #F5F8FC;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    border: 1px solid #B8C4D4;
+}
+
+/* Custom NumPad - กระดานชนวนศักดิ์สิทธิ์ */
+.numpad-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.numpad-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.numpad-container {
+    background: linear-gradient(180deg, #2C2C2C 0%, #1A1A1A 100%);
+    border-radius: 24px;
+    padding: 20px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border-top: 3px solid #DAA520;
+    transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.numpad-overlay.active .numpad-container {
+    transform: scale(1);
+}
+
+/* Mobile - align to bottom */
+@media (max-width: 640px) {
+    .numpad-overlay {
+        align-items: flex-end;
+    }
+    
+    .numpad-container {
+        border-radius: 24px 24px 0 0;
+        max-width: 100%;
+    }
+}
+
+.numpad-display {
+    text-align: center;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #3D3D3D 0%, #2A2A2A 100%);
+    border-radius: 16px;
+    border: 1px solid #4A4A4A;
+    min-height: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.numpad-display .text-3xl {
+    color: #F0E68C !important;
+}
+
+.numpad-display .text-sm {
+    color: #8B8B8B !important;
+}
+
+.numpad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.numpad-btn {
+    padding: 16px;
+    font-size: 22px;
+    font-weight: 600;
+    border-radius: 12px;
+    background: #3D3D3D;
+    color: #F0E68C;
+    border: 1px solid #4A4A4A;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 0 #111;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ripple effect */
+.numpad-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(240, 230, 140, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.numpad-btn:active::before {
+    width: 200px;
+    height: 200px;
+}
+
+.numpad-btn:active {
+    transform: translateY(3px) scale(0.92);
+    box-shadow: 0 1px 0 #111;
+    background-color: #4A4A4A;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    transition: all 0.05s ease;
+}
+
+.numpad-special {
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    color: #1A1A1A;
+    border: none;
+    box-shadow: 0 4px 0 #8B6914;
+}
+
+.numpad-special:active {
+    box-shadow: 0 1px 0 #8B6914, inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #B8860B 0%, #8B6914 100%);
+}
+
+.numpad-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.numpad-actions button:first-child {
+    background: #3D3D3D;
+    border: 1px solid #4A4A4A;
+    color: #F0E68C;
+}
+
+.numpad-actions button:last-child {
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    color: #1A1A1A;
+}
+
+/* Scrollbar - Hidden */
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Smooth scroll for horizontal chips */
+.snap-x {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.snap-center {
+    scroll-snap-align: center;
+}
+
+/* Active scale animation */
+.active\:scale-98:active {
+    transform: scale(0.98);
+}
+
+/* Pulse animation for gold button */
+@keyframes pulse-gold {
+    0%, 100% { 
+        box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
+    }
+    50% { 
+        box-shadow: 0 4px 25px rgba(218, 165, 32, 0.6), 0 0 0 8px rgba(218, 165, 32, 0.1);
+    }
+}
+
+.gold-btn {
+    animation: pulse-gold 2.5s ease-in-out infinite;
+}
+
+.gold-btn:hover {
+    animation: none;
+}
+
+.gold-btn:active {
+    animation: none;
+    transform: scale(0.98);
+}
+
+/* Dashboard Card Animation */
+@keyframes dashboardPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    60% {
+        transform: scale(1.05) translateY(-5px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.dashboard-card {
+    animation: dashboardPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+}
+
+.dashboard-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.dashboard-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+/* Empty state animation */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.empty-state-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Filter chips */
+.filter-chip {
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid #E8DFD0;
+    background: #FFFCF5;
+    color: #8B7355;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-chip::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(218, 165, 32, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.filter-chip:active::before {
+    width: 200px;
+    height: 200px;
+}
+
+.filter-chip:hover {
+    border-color: #DAA520;
+    background: #FFF9F0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(218, 165, 32, 0.15);
+}
+
+.filter-chip.active {
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    border-color: #B8860B;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(218, 165, 32, 0.5);
+    transform: scale(1.05);
+    animation: chipPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes chipPop {
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1.05); }
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Shake animation for errors */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.shake {
+    animation: shake 0.3s ease-in-out;
+}
+
+/* Success checkmark animation */
+@keyframes checkmark {
+    0% { transform: scale(0) rotate(45deg); }
+    50% { transform: scale(1.2) rotate(45deg); }
+    100% { transform: scale(1) rotate(45deg); }
+}
+
+.checkmark {
+    animation: checkmark 0.4s ease-out;
+}
+
+/* Bounce animation */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.bounce {
+    animation: bounce 0.5s ease-in-out;
+}
+
+/* iOS Safe Area */
+@supports (padding: env(safe-area-inset-bottom)) {
+    body {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .numpad-container {
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    }
+}
+
+/* Touch improvements */
+button, .choice-chip, .list-item, input, select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+/* Fix iOS input zoom */
+input[type="tel"], select {
+    font-size: 16px !important;
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Cursor pointer for clickable items */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* List item tap feedback */
+.list-item:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+/* Page Enter Animation */
+.page-enter {
+    animation: pageEnter 0.5s ease-out;
+}
+
+@keyframes pageEnter {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   ละอองทองศักดิ์สิทธิ์ (Floating Gold Dust)
+   ============================================ */
+.gold-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.25;
+    transition: opacity 0.5s ease;
+}
+
+/* Reduce particles opacity during transitions */
+body.transitioning .gold-particles {
+    opacity: 0.1;
+}
+
+.gold-particles span {
+    position: absolute;
+    display: block;
+    width: 3px;
+    height: 3px;
+    background: rgba(218, 165, 32, 0.3);
+    border-radius: 50%;
+    bottom: -10px;
+    animation: floatUp 15s linear infinite;
+    box-shadow: 0 0 4px rgba(255, 215, 0, 0.3);
+}
+
+.gold-particles span:nth-child(1) { left: 5%; animation-duration: 14s; animation-delay: 0s; width: 5px; height: 5px; }
+.gold-particles span:nth-child(2) { left: 15%; animation-duration: 18s; animation-delay: 2s; }
+.gold-particles span:nth-child(3) { left: 25%; animation-duration: 12s; animation-delay: 4s; width: 6px; height: 6px; }
+.gold-particles span:nth-child(4) { left: 35%; animation-duration: 16s; animation-delay: 1s; }
+.gold-particles span:nth-child(5) { left: 50%; animation-duration: 20s; animation-delay: 3s; width: 5px; height: 5px; }
+.gold-particles span:nth-child(6) { left: 60%; animation-duration: 13s; animation-delay: 5s; }
+.gold-particles span:nth-child(7) { left: 70%; animation-duration: 17s; animation-delay: 0.5s; width: 4px; height: 4px; }
+.gold-particles span:nth-child(8) { left: 80%; animation-duration: 15s; animation-delay: 2.5s; }
+.gold-particles span:nth-child(9) { left: 90%; animation-duration: 19s; animation-delay: 1.5s; width: 6px; height: 6px; }
+.gold-particles span:nth-child(10) { left: 95%; animation-duration: 11s; animation-delay: 4.5s; }
+
+@keyframes floatUp {
+    0% { 
+        transform: translateY(0) rotate(0deg) scale(0); 
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 0.8;
+        transform: translateY(-10vh) rotate(36deg) scale(1);
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% { 
+        transform: translateY(-100vh) rotate(360deg) scale(0.5); 
+        opacity: 0; 
+    }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .modal-content {
+        margin: 8px;
+        max-height: calc(100vh - 16px);
+    }
+    
+    .paper-preview {
+        width: 100% !important;
+        padding: 20px !important;
+        font-size: 12px !important;
+    }
+    
+    .brand-title {
+        font-size: 2.2rem;
+    }
+    
+    /* ปรับ header ให้เล็กลงบนมือถือ */
+    header {
+        padding: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* ปรับ card padding */
+    .card {
+        padding: 1rem !important;
+    }
+    
+    /* ปรับ choice chips ให้เล็กลง */
+    .choice-chip {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    /* ปรับ list items ให้อ่านง่ายขึ้น */
+    .list-item {
+        padding: 12px 14px;
+    }
+    
+    /* ปรับ font sizes */
+    .list-item .text-3xl {
+        font-size: 1.75rem;
+    }
+    
+    .list-item .text-sm {
+        font-size: 0.8rem;
+    }
+    
+    /* ปรับ dashboard cards */
+    .dashboard-card {
+        padding: 0.75rem !important;
+    }
+    
+    .dashboard-card .text-2xl {
+        font-size: 1.5rem;
+    }
+    
+    /* ปรับ modal buttons */
+    .modal-mode-btn {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    /* ปรับ numpad */
+    .numpad-container {
+        padding: 16px;
+    }
+    
+    .numpad-btn {
+        padding: 14px;
+        font-size: 20px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .max-w-xl {
+        max-width: 600px;
+    }
+    
+    /* ปรับ choice chips ให้ใหญ่ขึ้นบน tablet */
+    .choice-chip {
+        padding: 10px 18px;
+        font-size: 15px;
+    }
+    
+    /* ปรับ list items */
+    .list-item {
+        padding: 16px 18px;
+    }
+    
+    /* ปรับ modal */
+    .modal-content {
+        max-width: 600px;
+    }
+    
+    /* ปรับ numpad */
+    .numpad-container {
+        max-width: 400px;
+    }
+    
+    .numpad-btn {
+        padding: 18px;
+        font-size: 24px;
+    }
+}
+
+/* Large screens */
+@media (min-width: 1025px) {
+    .max-w-xl {
+        max-width: 640px;
+    }
+    
+    /* เพิ่ม shadow ให้ชัดขึ้นบนจอใหญ่ */
+    .card {
+        box-shadow: 0 6px 30px rgba(196, 160, 82, 0.15);
+    }
+    
+    /* ปรับ hover effects ให้เด่นขึ้น */
+    .choice-chip:hover {
+        transform: translateY(-2px);
+    }
+    
+    .list-item:hover {
+        transform: translateY(-1px);
+    }
+    
+    /* ปรับ modal ให้ใหญ่ขึ้น */
+    .modal-content {
+        max-width: 700px;
+    }
+    
+    /* ปรับ paper preview */
+    .paper-preview {
+        max-width: 600px !important;
+    }
+}
+
+/* Landscape mode บนมือถือ */
+@media (max-width: 896px) and (orientation: landscape) {
+    header {
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .brand-title {
+        font-size: 1.8rem;
+    }
+    
+    .modal-content {
+        max-height: calc(100vh - 8px);
+    }
+    
+    /* ปรับ numpad ให้พอดีกับหน้าจอ landscape */
+    .numpad-container {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .numpad-btn {
+        padding: 12px;
+        font-size: 18px;
+    }
+    
+    /* ลด padding ของ cards */
+    .card {
+        padding: 0.75rem !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .card {
+        border: 2px solid #8B7355;
+    }
+    
+    .choice-chip {
+        border-width: 2px;
+    }
+    
+    .list-item {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .gold-particles {
+        display: none;
+    }
+    
+    .floating-symbol {
+        animation: none;
+    }
+    
+    .pulse-dot {
+        animation: none;
+    }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    /* Keep light theme for now, but structure is ready */
+}
+
+
+/* Quick Price Buttons */
+.quick-price-btn {
+    padding: 10px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.quick-price-btn:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+}
+
+/* Glab Locked Input */
+.glab-locked {
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    border-color: #B8860B !important;
+    cursor: not-allowed !important;
+}
+
+/* Action Button Animations */
+.action-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(218, 165, 32, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.action-btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(218, 165, 32, 0.25);
+    border-color: #B8860B;
+}
+
+.action-btn:active {
+    transform: translateY(0) scale(0.95);
+}
+
+/* Success Animation */
+@keyframes successPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(34, 197, 94, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+}
+
+.success-flash {
+    animation: successPulse 0.6s ease-out;
+}
+
+/* Hero Number Input - Remove focus outline */
+.hero-input-container {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none !important;
+    position: relative;
+    isolation: isolate;
+}
+
+.hero-input-container *,
+.hero-input-container input,
+.hero-input-container div {
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Remove all borders and transitions from input */
+.hero-input-container input[type="tel"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: none !important;
+}
+
+.hero-input-container input[type="tel"]:focus,
+.hero-input-container input[type="tel"]:active {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Hero border using box-shadow - with proper layering */
+.hero-border {
+    border: 2px solid #C4A052;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    background: #FFFFFF;
+}
+
+/* Prevent border overflow */
+.hero-border::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.hero-input-container:hover .hero-border {
+    border-color: #DAA520;
+    box-shadow: 
+        0 4px 16px rgba(218, 165, 32, 0.2),
+        inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.hero-input-container:active .hero-border {
+    border-color: #B8860B;
+    box-shadow: 
+        0 2px 8px rgba(218, 165, 32, 0.15),
+        inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.hero-input-container:hover {
+    transform: scale(1.02);
+}
+
+.hero-input-container:active {
+    transform: scale(0.98);
+}
+
+.hero-input-container:focus,
+.hero-input-container:focus-visible,
+.hero-input-container:focus-within {
+    outline: none !important;
+}
+
+/* Fix number display - prevent horizontal spreading */
+.hero-input-container input[type="tel"] {
+    letter-spacing: 0.2em !important;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    display: block;
+    width: 100%;
+    background: transparent !important;
+}
+
+/* Ensure numbers display properly */
+.hero-input-container input[type="tel"]::placeholder {
+    letter-spacing: 0.3em;
+}
+
+/* Smooth number typing animation */
+@keyframes numberPop {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.number-pop {
+    animation: numberPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Loading Spinner */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Stagger animation for list items */
+.stagger-item {
+    animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0.05s; }
+.stagger-item:nth-child(2) { animation-delay: 0.1s; }
+.stagger-item:nth-child(3) { animation-delay: 0.15s; }
+.stagger-item:nth-child(4) { animation-delay: 0.2s; }
+.stagger-item:nth-child(5) { animation-delay: 0.25s; }
+.stagger-item:nth-child(6) { animation-delay: 0.3s; }
+.stagger-item:nth-child(7) { animation-delay: 0.35s; }
+.stagger-item:nth-child(8) { animation-delay: 0.4s; }
+.stagger-item:nth-child(9) { animation-delay: 0.45s; }
+.stagger-item:nth-child(10) { animation-delay: 0.5s; }
+
+/* Glow effect for important elements */
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(218, 165, 32, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(218, 165, 32, 0.8), 0 0 30px rgba(255, 215, 0, 0.4);
+    }
+}
+
+.glow-effect {
+    animation: glow 2s ease-in-out infinite;
+}
+
+/* Confetti effect (for success actions) */
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: #FFD700;
+    animation: confetti-fall 3s linear;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Force remove all focus rings and outlines */
+*,
+*::before,
+*::after {
+    outline: none !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+}
+
+/* Override Tailwind focus styles */
+.focus\:outline-none:focus,
+.focus-visible\:outline-none:focus-visible {
+    outline: none !important;
+}
+
+/* Remove focus ring from all interactive elements */
+button[type="button"],
+button[type="submit"],
+button[type="reset"],
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    outline: none !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+}
+
+button[type="button"]:focus,
+button[type="button"]:focus-visible,
+button[type="button"]:active,
+input[type="tel"]:focus,
+input[type="tel"]:focus-visible,
+input[type="tel"]:active {
+    outline: none !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Number display improvements */
+#govNumber,
+#ugNumber {
+    letter-spacing: 0.15em !important;
+    font-feature-settings: 'tnum' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Placeholder spacing */
+#govNumber::placeholder {
+    letter-spacing: 0.25em !important;
+}
+
+#ugNumber::placeholder {
+    letter-spacing: 0.3em !important;
+}
+
+/* Ensure proper number rendering */
+input[type="tel"] {
+    font-variant-numeric: tabular-nums;
+    text-rendering: optimizeLegibility;
+}
+
+/* Price Input Styling */
+#ugPriceDirect,
+#ugPriceTod {
+    transition: all 0.3s ease;
+}
+
+#ugPriceDirect:not(:placeholder-shown),
+#ugPriceTod:not(:placeholder-shown) {
+    color: #1F2937 !important;
+    font-weight: 700;
+}
+
+/* Glab locked state */
+#ugPriceDirect.glab-locked {
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 100%) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    border-color: #B8860B !important;
+    cursor: not-allowed !important;
+}
+
+/* Lock icon styling */
+.lock-icon {
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+}
+
+/* Fix border overflow issues */
+.hero-input-container .absolute {
+    clip-path: inset(0 round 1rem);
+}
+
+/* Ensure proper stacking context */
+.hero-input-container {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+/* Smooth tab transitions */
+.section-content {
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-content.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+}
+
+/* Tab button improvements */
+.tab-btn {
+    will-change: transform, background-color;
+}
+
+/* Fade in animation for active section */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-content:not(.hidden) {
+    animation: fadeInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Ensure content is above background animations */
+body {
+    position: relative;
+}
+
+.max-w-xl {
+    position: relative;
+    z-index: 10;
+}
+
+/* Ensure all interactive elements are above particles */
+header,
+.tab-btn,
+.card,
+.section-content,
+.choice-chip,
+.hero-input-container,
+.list-item,
+.gold-btn,
+.action-btn,
+button,
+input,
+select,
+label,
+h1, h2, h3, h4, h5, h6,
+p, span {
+    position: relative;
+    z-index: inherit;
+}
+
+/* Cards need semi-transparent background */
+.card {
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Modal should be on top of everything */
+.modal-overlay,
+.numpad-overlay,
+#toast {
+    z-index: 9999 !important;
+}
+
+/* Tabs container - ensure solid background */
+.flex.mb-8.bg-white {
+    background: #FFFFFF !important;
+    position: relative;
+    z-index: 100;
+}
+
+/* Header - ensure text is visible */
+header {
+    background: rgba(253, 251, 247, 0.98);
+    position: relative;
+    z-index: 100;
+    padding: 1rem 0;
+}
+
+/* Brand title - ensure visibility */
+.brand-title {
+    text-shadow: 0 2px 4px rgba(218, 165, 32, 0.3), 0 0 20px rgba(255, 255, 255, 0.8);
+}
