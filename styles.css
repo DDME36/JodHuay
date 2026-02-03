@@ -1769,12 +1769,22 @@ body.transitioning .gold-particles {
     .hero-input-container input[type="tel"] {
         cursor: pointer;
         pointer-events: none !important;
+        caret-color: transparent !important; /* ซ่อน cursor */
     }
 
     /* ซ่อนข้อความ hint บน Mobile */
     .desktop-hint {
         display: none !important;
     }
+}
+
+/* iOS specific: บังคับซ่อน cursor และป้องกัน keyboard */
+.hero-input-container input[type="tel"][readonly] {
+    cursor: pointer !important;
+    caret-color: transparent !important;
+    pointer-events: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
 }
 
 .hero-input-container *,

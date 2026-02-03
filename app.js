@@ -9,84 +9,157 @@ let isOnline = navigator.onLine;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    loadData();
-    renderAll();
-    registerServiceWorker();
+    try {
+        loadData();
+        renderAll();
+        registerServiceWorker();
 
-    // Setup Choice Chips
-    setupChoiceChips();
+        // Setup Choice Chips
+        setupChoiceChips();
 
-    // Setup Auto Jump for number inputs
-    setupAutoJump();
+        // Setup Auto Jump for number inputs
+        setupAutoJump();
 
-    // Setup event listeners
-    const ugPriceDirect = document.getElementById('ugPriceDirect');
-    const govNumber = document.getElementById('govNumber');
+        // Setup event listeners
+        const ugPriceDirect = document.getElementById('ugPriceDirect');
+        const govNumber = document.getElementById('govNumber');
 
-    if (ugPriceDirect) ugPriceDirect.addEventListener('keypress', e => { if (e.key === 'Enter') addUnderground(); });
-    if (govNumber) govNumber.addEventListener('keypress', e => { if (e.key === 'Enter') addGovernment(); });
+        if (ugPriceDirect) ugPriceDirect.addEventListener('keypress', e => { if (e.key === 'Enter') addUnderground(); });
+        if (govNumber) govNumber.addEventListener('keypress', e => { if (e.key === 'Enter') addGovernment(); });
 
-    // Setup offline detection
-    setupOfflineDetection();
+        // Setup offline detection
+        setupOfflineDetection();
 
-    // Setup swipe to delete
-    setupSwipeToDelete();
+        // Setup swipe to delete
+        setupSwipeToDelete();
 
-    // Global error handler
-    window.addEventListener('error', (event) => {
-        console.error('Global error:', event.error);
-        // Don't show toast for every error, just log it
-    });
+        // Setup window resize handler to update readonly state
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                updateInputReadonlyState();
+            }, 250);
+        });
 
-    window.addEventListener('unhandledrejection', (event) => {
-        console.error('Unhandled promise rejection:', event.reason);
-        // Don't show toast for every error, just log it
-    });
+        // Global error handler
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+            // Don't show toast for every error, just log it
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
+            // Don't show toast for every error, just log it
+        });
+    } catch (error) {
+        console.error('DOMContentLoaded initialization error:', error);
+        showToast('⚠️ เกิดข้อผิดพลาดในการเริ่มต้น');
+    }
 });
+
+// Update readonly state for inputs based on platform
+function updateInputReadonlyState() {
+    try {
+        const govNumber = document.getElementById('govNumber');
+        const ugNumber = document.getElementById('ugNumber');
+        const shouldBeReadonly = isIOS() || !isDesktop();
+
+        if (govNumber) {
+            if (shouldBeReadonly) {
+                govNumber.setAttribute('readonly', 'readonly');
+            } else {
+                govNumber.removeAttribute('readonly');
+            }
+        }
+
+        if (ugNumber) {
+            if (shouldBeReadonly) {
+                ugNumber.setAttribute('readonly', 'readonly');
+            } else {
+                ugNumber.removeAttribute('readonly');
+            }
+        }
+    } catch (error) {
+        console.error('updateInputReadonlyState error:', error);
+    }
+}
 
 // Setup Choice Chips
 function setupChoiceChips() {
-    // Government Type Chips
-    const govTypeChips = document.getElementById('govTypeChips');
-    if (govTypeChips) {
-        govTypeChips.addEventListener('click', (e) => {
-            const chip = e.target.closest('.choice-chip');
-            if (!chip) return;
+    try {
+        // Government Type Chips
+        const govTypeChips = document.getElementById('govTypeChips');
+        if (govTypeChips) {
+            govTypeChips.addEventListener('click', (e) => {
+                try {
+                    const chip = e.target.closest('.choice-chip');
+                    if (!chip) return;
 
-            govTypeChips.querySelectorAll('.choice-chip').forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            document.getElementById('govType').value = chip.dataset.value;
-            onGovTypeChange();
-            document.getElementById('govNumber').focus();
-        });
-    }
+                    govTypeChips.querySelectorAll('.choice-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    
+                    const govType = document.getElementById('govType');
+                    if (govType) {
+                        govType.value = chip.dataset.value;
+                        onGovTypeChange();
+                    }
+                    
+                    // Focus หรือเปิด numpad ตามแพลตฟอร์ม
+                    handleNumberInput('govNumber');
+                } catch (error) {
+                    console.error('govTypeChips click error:', error);
+                }
+            });
+        }
 
-    // Government Qty Chips
-    const govQtyChips = document.getElementById('govQtyChips');
-    if (govQtyChips) {
-        govQtyChips.addEventListener('click', (e) => {
-            const chip = e.target.closest('.choice-chip');
-            if (!chip) return;
+        // Government Qty Chips
+        const govQtyChips = document.getElementById('govQtyChips');
+        if (govQtyChips) {
+            govQtyChips.addEventListener('click', (e) => {
+                try {
+                    const chip = e.target.closest('.choice-chip');
+                    if (!chip) return;
 
-            govQtyChips.querySelectorAll('.choice-chip').forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            document.getElementById('govQty').value = chip.dataset.value;
-        });
-    }
+                    govQtyChips.querySelectorAll('.choice-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    
+                    const govQty = document.getElementById('govQty');
+                    if (govQty) {
+                        govQty.value = chip.dataset.value;
+                    }
+                } catch (error) {
+                    console.error('govQtyChips click error:', error);
+                }
+            });
+        }
 
-    // Underground Type Chips
-    const ugTypeChips = document.getElementById('ugTypeChips');
-    if (ugTypeChips) {
-        ugTypeChips.addEventListener('click', (e) => {
-            const chip = e.target.closest('.choice-chip');
-            if (!chip) return;
+        // Underground Type Chips
+        const ugTypeChips = document.getElementById('ugTypeChips');
+        if (ugTypeChips) {
+            ugTypeChips.addEventListener('click', (e) => {
+                try {
+                    const chip = e.target.closest('.choice-chip');
+                    if (!chip) return;
 
-            ugTypeChips.querySelectorAll('.choice-chip').forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            document.getElementById('ugType').value = chip.dataset.value;
-            onUgTypeChange();
-            document.getElementById('ugNumber').focus();
-        });
+                    ugTypeChips.querySelectorAll('.choice-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    
+                    const ugType = document.getElementById('ugType');
+                    if (ugType) {
+                        ugType.value = chip.dataset.value;
+                        onUgTypeChange();
+                    }
+                    
+                    // Focus หรือเปิด numpad ตามแพลตฟอร์ม
+                    handleNumberInput('ugNumber');
+                } catch (error) {
+                    console.error('ugTypeChips click error:', error);
+                }
+            });
+        }
+    } catch (error) {
+        console.error('setupChoiceChips error:', error);
     }
 }
 
@@ -121,88 +194,171 @@ window.openUgNumpad = openUgNumpad;
 // SMART INPUT HANDLING (Desktop vs Mobile)
 // ============================================
 
+// ตรวจสอบว่าเป็น iOS หรือไม่
+function isIOS() {
+    try {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+               (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    } catch (e) {
+        console.error('isIOS detection error:', e);
+        return false;
+    }
+}
+
 // ตรวจสอบว่าเป็น Desktop หรือ Mobile
 function isDesktop() {
-    return window.innerWidth >= 768 && !('ontouchstart' in window);
+    try {
+        return window.innerWidth >= 768 && !('ontouchstart' in window) && !isIOS();
+    } catch (e) {
+        console.error('isDesktop detection error:', e);
+        return false;
+    }
 }
 
 // จัดการ input ตามแพลตฟอร์ม
 function handleNumberInput(inputId) {
-    const input = document.getElementById(inputId);
-    if (!input) return;
-
-    if (isDesktop()) {
-        // Desktop: ให้ focus เพื่อพิมพ์ได้เลย
-        input.focus();
-    } else {
-        // Mobile: เปิด numpad
-        if (inputId === 'govNumber') {
-            openGovNumpad();
-        } else if (inputId === 'ugNumber') {
-            openUgNumpad();
+    try {
+        const input = document.getElementById(inputId);
+        if (!input) {
+            console.warn('Input element not found:', inputId);
+            return;
         }
+
+        // iOS หรือ Mobile: บังคับใช้ numpad เสมอ
+        if (isIOS() || !isDesktop()) {
+            // ป้องกัน system keyboard บน iOS
+            input.blur();
+            input.setAttribute('readonly', 'readonly');
+            
+            // เปิด custom numpad
+            if (inputId === 'govNumber') {
+                openGovNumpad();
+            } else if (inputId === 'ugNumber') {
+                openUgNumpad();
+            }
+        } else {
+            // Desktop: ให้พิมพ์ได้เลย
+            input.removeAttribute('readonly');
+            input.focus();
+        }
+    } catch (error) {
+        console.error('handleNumberInput error:', error);
+        showToast('⚠️ เกิดข้อผิดพลาด');
     }
 }
 
 // จัดการ keypress (เฉพาะตัวเลข + Enter)
 function handleKeyPress(event, type) {
-    // อนุญาตเฉพาะตัวเลข 0-9
-    const charCode = event.which || event.keyCode;
+    try {
+        // อนุญาตเฉพาะตัวเลข 0-9
+        const charCode = event.which || event.keyCode;
 
-    // Enter key
-    if (charCode === 13) {
-        event.preventDefault();
-        if (type === 'government') {
-            addGovernment();
-        } else if (type === 'underground') {
-            // Focus ไปที่ราคา
-            const priceInput = document.getElementById('ugPriceDirect');
-            if (priceInput) priceInput.focus();
+        // Enter key
+        if (charCode === 13) {
+            event.preventDefault();
+            if (type === 'government') {
+                addGovernment();
+            } else if (type === 'underground') {
+                // Focus ไปที่ราคา
+                const priceInput = document.getElementById('ugPriceDirect');
+                if (priceInput) priceInput.focus();
+            }
+            return false;
         }
+
+        // ตัวเลข 0-9
+        if (charCode >= 48 && charCode <= 57) {
+            return true;
+        }
+
+        // บล็อกตัวอักษรอื่นๆ
+        event.preventDefault();
+        return false;
+    } catch (error) {
+        console.error('handleKeyPress error:', error);
         return false;
     }
-
-    // ตัวเลข 0-9
-    if (charCode >= 48 && charCode <= 57) {
-        return true;
-    }
-
-    // บล็อกตัวอักษรอื่นๆ
-    event.preventDefault();
-    return false;
 }
 
 // Format input แบบมีช่องว่าง (เมื่อพิมพ์บน Desktop)
 function formatNumberInput(input) {
-    if (!input) return;
-
-    // เอาเฉพาะตัวเลข
-    let value = input.value.replace(/\D/g, '');
-
-    // จำกัดความยาว
-    if (value.length > input.maxLength) {
-        value = value.slice(0, input.maxLength);
+    try {
+        if (!input) {
+            console.warn('formatNumberInput: input is null');
+            return;
+        }
+        
+        // เก็บ maxLength ที่แท้จริง (จำนวนตัวเลข)
+        const realMaxLength = parseInt(input.getAttribute('data-max-length') || input.maxLength, 10);
+        
+        if (isNaN(realMaxLength) || realMaxLength <= 0) {
+            console.warn('formatNumberInput: invalid maxLength');
+            return;
+        }
+        
+        // เอาเฉพาะตัวเลข
+        let value = input.value.replace(/\D/g, '');
+        
+        // จำกัดความยาวตามจำนวนตัวเลขจริง
+        if (value.length > realMaxLength) {
+            value = value.slice(0, realMaxLength);
+        }
+        
+        // แสดงแบบมีช่องว่าง
+        input.value = value.split('').join(' ');
+    } catch (error) {
+        console.error('formatNumberInput error:', error);
     }
-
-    // แสดงแบบมีช่องว่าง
-    input.value = value.split('').join(' ');
 }
 
 // เพิ่ม event listener สำหรับ input
 document.addEventListener('DOMContentLoaded', function () {
-    const govNumber = document.getElementById('govNumber');
-    const ugNumber = document.getElementById('ugNumber');
-
-    if (govNumber) {
-        govNumber.addEventListener('input', function () {
-            formatNumberInput(this);
-        });
-    }
-
-    if (ugNumber) {
-        ugNumber.addEventListener('input', function () {
-            formatNumberInput(this);
-        });
+    try {
+        const govNumber = document.getElementById('govNumber');
+        const ugNumber = document.getElementById('ugNumber');
+        
+        // ตั้งค่า readonly สำหรับ iOS/Mobile
+        const shouldBeReadonly = isIOS() || !isDesktop();
+        
+        if (govNumber) {
+            // เก็บ maxLength จริงไว้
+            const originalMaxLength = govNumber.maxLength || 6;
+            govNumber.setAttribute('data-max-length', originalMaxLength);
+            // เพิ่ม maxLength ให้มากพอสำหรับช่องว่าง (เลข + ช่องว่าง)
+            govNumber.maxLength = originalMaxLength * 2 - 1;
+            
+            // ตั้งค่า readonly สำหรับ iOS/Mobile
+            if (shouldBeReadonly) {
+                govNumber.setAttribute('readonly', 'readonly');
+            }
+            
+            govNumber.addEventListener('input', function () {
+                formatNumberInput(this);
+            });
+        } else {
+            console.warn('govNumber element not found');
+        }
+        
+        if (ugNumber) {
+            // เก็บ maxLength จริงไว้
+            const originalMaxLength = ugNumber.maxLength || 3;
+            ugNumber.setAttribute('data-max-length', originalMaxLength);
+            // เพิ่ม maxLength ให้มากพอสำหรับช่องว่าง (เลข + ช่องว่าง)
+            ugNumber.maxLength = originalMaxLength * 2 - 1;
+            
+            // ตั้งค่า readonly สำหรับ iOS/Mobile
+            if (shouldBeReadonly) {
+                ugNumber.setAttribute('readonly', 'readonly');
+            }
+            
+            ugNumber.addEventListener('input', function () {
+                formatNumberInput(this);
+            });
+        } else {
+            console.warn('ugNumber element not found');
+        }
+    } catch (error) {
+        console.error('DOMContentLoaded input setup error:', error);
     }
 });
 
@@ -633,38 +789,79 @@ window.onGlabChange = onGlabChange;
 
 // Underground type change
 function onUgTypeChange() {
-    const type = document.getElementById('ugType').value;
-    const input = document.getElementById('ugNumber');
+    try {
+        const type = document.getElementById('ugType')?.value;
+        const input = document.getElementById('ugNumber');
+        
+        if (!type || !input) {
+            console.warn('onUgTypeChange: missing type or input');
+            return;
+        }
 
-    if (type === '3bon') {
-        input.maxLength = 3;
-        input.placeholder = '_ _ _';
-    } else if (type === '2bon' || type === '2lang') {
-        input.maxLength = 2;
-        input.placeholder = '_ _';
-    } else {
-        // วิ่ง
-        input.maxLength = 1;
-        input.placeholder = '_';
+        let realMaxLength;
+        if (type === '3bon') {
+            realMaxLength = 3;
+            input.placeholder = '_ _ _';
+        } else if (type === '2bon' || type === '2lang') {
+            realMaxLength = 2;
+            input.placeholder = '_ _';
+        } else {
+            // วิ่ง
+            realMaxLength = 1;
+            input.placeholder = '_';
+        }
+        
+        // เก็บ maxLength จริง
+        input.setAttribute('data-max-length', realMaxLength);
+        // ตั้ง maxLength ให้มากพอสำหรับช่องว่าง
+        input.maxLength = realMaxLength * 2 - 1;
+        input.value = '';
+        
+        // รักษา readonly state สำหรับ iOS/Mobile
+        if (isIOS() || !isDesktop()) {
+            input.setAttribute('readonly', 'readonly');
+        }
+    } catch (error) {
+        console.error('onUgTypeChange error:', error);
     }
-    input.value = '';
 }
 
 // Government type change
 function onGovTypeChange() {
-    const type = document.getElementById('govType').value;
-    const input = document.getElementById('govNumber');
-    if (type === '6') {
-        input.maxLength = 6;
-        input.placeholder = '_ _ _ _ _ _';
-    } else if (type === 'front3' || type === 'back3') {
-        input.maxLength = 3;
-        input.placeholder = '_ _ _';
-    } else {
-        input.maxLength = 2;
-        input.placeholder = '_ _';
+    try {
+        const type = document.getElementById('govType')?.value;
+        const input = document.getElementById('govNumber');
+        
+        if (!type || !input) {
+            console.warn('onGovTypeChange: missing type or input');
+            return;
+        }
+        
+        let realMaxLength;
+        if (type === '6') {
+            realMaxLength = 6;
+            input.placeholder = '_ _ _ _ _ _';
+        } else if (type === 'front3' || type === 'back3') {
+            realMaxLength = 3;
+            input.placeholder = '_ _ _';
+        } else {
+            realMaxLength = 2;
+            input.placeholder = '_ _';
+        }
+        
+        // เก็บ maxLength จริง
+        input.setAttribute('data-max-length', realMaxLength);
+        // ตั้ง maxLength ให้มากพอสำหรับช่องว่าง
+        input.maxLength = realMaxLength * 2 - 1;
+        input.value = '';
+        
+        // รักษา readonly state สำหรับ iOS/Mobile
+        if (isIOS() || !isDesktop()) {
+            input.setAttribute('readonly', 'readonly');
+        }
+    } catch (error) {
+        console.error('onGovTypeChange error:', error);
     }
-    input.value = '';
 }
 
 // Add underground
@@ -767,66 +964,91 @@ function addUnderground() {
 }
 
 function clearUndergroundForm() {
-    const ugNumberEl = document.getElementById('ugNumber');
-    const ugPriceDirectEl = document.getElementById('ugPriceDirect');
-    const ugPriceTodEl = document.getElementById('ugPriceTod');
-    const ugTodTypeEl = document.getElementById('ugTodType');
+    try {
+        const ugNumberEl = document.getElementById('ugNumber');
+        const ugPriceDirectEl = document.getElementById('ugPriceDirect');
+        const ugPriceTodEl = document.getElementById('ugPriceTod');
+        const ugTodTypeEl = document.getElementById('ugTodType');
 
-    // เคลียร์เลข
-    if (ugNumberEl) ugNumberEl.value = '';
+        // เคลียร์เลข
+        if (ugNumberEl) {
+            ugNumberEl.value = '';
+            // รักษา readonly state สำหรับ iOS/Mobile
+            if (isIOS() || !isDesktop()) {
+                ugNumberEl.setAttribute('readonly', 'readonly');
+            }
+        }
 
-    // เคลียร์ราคาเต็ง
-    if (ugPriceDirectEl) {
-        ugPriceDirectEl.value = '';
-        ugPriceDirectEl.disabled = false;
-        ugPriceDirectEl.classList.remove('glab-locked');
-    }
+        // เคลียร์ราคาเต็ง
+        if (ugPriceDirectEl) {
+            ugPriceDirectEl.value = '';
+            ugPriceDirectEl.disabled = false;
+            ugPriceDirectEl.classList.remove('glab-locked');
+        }
 
-    // รีเซ็ต dropdown โต๊ด และปลดล็อคช่องราคาโต๊ด
-    if (ugTodTypeEl) ugTodTypeEl.value = '';
-    if (ugPriceTodEl) {
-        ugPriceTodEl.value = '';
-        ugPriceTodEl.disabled = false;
-        ugPriceTodEl.classList.remove('glab-locked');
-    }
+        // รีเซ็ต dropdown โต๊ด และปลดล็อคช่องราคาโต๊ด
+        if (ugTodTypeEl) ugTodTypeEl.value = '';
+        if (ugPriceTodEl) {
+            ugPriceTodEl.value = '';
+            ugPriceTodEl.disabled = false;
+            ugPriceTodEl.classList.remove('glab-locked');
+        }
 
-    // Reset tod price section if open
-    if (showTodPrice) {
-        toggleTodPrice();
+        // Reset tod price section if open
+        if (showTodPrice) {
+            toggleTodPrice();
+        }
+    } catch (error) {
+        console.error('clearUndergroundForm error:', error);
     }
 }
 
 function deleteUnderground(id) {
-    const item = undergroundData.find(i => i.id === id);
-    if (!item) return;
+    try {
+        const item = undergroundData.find(i => i.id === id);
+        if (!item) {
+            console.warn('deleteUnderground: item not found', id);
+            return;
+        }
 
-    // Delete immediately
-    undergroundData = undergroundData.filter(i => i.id !== id);
-    saveData();
-    renderUnderground();
+        // Delete immediately
+        undergroundData = undergroundData.filter(i => i.id !== id);
+        saveData();
+        renderUnderground();
 
-    showToast(`ลบ "${item.number}" แล้ว`);
+        showToast(`ลบ "${item.number}" แล้ว`);
 
-    if (navigator.vibrate) navigator.vibrate(50);
+        if (navigator.vibrate) {
+            try {
+                navigator.vibrate(50);
+            } catch (e) {
+                // Vibrate not supported, ignore
+            }
+        }
+    } catch (error) {
+        console.error('deleteUnderground error:', error);
+        showToast('⚠️ ไม่สามารถลบรายการได้');
+    }
 }
 
 function renderUnderground() {
-    const list = document.getElementById('ugList');
-    const count = document.getElementById('ugCount');
-    const summary = document.getElementById('ugSummary');
-    const totalEl = document.getElementById('ugTotal');
-    const searchBar = document.getElementById('ugSearchBar');
+    try {
+        const list = document.getElementById('ugList');
+        const count = document.getElementById('ugCount');
+        const summary = document.getElementById('ugSummary');
+        const totalEl = document.getElementById('ugTotal');
+        const searchBar = document.getElementById('ugSearchBar');
 
-    // Update Dashboard
-    const dashTotal = document.getElementById('ugDashTotal');
-    const dashAmount = document.getElementById('ugDashAmount');
+        // Update Dashboard
+        const dashTotal = document.getElementById('ugDashTotal');
+        const dashAmount = document.getElementById('ugDashAmount');
 
-    if (!list || !count || !summary || !totalEl) {
-        console.error('Required elements not found');
-        return;
-    }
+        if (!list || !count || !summary || !totalEl) {
+            console.error('renderUnderground: Required elements not found');
+            return;
+        }
 
-    if (undergroundData.length === 0) {
+        if (undergroundData.length === 0) {
         list.innerHTML = getEnhancedEmptyState('underground');
         count.textContent = '';
         summary.classList.add('hidden');
@@ -962,6 +1184,13 @@ function renderUnderground() {
             </div>
         </div>
     `}).join('');
+    } catch (error) {
+        console.error('renderUnderground error:', error);
+        const list = document.getElementById('ugList');
+        if (list) {
+            list.innerHTML = '<p class="text-red-500 text-center py-6 text-sm">⚠️ เกิดข้อผิดพลาดในการแสดงผล</p>';
+        }
+    }
 }
 
 // Animate number rolling effect
@@ -1020,7 +1249,13 @@ function editUnderground(id) {
 
         // Set number
         const numberInput = document.getElementById('ugNumber');
-        if (numberInput) numberInput.value = item.number;
+        if (numberInput) {
+            numberInput.value = item.number;
+            // รักษา readonly state สำหรับ iOS/Mobile
+            if (isIOS() || !isDesktop()) {
+                numberInput.setAttribute('readonly', 'readonly');
+            }
+        }
 
         // Parse price (e.g., "100 x 50" or "50 x กลับ 3")
         const priceParts = item.price.split(' x ');
@@ -1104,7 +1339,12 @@ function addGovernment() {
         const numberInput = document.getElementById('govNumber');
         if (numberInput) {
             numberInput.value = '';
-            numberInput.focus();
+            // รักษา readonly state สำหรับ iOS/Mobile
+            if (isIOS() || !isDesktop()) {
+                numberInput.setAttribute('readonly', 'readonly');
+            } else {
+                numberInput.focus();
+            }
         }
 
         // Reset qty to 1
@@ -1132,48 +1372,68 @@ function addGovernment() {
 }
 
 function deleteGovernment(id) {
-    const item = governmentData.find(i => i.id === id);
-    if (!item) return;
+    try {
+        const item = governmentData.find(i => i.id === id);
+        if (!item) {
+            console.warn('deleteGovernment: item not found', id);
+            return;
+        }
 
-    // Delete immediately
-    governmentData = governmentData.filter(i => i.id !== id);
-    saveData();
-    renderGovernment();
+        // Delete immediately
+        governmentData = governmentData.filter(i => i.id !== id);
+        saveData();
+        renderGovernment();
 
-    showToast(`ลบ "${item.number}" แล้ว`);
+        showToast(`ลบ "${item.number}" แล้ว`);
 
-    if (navigator.vibrate) navigator.vibrate(50);
+        if (navigator.vibrate) {
+            try {
+                navigator.vibrate(50);
+            } catch (e) {
+                // Vibrate not supported, ignore
+            }
+        }
+    } catch (error) {
+        console.error('deleteGovernment error:', error);
+        showToast('⚠️ ไม่สามารถลบรายการได้');
+    }
 }
 
 function renderGovernment() {
-    const list = document.getElementById('govList');
-    const count = document.getElementById('govCount');
-    const searchBar = document.getElementById('govSearchBar');
+    try {
+        const list = document.getElementById('govList');
+        const count = document.getElementById('govCount');
+        const searchBar = document.getElementById('govSearchBar');
 
-    if (governmentData.length === 0) {
-        list.innerHTML = getEnhancedEmptyState('government');
-        count.textContent = '';
-        if (searchBar) searchBar.classList.add('hidden');
-        return;
-    }
-
-    // Show search bar if more than 3 items
-    if (searchBar) {
-        if (governmentData.length > 3) {
-            searchBar.classList.remove('hidden');
-        } else {
-            searchBar.classList.add('hidden');
+        if (!list || !count) {
+            console.error('renderGovernment: Required elements not found');
+            return;
         }
-    }
 
-    // Filter by search
-    const searchInput = document.getElementById('govSearchInput');
-    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        if (governmentData.length === 0) {
+            list.innerHTML = getEnhancedEmptyState('government');
+            count.textContent = '';
+            if (searchBar) searchBar.classList.add('hidden');
+            return;
+        }
 
-    let filteredData = governmentData;
-    if (searchTerm) {
-        filteredData = governmentData.filter(item =>
-            item.number.includes(searchTerm) ||
+        // Show search bar if more than 3 items
+        if (searchBar) {
+            if (governmentData.length > 3) {
+                searchBar.classList.remove('hidden');
+            } else {
+                searchBar.classList.add('hidden');
+            }
+        }
+
+        // Filter by search
+        const searchInput = document.getElementById('govSearchInput');
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+        let filteredData = governmentData;
+        if (searchTerm) {
+            filteredData = governmentData.filter(item =>
+                item.number.includes(searchTerm) ||
             typeNames[item.type].toLowerCase().includes(searchTerm)
         );
     }
@@ -1202,6 +1462,13 @@ function renderGovernment() {
             </div>
         </div>
     `}).join('');
+    } catch (error) {
+        console.error('renderGovernment error:', error);
+        const list = document.getElementById('govList');
+        if (list) {
+            list.innerHTML = '<p class="text-red-500 text-center py-6 text-sm">⚠️ เกิดข้อผิดพลาดในการแสดงผล</p>';
+        }
+    }
 }
 
 function editGovernment(id) {
@@ -1216,7 +1483,14 @@ function editGovernment(id) {
     onGovTypeChange();
 
     // Set number
-    document.getElementById('govNumber').value = item.number;
+    const numberInput = document.getElementById('govNumber');
+    if (numberInput) {
+        numberInput.value = item.number;
+        // รักษา readonly state สำหรับ iOS/Mobile
+        if (isIOS() || !isDesktop()) {
+            numberInput.setAttribute('readonly', 'readonly');
+        }
+    }
 
     // Set qty chip
     const qtyChips = document.getElementById('govQtyChips');
@@ -2695,9 +2969,11 @@ function setupSwipeToDelete() {
 
                 setTimeout(() => {
                     // Extract ID and delete
-                    const deleteBtn = currentElement.querySelector('.delete-btn');
-                    if (deleteBtn) {
-                        deleteBtn.click();
+                    if (currentElement) {
+                        const deleteBtn = currentElement.querySelector('.delete-btn');
+                        if (deleteBtn) {
+                            deleteBtn.click();
+                        }
                     }
                 }, 300);
             } else {
