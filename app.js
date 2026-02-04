@@ -44,6 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Global error handler
         window.addEventListener('error', (event) => {
+            // ข้าม Script error จาก external scripts (CORS)
+            if (event && event.message === 'Script error.') {
+                event.preventDefault();
+                return;
+            }
+            
             // ป้องกัน error ที่เป็น null หรือ undefined
             if (event && event.error) {
                 console.error('Global error:', event.error);
