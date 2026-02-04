@@ -1852,10 +1852,13 @@ async function saveImage() {
                     return;
                 }
             } catch (e) {
-                // ถ้า Share ไม่ได้ ให้ลองดาวน์โหลดแทน
-                if (e.name !== 'AbortError') {
-                    console.log('Share failed, trying download:', e);
+                // ถ้าผู้ใช้ยกเลิก Share ให้ปิด modal และไม่ทำอะไร
+                if (e.name === 'AbortError') {
+                    closePreviewModal();
+                    return;
                 }
+                // ถ้า Share ไม่ได้ด้วยเหตุผลอื่น ให้ลองดาวน์โหลดแทน
+                console.log('Share failed, trying download:', e);
             }
 
             // ถ้า Share ไม่ได้ ให้เปิดรูปในแท็บใหม่แทน (iOS Safari)
@@ -1883,10 +1886,11 @@ async function saveImage() {
                     </html>
                 `);
                 showToast('✓ เปิดรูปในแท็บใหม่แล้ว');
+                closePreviewModal();
             } else {
                 showToast('⚠️ กรุณาอนุญาตให้เปิดหน้าต่างใหม่');
+                // ไม่ปิด modal เพื่อให้ผู้ใช้ลองใหม่
             }
-            closePreviewModal();
             return;
         }
 
