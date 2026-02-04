@@ -50,26 +50,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // ป้องกัน error ที่เป็น null หรือ undefined
-            if (event && event.error) {
-                console.error('Global error:', event.error);
-            } else if (event && event.message) {
-                console.error('Global error:', event.message);
-            } else {
-                console.error('Global error: Unknown error');
+            // ป้องกัน error ที่เป็น null หรือ undefined - ไม่ log เลย
+            if (!event || (!event.error && !event.message)) {
+                event?.preventDefault();
+                return;
             }
-            // Don't show toast for every error, just log it
+            
+            // Log เฉพาะ error ที่มีข้อมูลจริงๆ
+            if (event.error) {
+                console.error('Global error:', event.error);
+            } else if (event.message) {
+                console.error('Global error:', event.message);
+            }
+            
             event.preventDefault(); // ป้องกัน error แสดงใน console ซ้ำ
         });
 
         window.addEventListener('unhandledrejection', (event) => {
-            // ป้องกัน promise rejection ที่เป็น null หรือ undefined
-            if (event && event.reason) {
-                console.error('Unhandled promise rejection:', event.reason);
-            } else {
-                console.error('Unhandled promise rejection: Unknown reason');
+            // ป้องกัน promise rejection ที่เป็น null หรือ undefined - ไม่ log เลย
+            if (!event || !event.reason) {
+                event?.preventDefault();
+                return;
             }
-            // Don't show toast for every error, just log it
+            
+            console.error('Unhandled promise rejection:', event.reason);
             event.preventDefault(); // ป้องกัน error แสดงใน console ซ้ำ
         });
     } catch (error) {
@@ -1872,9 +1876,9 @@ async function saveImage() {
                     return;
                 }
             } catch (e) {
-                // ถ้าผู้ใช้ยกเลิก Share ให้ปิด modal และไม่ทำอะไร
+                // ถ้าผู้ใช้ยกเลิก Share ให้อยู่ที่ modal เดิม (ไม่ปิด)
                 if (e.name === 'AbortError') {
-                    closePreviewModal();
+                    // ไม่ทำอะไร - ให้ผู้ใช้อยู่ที่หน้า modal
                     return;
                 }
                 // ถ้า Share ไม่ได้ด้วยเหตุผลอื่น ให้ลองดาวน์โหลดแทน
