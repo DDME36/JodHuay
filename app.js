@@ -44,13 +44,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Global error handler
         window.addEventListener('error', (event) => {
-            console.error('Global error:', event.error);
+            // ป้องกัน error ที่เป็น null หรือ undefined
+            if (event && event.error) {
+                console.error('Global error:', event.error);
+            } else if (event && event.message) {
+                console.error('Global error:', event.message);
+            } else {
+                console.error('Global error: Unknown error');
+            }
             // Don't show toast for every error, just log it
+            event.preventDefault(); // ป้องกัน error แสดงใน console ซ้ำ
         });
 
         window.addEventListener('unhandledrejection', (event) => {
-            console.error('Unhandled promise rejection:', event.reason);
+            // ป้องกัน promise rejection ที่เป็น null หรือ undefined
+            if (event && event.reason) {
+                console.error('Unhandled promise rejection:', event.reason);
+            } else {
+                console.error('Unhandled promise rejection: Unknown reason');
+            }
             // Don't show toast for every error, just log it
+            event.preventDefault(); // ป้องกัน error แสดงใน console ซ้ำ
         });
     } catch (error) {
         console.error('DOMContentLoaded initialization error:', error);
@@ -1886,7 +1900,7 @@ async function saveImage() {
                     </html>
                 `);
                 showToast('✓ เปิดรูปในแท็บใหม่แล้ว');
-                closePreviewModal();
+                // ไม่ปิด modal - ให้ผู้ใช้ปิดเองหรือบันทึกต่อ
             } else {
                 showToast('⚠️ กรุณาอนุญาตให้เปิดหน้าต่างใหม่');
                 // ไม่ปิด modal เพื่อให้ผู้ใช้ลองใหม่
