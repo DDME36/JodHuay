@@ -1783,27 +1783,57 @@ async function saveImage() {
         // Small delay for UI update
         await new Promise(r => setTimeout(r, 100));
 
+        // iOS specific: ใช้ options ที่เหมาะสมกับ iOS Safari
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
         const canvas = await html2canvas(preview, {
             backgroundColor: '#ffffff',
-            scale: 2,
+            scale: isIOS ? 1.5 : 2, // ลด scale บน iOS เพื่อลด memory usage
             useCORS: true,
-            allowTaint: true,
+            allowTaint: false, // เปลี่ยนเป็น false เพื่อความปลอดภัย
             logging: false,
-            // แก้ปัญหา background image
+            removeContainer: true,
+            imageTimeout: 15000,
+            // iOS: ปิด features ที่อาจทำให้เกิดปัญหา
+            foreignObjectRendering: false,
+            // แก้ปัญหา background image และ patterns
             onclone: (clonedDoc) => {
-                // ลบ background patterns ที่ซับซ้อนออกจาก cloned document
-                const body = clonedDoc.body;
-                if (body) {
-                    body.style.backgroundImage = 'none';
-                    body.style.backgroundColor = '#FDFBF7';
+                try {
+                    // ลบ background patterns ที่ซับซ้อนออกจาก cloned document
+                    const body = clonedDoc.body;
+                    if (body) {
+                        body.style.backgroundImage = 'none';
+                        body.style.backgroundColor = '#FDFBF7';
+                    }
+                    
+                    // ลบ animations และ transitions ที่อาจทำให้เกิดปัญหา
+                    const allElements = clonedDoc.querySelectorAll('*');
+                    allElements.forEach(el => {
+                        if (el.style) {
+                            el.style.animation = 'none';
+                            el.style.transition = 'none';
+                            el.style.transform = 'none';
+                        }
+                    });
+                    
+                    // แก้ไข preview element
+                    const clonedPreview = clonedDoc.getElementById('a4Preview');
+                    if (clonedPreview) {
+                        clonedPreview.style.transform = 'none';
+                        clonedPreview.style.boxShadow = 'none';
+                    }
+                } catch (e) {
+                    console.warn('onclone error:', e);
                 }
             }
         });
 
-        const dataUrl = canvas.toDataURL('image/png');
-        const fileName = `JodHuay_${currentTab === 'underground' ? 'ใต้ดิน' : 'รัฐบาล'}.png`;
+        if (!canvas || canvas.width === 0 || canvas.height === 0) {
+            throw new Error('Canvas creation failed - invalid dimensions');
+        }
 
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const dataUrl = canvas.toDataURL('image/png', 0.95); // เพิ่ม quality parameter
+        const fileName = `JodHuay_${currentTab === 'underground' ? 'ใต้ดิน' : 'รัฐบาล'}.png`;
 
         // iOS: พยายามใช้ Web Share API ก่อน
         if (isIOS) {
@@ -1877,14 +1907,28 @@ async function saveImage() {
     } catch (e) {
         console.error('Save image error:', e);
         let errorMsg = '⚠️ เกิดข้อผิดพลาด';
+        let showFallback = false;
 
         if (e.message && e.message.includes('html2canvas')) {
             errorMsg = '⚠️ ไม่สามารถโหลดไลบรารีได้';
+            showFallback = true;
+        } else if (e.message && e.message.includes('Canvas')) {
+            errorMsg = '⚠️ ไม่สามารถสร้างรูปภาพได้';
+            showFallback = true;
         } else if (e.name === 'SecurityError') {
             errorMsg = '⚠️ ไม่สามารถเข้าถึงรูปภาพได้';
+            showFallback = true;
+        } else if (e.name === 'DOMException') {
+            errorMsg = '⚠️ รูปภาพมีขนาดใหญ่เกินไป ลองลดจำนวนรายการ';
+            showFallback = true;
         }
 
         showToast(errorMsg);
+        
+        // แสดง fallback UI สำหรับ iOS
+        if (showFallback && /iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            setTimeout(() => showScreenshotFallback(), 500);
+        }
     } finally {
         // Reset button
         if (saveBtn) {
@@ -2340,24 +2384,55 @@ async function shareAsImage() {
 
         await new Promise(r => setTimeout(r, 100));
 
+        // iOS specific: ใช้ options ที่เหมาะสมกับ iOS Safari
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
         const canvas = await html2canvas(preview, {
             backgroundColor: '#ffffff',
-            scale: 2,
+            scale: isIOS ? 1.5 : 2, // ลด scale บน iOS
             useCORS: true,
-            allowTaint: true,
+            allowTaint: false,
             logging: false,
-            // แก้ปัญหา background image
+            removeContainer: true,
+            imageTimeout: 15000,
+            foreignObjectRendering: false,
+            // แก้ปัญหา background image และ patterns
             onclone: (clonedDoc) => {
-                // ลบ background patterns ที่ซับซ้อนออกจาก cloned document
-                const body = clonedDoc.body;
-                if (body) {
-                    body.style.backgroundImage = 'none';
-                    body.style.backgroundColor = '#FDFBF7';
+                try {
+                    // ลบ background patterns ที่ซับซ้อนออกจาก cloned document
+                    const body = clonedDoc.body;
+                    if (body) {
+                        body.style.backgroundImage = 'none';
+                        body.style.backgroundColor = '#FDFBF7';
+                    }
+                    
+                    // ลบ animations และ transitions
+                    const allElements = clonedDoc.querySelectorAll('*');
+                    allElements.forEach(el => {
+                        if (el.style) {
+                            el.style.animation = 'none';
+                            el.style.transition = 'none';
+                            el.style.transform = 'none';
+                        }
+                    });
+                    
+                    // แก้ไข preview element
+                    const clonedPreview = clonedDoc.getElementById('a4Preview');
+                    if (clonedPreview) {
+                        clonedPreview.style.transform = 'none';
+                        clonedPreview.style.boxShadow = 'none';
+                    }
+                } catch (e) {
+                    console.warn('onclone error:', e);
                 }
             }
         });
 
-        const blob = await (await fetch(canvas.toDataURL('image/png'))).blob();
+        if (!canvas || canvas.width === 0 || canvas.height === 0) {
+            throw new Error('Canvas creation failed - invalid dimensions');
+        }
+
+        const blob = await (await fetch(canvas.toDataURL('image/png', 0.95))).blob();
         const fileName = `JodHuay_${currentTab === 'underground' ? 'ใต้ดิน' : 'รัฐบาล'}.png`;
         const file = new File([blob], fileName, { type: 'image/png' });
 
@@ -2375,14 +2450,28 @@ async function shareAsImage() {
         if (e.name !== 'AbortError') {
             console.error('Share image error:', e);
             let errorMsg = 'ไม่สามารถแชร์ได้';
+            let showFallback = false;
 
             if (e.message && e.message.includes('html2canvas')) {
                 errorMsg = 'ไม่สามารถโหลดไลบรารีได้';
+                showFallback = true;
+            } else if (e.message && e.message.includes('Canvas')) {
+                errorMsg = 'ไม่สามารถสร้างรูปภาพได้';
+                showFallback = true;
             } else if (e.name === 'SecurityError') {
                 errorMsg = 'ไม่สามารถเข้าถึงรูปภาพได้';
+                showFallback = true;
+            } else if (e.name === 'DOMException') {
+                errorMsg = 'รูปภาพมีขนาดใหญ่เกินไป ลองลดจำนวนรายการ';
+                showFallback = true;
             }
 
             showToast(errorMsg);
+            
+            // แสดง fallback UI สำหรับ iOS
+            if (showFallback && /iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                setTimeout(() => showScreenshotFallback(), 500);
+            }
         }
     } finally {
         if (shareBtn && originalHTML) {
@@ -2394,6 +2483,7 @@ async function shareAsImage() {
 
 window.shareAsText = shareAsText;
 window.shareAsImage = shareAsImage;
+window.showScreenshotFallback = showScreenshotFallback;
 
 // ============================================
 // MODAL MODE SWITCHING
@@ -3186,11 +3276,62 @@ async function ensureHtml2Canvas() {
 
     try {
         await loadHtml2Canvas();
+        // ตรวจสอบว่าโหลดสำเร็จจริงๆ
+        if (typeof html2canvas === 'undefined') {
+            throw new Error('html2canvas not loaded after script execution');
+        }
         return true;
     } catch (error) {
+        console.error('ensureHtml2Canvas error:', error);
         showToast('⚠️ ไม่สามารถโหลดไลบรารีสร้างรูปได้');
         return false;
     }
+}
+
+// แสดง fallback UI เมื่อไม่สามารถสร้างรูปได้
+function showScreenshotFallback() {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+    modal.innerHTML = `
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <div class="text-center">
+                <div class="text-5xl mb-4">📸</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">ไม่สามารถสร้างรูปอัตโนมัติได้</h3>
+                <p class="text-gray-600 mb-4 text-sm leading-relaxed">
+                    เนื่องจากข้อจำกัดของเบราว์เซอร์<br>
+                    กรุณาใช้วิธีนี้แทน:
+                </p>
+                <div class="bg-gold-50 rounded-xl p-4 mb-4 text-left">
+                    <ol class="text-sm text-gray-700 space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold text-gold-600">1.</span>
+                            <span>กดปุ่ม Screenshot บนมือถือ</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold text-gold-600">2.</span>
+                            <span>ครอบตัดเฉพาะส่วนที่ต้องการ</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold text-gold-600">3.</span>
+                            <span>บันทึกหรือแชร์รูปได้เลย</span>
+                        </li>
+                    </ol>
+                </div>
+                <button onclick="this.closest('.fixed').remove()" 
+                    class="w-full py-3 bg-gold-500 text-white rounded-xl font-semibold hover:bg-gold-600 transition-colors">
+                    เข้าใจแล้ว
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
 }
 
 // ============================================
