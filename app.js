@@ -7,6 +7,28 @@ let showTodPrice = false;
 // Offline detection
 let isOnline = navigator.onLine;
 
+// ============================================
+// SECURITY: HTML Escape Function
+// ============================================
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// ============================================
+// ID GENERATION: Unique ID Generator
+// ============================================
+function generateUniqueId() {
+    // Use crypto.randomUUID() if available (modern browsers)
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return crypto.randomUUID();
+    }
+    // Fallback: timestamp + random + counter
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     try {
@@ -961,7 +983,7 @@ function addUnderground() {
     try {
         // Add entry
         undergroundData.push({
-            id: Date.now() + Math.random(),
+            id: generateUniqueId(),
             type,
             number: number,
             price: priceStr,
@@ -1194,14 +1216,17 @@ function renderUnderground() {
 
     list.innerHTML = filteredData.map((item, index) => {
         const isNewest = index === filteredData.length - 1 && !searchTerm && currentFilter === 'all';
+        const escapedNumber = escapeHtml(item.number);
+        const escapedTypeName = escapeHtml(typeNames[item.type] || '');
+        const escapedPrice = escapeHtml(item.price);
         return `
         <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}" style="animation-delay: ${index * 0.03}s" onclick="editUnderground(${item.id})">
             <div class="flex items-center justify-between w-full">
                 <div class="flex items-center gap-4">
-                    <span class="text-3xl font-bold text-gold-700 tracking-widest">${item.number}</span>
+                    <span class="text-3xl font-bold text-gold-700 tracking-widest">${escapedNumber}</span>
                     <div class="text-left">
-                        <span class="${getTypeClass(item.type)}">${typeNames[item.type]}</span>
-                        <div class="text-sm text-gray-700 font-semibold mt-1">${item.price}</div>
+                        <span class="${getTypeClass(item.type)}">${escapedTypeName}</span>
+                        <div class="text-sm text-gray-700 font-semibold mt-1">${escapedPrice}</div>
                     </div>
                 </div>
                 <button onclick="event.stopPropagation(); deleteUnderground(${item.id})" class="delete-btn">&times;</button>
@@ -1356,7 +1381,7 @@ function addGovernment() {
             return;
         }
 
-        governmentData.push({ id: Date.now(), type, number, qty });
+        governmentData.push({ id: generateUniqueId(), type, number, qty });
         saveData();
         renderGovernment();
 
@@ -1475,12 +1500,15 @@ function renderGovernment() {
 
     list.innerHTML = filteredData.map((item, index) => {
         const isNewest = index === filteredData.length - 1 && !searchTerm;
+        const escapedNumber = escapeHtml(item.number);
+        const escapedTypeName = escapeHtml(typeNames[item.type] || '');
+        const qtyText = item.qty > 1 ? ` (${parseInt(item.qty, 10)} ใบ)` : '';
         return `
         <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}" style="animation-delay: ${index * 0.03}s" onclick="editGovernment(${item.id})">
             <div class="flex items-center justify-between w-full">
                 <div class="flex items-center gap-4">
-                    <span class="text-3xl font-bold text-gold-700 tracking-widest">${item.number}</span>
-                    <span class="text-sm text-gray-500">${typeNames[item.type]}${item.qty > 1 ? ` (${item.qty} ใบ)` : ''}</span>
+                    <span class="text-3xl font-bold text-gold-700 tracking-widest">${escapedNumber}</span>
+                    <span class="text-sm text-gray-500">${escapedTypeName}${qtyText}</span>
                 </div>
                 <button onclick="event.stopPropagation(); deleteGovernment(${item.id})" class="delete-btn">&times;</button>
             </div>
@@ -3110,69 +3138,6 @@ function setupSwipeToDelete() {
 // ============================================
 // QUICK ACTIONS (Long Press)
 // ============================================
-
-let longPressTimer = null;
-let longPressElement = null;
-
-function setupQuickActions() {
-    document.addEventListener('touchstart', (e) => {
-        const listItem = e.target.closest('.list-item');
-        if (listItem) {
-            longPressElement = listItem;
-            longPressTimer = setTimeout(() => {
-                showQuickActionsMenu(listItem);
-                if (navigator.vibrate) navigator.vibrate(50);
-            }, 500);
-        }
-    });
-
-    document.addEventListener('touchend', () => {
-        if (longPressTimer) {
-            clearTimeout(longPressTimer);
-            longPressTimer = null;
-        }
-    });
-
-    document.addEventListener('touchmove', () => {
-        if (longPressTimer) {
-            clearTimeout(longPressTimer);
-            longPressTimer = null;
-        }
-    });
-}
-
-function showQuickActionsMenu(element) {
-    // Show context menu with options
-    const menu = document.createElement('div');
-    menu.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center';
-    menu.innerHTML = `
-        <div class="bg-white rounded-2xl p-4 m-4 max-w-xs w-full animate-scale-in">
-            <h3 class="text-lg font-bold text-gray-800 mb-4 text-center">ตัวเลือก</h3>
-            <div class="space-y-2">
-                <button onclick="this.closest('.fixed').remove()" class="w-full py-3 bg-gold-500 text-white rounded-xl font-semibold">
-                    แก้ไข
-                </button>
-                <button onclick="this.closest('.fixed').remove()" class="w-full py-3 bg-red-500 text-white rounded-xl font-semibold">
-                    ลบ
-                </button>
-                <button onclick="this.closest('.fixed').remove()" class="w-full py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold">
-                    ยกเลิก
-                </button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(menu);
-
-    // Close on background click
-    menu.addEventListener('click', (e) => {
-        if (e.target === menu) {
-            menu.remove();
-        }
-    });
-}
-
-// ============================================
 // ENHANCED EMPTY STATE
 // ============================================
 
@@ -3245,10 +3210,6 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
-
-// Optimized search with debounce
-const debouncedFilterUnderground = debounce(filterUnderground, 300);
-const debouncedFilterGovernment = debounce(filterGovernment, 300);
 
 // ============================================
 // LAZY LOADING - html2canvas
@@ -3362,49 +3323,6 @@ function showScreenshotFallback() {
     });
 }
 
-// ============================================
-// DOM CACHING - Reduce repeated DOM queries
-// ============================================
-
-const DOMCache = {
-    _cache: {},
-
-    get(id) {
-        if (!this._cache[id]) {
-            this._cache[id] = document.getElementById(id);
-        }
-        return this._cache[id];
-    },
-
-    clear() {
-        this._cache = {};
-    }
-};
-
-// ============================================
-// PERFORMANCE MONITORING
-// ============================================
-
-const PerfMonitor = {
-    marks: {},
-
-    start(name) {
-        this.marks[name] = performance.now();
-    },
-
-    end(name) {
-        if (this.marks[name]) {
-            const duration = performance.now() - this.marks[name];
-            if (duration > 100) { // Log slow operations (>100ms)
-                console.log(`⚡ ${name}: ${duration.toFixed(2)}ms`);
-            }
-            delete this.marks[name];
-            return duration;
-        }
-        return 0;
-    }
-};
-
 // Add CSS for new animations
 const style = document.createElement('style');
 style.textContent = `
@@ -3456,4 +3374,3 @@ if (typeof performance !== 'undefined' && performance.timing) {
         }, 0);
     });
 }
-
