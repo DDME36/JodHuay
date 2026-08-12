@@ -16,6 +16,21 @@ html {
     background: var(--jh-canvas);
 }
 
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+}
+
+@supports (overflow: clip) {
+    html,
+    body {
+        overflow-x: clip;
+    }
+}
+
 body {
     color: var(--jh-ink);
     background-color: var(--jh-canvas) !important;
@@ -33,6 +48,8 @@ body {
 .app-shell {
     position: relative;
     width: 100%;
+    min-width: 0;
+    margin-inline: auto;
 }
 
 .card,
