@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jodhuay-v82';
+const CACHE_NAME = 'jodhuay-v83';
 const RUNTIME_CACHE = 'jodhuay-runtime-v1';
 const urlsToCache = [
     './',

@@ -231,10 +231,16 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.26));
+    /* Avoid Safari rasterizing the animated, clipped text as a blurred rectangle. */
+    filter: none !important;
+    text-shadow:
+        0 2px 2px rgba(24, 7, 7, 0.46),
+        0 0 8px rgba(227, 180, 58, 0.16) !important;
     font-size: clamp(2.15rem, 8.5vw, 3.1rem) !important;
     letter-spacing: 0.075em !important;
     line-height: 1.05;
+    -webkit-font-smoothing: antialiased;
+    will-change: transform;
 }
 
 .brand-flourish {
