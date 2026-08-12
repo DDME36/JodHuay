@@ -1,0 +1,173 @@
+/* Product motion system: scroll reveals, interaction feedback, and calm ambient movement. */
+
+html[data-motion='full'] .motion-reveal {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.985);
+    transition: opacity 0.58s ease-out, transform 0.64s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    transition-delay: var(--motion-delay, 0ms) !important;
+    will-change: transform, opacity;
+}
+
+html[data-motion='full'] .motion-reveal.motion-from-left {
+    transform: translate3d(-16px, 0, 0) scale(0.99);
+}
+
+html[data-motion='full'] .motion-reveal.is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+}
+
+html[data-motion='full'] .sacred-header .brand-title {
+    animation: jh-brand-breathe 4.2s ease-in-out infinite !important;
+    animation-duration: 4.2s !important;
+}
+
+html[data-motion='full'] .brand-flourish {
+    animation: jh-flourish-float 3.8s ease-in-out infinite !important;
+    animation-duration: 3.8s !important;
+}
+
+html[data-motion='full'] .brand-flourish-mirror {
+    animation-name: jh-flourish-float-mirror !important;
+    animation-delay: -1.9s !important;
+}
+
+html[data-motion='full'] .header-divider i {
+    animation: jh-divider-pulse 2.8s ease-in-out infinite !important;
+    animation-duration: 2.8s !important;
+}
+
+html[data-motion='full'] .brand-seal {
+    animation: jh-seal-float 3.4s ease-in-out infinite !important;
+    animation-duration: 3.4s !important;
+}
+
+html[data-motion='full'] .header-mandala {
+    animation: jh-mandala-spin 90s linear infinite !important;
+    animation-duration: 90s !important;
+}
+
+html[data-motion='full'] .sacred-orbit-one {
+    animation: sacred-orbit-turn 52s linear infinite !important;
+    animation-duration: 52s !important;
+}
+
+html[data-motion='full'] .sacred-orbit-two {
+    animation: sacred-orbit-turn-reverse 64s linear infinite !important;
+    animation-duration: 64s !important;
+}
+
+html[data-motion='full'] .device-status-dot {
+    animation: jh-status-pulse 2.6s ease-in-out infinite !important;
+    animation-duration: 2.6s !important;
+}
+
+html[data-motion='full'] .choice-chip.active,
+html[data-motion='full'] .filter-chip.active {
+    animation: jh-chip-select 0.36s cubic-bezier(0.2, 0.9, 0.25, 1.2) both !important;
+    animation-duration: 0.36s !important;
+}
+
+html[data-motion='full'] .gold-btn,
+html[data-motion='full'] .tab-btn,
+html[data-motion='full'] .choice-chip,
+html[data-motion='full'] .data-tool-btn,
+html[data-motion='full'] .device-vault-toggle,
+html[data-motion='full'] .numpad-btn,
+html[data-motion='full'] .quick-price-btn {
+    transition-duration: 0.28s !important;
+}
+
+html[data-motion='full'] .gold-btn:hover,
+html[data-motion='full'] .data-tool-btn:hover {
+    transform: translateY(-2px);
+}
+
+html[data-motion='full'] .gold-btn:active,
+html[data-motion='full'] .data-tool-btn:active,
+html[data-motion='full'] .choice-chip:active,
+html[data-motion='full'] .filter-chip:active,
+html[data-motion='full'] .device-vault-toggle:active,
+html[data-motion='full'] .quick-price-btn:active {
+    transform: translateY(1px) scale(0.985);
+}
+
+html[data-motion='full'] .tab-btn:active {
+    transform: scale(0.975) !important;
+}
+
+html[data-motion='full'] .device-vault-panel,
+html[data-motion='full'] .device-vault-chevron {
+    transition-duration: 0.4s !important;
+}
+
+html[data-motion='full'] .numpad-overlay {
+    transition: opacity 0.28s ease-out, visibility 0.28s ease-out !important;
+}
+
+html[data-motion='full'] .numpad-container {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96) !important;
+    transition: opacity 0.34s ease-out, transform 0.42s cubic-bezier(0.2, 0.9, 0.25, 1.05) !important;
+    will-change: transform, opacity;
+}
+
+html[data-motion='full'] .numpad-overlay.active .numpad-container {
+    opacity: 1;
+    transform: translateY(0) scale(1) !important;
+}
+
+html[data-motion='full'] .numpad-value-pop {
+    animation: jh-number-pop 0.25s cubic-bezier(0.2, 0.9, 0.25, 1.2) !important;
+    animation-duration: 0.25s !important;
+}
+
+html[data-motion='full'] .list-item.new-entry {
+    animation-duration: 0.44s !important;
+}
+
+@keyframes jh-brand-breathe {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-4px) scale(1.02); }
+}
+
+@keyframes jh-flourish-float {
+    0%, 100% { opacity: 0.58; transform: translateY(1px); }
+    50% { opacity: 0.92; transform: translateY(-3px); }
+}
+
+@keyframes jh-flourish-float-mirror {
+    0%, 100% { opacity: 0.58; transform: translateY(1px) scaleX(-1); }
+    50% { opacity: 0.92; transform: translateY(-3px) scaleX(-1); }
+}
+
+@keyframes jh-divider-pulse {
+    0%, 100% { opacity: 0.55; transform: scale(0.85) rotate(45deg); }
+    50% { opacity: 1; transform: scale(1.12) rotate(45deg); }
+}
+
+@keyframes jh-seal-float {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-5px) rotate(2deg); }
+}
+
+@keyframes jh-mandala-spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes jh-status-pulse {
+    0%, 100% { opacity: 0.58; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes jh-chip-select {
+    0% { transform: scale(0.94); }
+    62% { transform: scale(1.045); }
+    100% { transform: scale(1.02); }
+}
+
+@keyframes jh-number-pop {
+    0% { opacity: 0.45; transform: translateY(5px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}

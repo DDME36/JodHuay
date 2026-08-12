@@ -1,0 +1,385 @@
+.preview-modal-head {
+    color: #f9edca;
+    background: linear-gradient(135deg, #4a271f, #2f1814);
+    border-bottom: 1px solid rgba(219, 178, 72, 0.28);
+}
+
+.preview-modal-head h2 { color: #f0d690 !important; }
+.preview-modal-head p { color: rgba(255, 247, 226, 0.62) !important; }
+
+.preview-modal-head > button {
+    color: #f8e8ba !important;
+    background: rgba(255, 255, 255, 0.09) !important;
+}
+
+.preview-selection {
+    background: #f8f2e6;
+    border-bottom: 1px solid #dfcfb4;
+}
+
+.preview-command-bar {
+    background: #fffdf8;
+    border-top: 1px solid #dfcfb4;
+}
+
+.preview-stage {
+    background: #2a211f !important;
+}
+
+/* The exported slip intentionally stays quieter than the application UI. */
+.export-sheet {
+    --export-a4-width: 794px;
+    --export-a4-height: 1123px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--export-a4-width);
+    min-height: 0;
+    margin-inline: auto;
+    padding: 0 !important;
+    overflow: hidden;
+    color: #382f2a;
+    font-family: 'Prompt', sans-serif;
+    /* Keep the slip background raster-safe. Some html2canvas/Chromium builds
+       turn CSS gradients into a zero-sized pattern canvas while cloning. */
+    background: #fdf8ed;
+    border: 1px solid #cdb783;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.24) !important;
+    transition: max-width 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Short slips shrink to their content; fuller slips grow up to A4 width. */
+.export-sheet-empty { max-width: 340px; min-height: 180px; }
+.export-sheet-compact { max-width: 380px; min-height: 0; }
+.export-sheet-balanced { max-width: 500px; min-height: 0; }
+.export-sheet-a4 { max-width: 680px; min-height: 0; }
+
+.export-sheet-compact .export-header {
+    padding: 12px 18px 6px;
+}
+
+.export-sheet-compact .export-header::before,
+.export-sheet-compact .export-header::after { top: 15px; }
+
+.export-sheet-compact .export-brand-mark {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 3px;
+    font-size: 12px;
+}
+
+.export-sheet-compact .export-brand-name { font-size: 20px; }
+.export-sheet-compact .export-header-ornament { margin-top: 4px; }
+.export-sheet-compact .export-meta { padding-top: 3px; }
+.export-sheet-compact .export-content { padding: 8px 18px 9px; }
+.export-sheet-compact .export-groups { gap: 11px 16px; }
+.export-sheet-compact .export-groups-single { width: 100%; }
+.export-sheet-compact .export-number-row {
+    min-height: 25px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.export-sheet-compact .export-summary { margin-top: 7px; padding-top: 7px; }
+.export-sheet-compact .export-footer { padding: 6px 18px 8px; }
+
+.export-sheet-no-meta .export-header { padding-bottom: 2px !important; }
+.export-sheet-no-meta .export-header-ornament { margin-top: 3px; }
+.export-sheet-no-meta .export-content { padding-top: 0 !important; }
+
+.export-sheet-capture {
+    transition: none !important;
+}
+
+.export-sheet-flow-columns .export-groups-single { width: 100%; }
+
+.export-sheet-flow-columns .export-number-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+}
+
+/* Dense layouts keep practical amounts of data within an A4-like canvas. */
+.export-sheet-dense .export-number-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+}
+
+.export-sheet-dense.export-sheet-single-group .export-groups-single {
+    width: 100%;
+}
+
+.export-sheet-dense .export-number-row {
+    min-height: 24px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.export-sheet-ultra-dense .export-number-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 13px;
+}
+
+.export-sheet-ultra-dense.export-sheet-single-group .export-number-list {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.export-sheet-ultra-dense .export-number { font-size: 11px; }
+.export-sheet-ultra-dense .export-number-detail { font-size: 7px; }
+
+.export-sheet::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(139, 96, 18, 0.10);
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.export-header {
+    position: relative;
+    display: block;
+    z-index: auto;
+    margin: 0;
+    padding: 12px 18px 4px !important;
+    text-align: center;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid #e3d4b6;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.export-corner {
+    position: absolute;
+    top: 18px;
+    color: #b68a2e;
+    font-size: 13px;
+    opacity: 0.75;
+    line-height: 1;
+    font-family: 'Prompt', sans-serif;
+    pointer-events: none;
+    user-select: none;
+}
+
+.export-corner.corner-left { left: 20px; }
+.export-corner.corner-right { right: 20px; }
+
+.export-brand-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin: 0 auto 5px;
+    color: #fff7dc;
+    background: #543025;
+    border: 1px solid #b9903d;
+    border-radius: 50%;
+    font-family: 'Prompt', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+}
+
+.export-brand-mark span {
+    display: block;
+    line-height: 1;
+    transform: translateY(-1px);
+}
+
+.export-brand-name {
+    margin: 0;
+    color: #765118;
+    font-family: 'Marcellus', Georgia, serif;
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    line-height: 1.05;
+}
+
+.export-sheet .preview-lottery-title {
+    margin: 4px 0 0;
+    color: #75695f;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+}
+
+.export-header-ornament {
+    display: grid;
+    grid-template-columns: 32px 4px 32px;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 8px;
+    opacity: 0.72;
+}
+
+.export-header-ornament span {
+    width: 32px;
+    height: 1px;
+    background: #b9903d;
+    opacity: 0.55;
+}
+
+.export-header-ornament span:last-child { transform: scaleX(-1); }
+
+.export-header-ornament i {
+    width: 4px;
+    height: 4px;
+    background: #b9903d;
+    transform: rotate(45deg);
+}
+
+.export-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px 0;
+    padding: 4px 18px 0;
+    color: #665a51;
+    font-size: 8px;
+    font-weight: 500;
+}
+
+.export-meta.hidden,
+.export-meta span:empty {
+    display: none !important;
+}
+
+.export-meta span {
+    display: inline-flex;
+    align-items: center;
+}
+
+.export-meta span:not(:empty) ~ span:not(:empty)::before {
+    content: '•';
+    margin: 0 8px;
+    color: #b9903d;
+}
+
+.export-content {
+    padding: 3px 18px 10px !important;
+}
+
+.export-meta.hidden + .export-content,
+.export-sheet-compact .export-meta.hidden + .export-content {
+    padding-top: 2px !important;
+}
+
+.export-groups {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 22px;
+}
+
+.export-groups-single {
+    width: min(100%, 255px);
+    margin-inline: auto;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.export-group {
+    min-width: 0;
+}
+
+.export-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 2px 5px;
+    color: #6b3033;
+    border-bottom: 1px solid #d7bcbc;
+}
+
+.export-group-lower .export-group-header {
+    color: #315063;
+    border-color: #b9ccd5;
+}
+
+.export-group-header strong { font-size: 10px; }
+.export-group-header span { color: #9a8b7f; font-size: 7px; }
+
+.export-number-list {
+    display: grid;
+}
+
+.export-number-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 29px;
+    padding: 6px 2px;
+    border-bottom: 1px dashed rgba(125, 95, 51, 0.14);
+}
+
+.export-number-row:last-child { border-bottom: 0; }
+
+.export-number {
+    color: #392923;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.export-number-detail {
+    color: #70645b;
+    font-size: 8px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.export-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+    padding: 9px 2px 0;
+    border-top: 2px solid #765118;
+}
+
+.export-summary-item {
+    display: grid;
+    gap: 1px;
+}
+
+.export-summary-item:last-child { text-align: right; }
+
+.export-summary-label {
+    color: #95867a;
+    font-size: 7px;
+}
+
+.export-summary-value {
+    color: #533126;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.export-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 20px 12px;
+    color: #a09386;
+    border-top: 1px solid rgba(125, 95, 51, 0.11);
+    font-size: 6px;
+    opacity: 1;
+}
+
+@media (max-width: 460px) {
+    .export-header { padding: 12px 14px 6px !important; }
+    .export-content { padding: 3px 14px 8px !important; }
+    .export-groups { gap: 10px 14px; }
+    .export-footer { padding-right: 14px; padding-left: 14px; }
+
+    .export-sheet-compact { max-width: 380px; }
+}

@@ -1,0 +1,6 @@
+node_modules/
+.edge-*/
+tests/*.png
+jodhuay-*.png
+.DS_Store
+Thumbs.db

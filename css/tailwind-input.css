@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@source "../index.html";
+@source "../app.js";
+
+@theme {
+    --font-prompt: "Prompt", sans-serif;
+    --color-gold-50: #fcf8ee;
+    --color-gold-100: #f6edd9;
+    --color-gold-200: #ebd9ad;
+    --color-gold-300: #dcc277;
+    --color-gold-400: #c7a04a;
+    --color-gold-500: #b7862b;
+    --color-gold-600: #8a621c;
+    --color-gold-700: #5c4116;
+    --color-cream-50: #fdfcfa;
+    --color-cream-100: #faf8f5;
+    --color-cream-200: #f5f0e8;
+    --color-accent-red: #6b2229;
+    --color-accent-gold: #b7862b;
+}

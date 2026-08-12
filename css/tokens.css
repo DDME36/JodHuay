@@ -1,0 +1,59 @@
+:root {
+    --jh-ink: #352c28;
+    --jh-muted: #746860;
+    --jh-gold: #946116;
+    --jh-gold-deep: #693f0d;
+    --jh-gold-soft: #ebd9ad;
+    --jh-paper: #fffdf8;
+    --jh-canvas: #eee3cf;
+    --jh-line: rgba(105, 63, 13, 0.18);
+    --jh-shadow: 0 18px 45px rgba(48, 24, 17, 0.10);
+    --jh-radius: 22px;
+}
+
+html {
+    color-scheme: light;
+    background: var(--jh-canvas);
+}
+
+body {
+    color: var(--jh-ink);
+    background-color: var(--jh-canvas) !important;
+    background-image:
+        radial-gradient(circle at 12% 6%, rgba(183, 134, 43, 0.10), transparent 28%),
+        radial-gradient(circle at 92% 22%, rgba(91, 28, 35, 0.06), transparent 26%),
+        linear-gradient(145deg, #eadcc5, #f5eddf 46%, #eee1cb) !important;
+    background-size: cover !important;
+}
+
+.gold-particles {
+    opacity: 0.22 !important;
+}
+
+.app-shell {
+    position: relative;
+    width: 100%;
+}
+
+.card,
+.slip-meta-card,
+.data-tools {
+    background: rgba(255, 253, 248, 0.94) !important;
+    border: 1px solid var(--jh-line) !important;
+    box-shadow: var(--jh-shadow) !important;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+input::placeholder {
+    color: #aaa092;
+}
+
+:focus-visible {
+    outline: 3px solid rgba(183, 132, 23, 0.28) !important;
+    outline-offset: 3px !important;
+}

@@ -1,0 +1,56 @@
+@media (max-width: 640px) {
+    .app-shell {
+        padding-top: max(18px, env(safe-area-inset-top)) !important;
+    }
+
+    .app-shell > header {
+        margin-bottom: 20px !important;
+        padding: 20px 14px !important;
+        border-radius: 20px !important;
+    }
+
+    .brand-title {
+        font-size: clamp(2rem, 10vw, 2.8rem) !important;
+    }
+
+    .app-tabs {
+        margin-bottom: 18px !important;
+    }
+
+    .slip-meta-card {
+        padding: 15px;
+        border-radius: 18px;
+    }
+
+    .slip-meta-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .slip-field-date {
+        grid-column: auto;
+    }
+
+    .slip-meta-status {
+        display: none;
+    }
+
+    .data-tools {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .data-tools-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .data-tool-btn {
+        width: 100%;
+    }
+}
+
+@media (min-width: 641px) {
+    .slip-field-date {
+        grid-column: 1 / -1;
+    }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "jodhuay",
+  "version": "1.2.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:css": "tailwindcss -i ./css/tailwind-input.css -o ./css/tailwind-built.css --minify",
+    "build": "npm run build:css",
+    "start": "node server.mjs"
+  },
+  "devDependencies": {
+    "@fontsource/marcellus": "^5.2.6",
+    "@fontsource/prompt": "^5.2.6",
+    "@tailwindcss/cli": "^4.1.10",
+    "html2canvas": "^1.4.1",
+    "modern-screenshot": "^4.7.0",
+    "tailwindcss": "^4.1.10"
+  }
+}
