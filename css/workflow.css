@@ -264,6 +264,74 @@
     overflow: hidden;
 }
 
+.saved-entry-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 40px;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.saved-entry-main {
+    display: grid;
+    grid-template-columns: minmax(54px, auto) minmax(76px, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.saved-entry-number {
+    min-width: 0;
+    font-size: 1.7rem !important;
+    line-height: 1;
+    letter-spacing: 0.035em !important;
+    overflow-wrap: anywhere;
+}
+
+.saved-entry-meta,
+.saved-entry-government-type {
+    min-width: 0;
+}
+
+.saved-entry-value {
+    display: grid;
+    justify-items: end;
+    min-width: 64px;
+    padding-left: 12px;
+    border-left: 1px solid rgba(125, 87, 13, 0.15);
+    line-height: 1.2;
+}
+
+.saved-entry-value small {
+    color: #9a8d7e;
+    font-size: 0.58rem;
+    font-weight: 500;
+}
+
+.saved-entry-value strong {
+    margin-top: 3px;
+    color: var(--jh-ink);
+    font-size: 0.86rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+@media (max-width: 380px) {
+    .saved-entry-row {
+        gap: 8px;
+    }
+
+    .saved-entry-main {
+        grid-template-columns: minmax(46px, auto) minmax(62px, 1fr) auto;
+        gap: 8px;
+    }
+
+    .saved-entry-value {
+        min-width: 54px;
+        padding-left: 8px;
+    }
+}
+
 .list-item .delete-btn {
     min-width: 40px;
     min-height: 40px;
@@ -300,4 +368,72 @@
 .custom-scroll-list {
     scrollbar-width: thin;
     scrollbar-color: #caa045 rgba(235, 222, 195, 0.4);
+}
+
+/* Wide cards waste horizontal space; turn the ledger into a balanced card grid. */
+@media (min-width: 560px) {
+    .custom-scroll-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .custom-scroll-list > .list-item {
+        min-width: 0;
+        margin-top: 0 !important;
+        padding: 12px !important;
+    }
+
+    .custom-scroll-list > :not(.list-item) {
+        grid-column: 1 / -1;
+    }
+
+    .custom-scroll-list > .list-item:last-child:nth-child(odd):not(:first-child) {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc(50% - 5px);
+    }
+
+    .saved-entry-row {
+        grid-template-columns: minmax(0, 1fr) 40px;
+        gap: 8px;
+    }
+
+    .saved-entry-main {
+        grid-template-columns: minmax(50px, auto) minmax(0, 1fr);
+        grid-template-areas:
+            "number meta"
+            "number value";
+        gap: 5px 9px;
+    }
+
+    .saved-entry-number {
+        grid-area: number;
+        align-self: center;
+        padding-left: 5px;
+    }
+
+    .saved-entry-meta,
+    .saved-entry-government-type {
+        grid-area: meta;
+        align-self: end;
+    }
+
+    .saved-entry-value {
+        grid-area: value;
+        display: flex;
+        align-items: baseline;
+        justify-content: flex-start;
+        min-width: 0;
+        padding-left: 0;
+        border-left: 0;
+    }
+
+    .saved-entry-value small {
+        margin-right: 6px;
+    }
+
+    .saved-entry-value strong {
+        margin-top: 0;
+    }
 }

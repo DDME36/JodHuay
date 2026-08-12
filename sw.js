@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jodhuay-v83';
+const CACHE_NAME = 'jodhuay-v90';
 const RUNTIME_CACHE = 'jodhuay-runtime-v1';
 const urlsToCache = [
     './',
@@ -26,6 +26,7 @@ const urlsToCache = [
     './assets/fonts/prompt-thai-700-normal.woff2',
     './assets/fonts/prompt-latin-700-normal.woff2',
     './assets/fonts/marcellus-latin-400-normal.woff2',
+    './assets/fonts/cinzel-decorative-latin-900-normal.woff2',
     './manifest.json',
     './assets/icon-192.png',
     './assets/icon-512.png',

@@ -54,3 +54,8 @@
     font-family: 'Marcellus'; font-style: normal; font-display: swap; font-weight: 400;
     src: url('../assets/fonts/marcellus-latin-400-normal.woff2') format('woff2');
 }
+
+@font-face {
+    font-family: 'Cinzel Decorative'; font-style: normal; font-display: swap; font-weight: 900;
+    src: url('../assets/fonts/cinzel-decorative-latin-900-normal.woff2') format('woff2');
+}

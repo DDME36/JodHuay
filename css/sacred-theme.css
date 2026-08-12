@@ -84,7 +84,7 @@ body {
     border: 1px solid rgba(217, 165, 32, 0.11);
     border-radius: 50%;
     transform: translateX(-50%);
-    will-change: transform;
+    will-change: opacity;
 }
 
 .sacred-orbit::before,
@@ -224,21 +224,23 @@ body {
 }
 
 .sacred-header .brand-title {
-    font-family: 'Marcellus', Georgia, serif !important;
+    font-family: 'Cinzel Decorative', 'Marcellus', Georgia, serif !important;
+    font-weight: 900 !important;
     margin: 0 !important;
-    color: #f1ca5e !important;
-    background: linear-gradient(180deg, #fff2bb 4%, #e3b43a 56%, #b77b0d 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #fff3cc !important;
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-text-fill-color: #fff3cc;
     /* Avoid Safari rasterizing the animated, clipped text as a blurred rectangle. */
     filter: none !important;
     text-shadow:
-        0 2px 2px rgba(24, 7, 7, 0.46),
-        0 0 8px rgba(227, 180, 58, 0.16) !important;
-    font-size: clamp(2.15rem, 8.5vw, 3.1rem) !important;
-    letter-spacing: 0.075em !important;
-    line-height: 1.05;
+        0 2px 0 rgba(61, 20, 16, 0.96),
+        0 4px 5px rgba(18, 5, 6, 0.56) !important;
+    -webkit-text-stroke: 0.55px #dca633;
+    font-size: clamp(2rem, 8vw, 2.85rem) !important;
+    letter-spacing: 0.045em !important;
+    line-height: 1.08;
     -webkit-font-smoothing: antialiased;
     will-change: transform;
 }
@@ -289,8 +291,11 @@ body {
 
 .header-blessing {
     margin: 0;
-    color: rgba(255, 247, 223, 0.50);
-    font-size: 0.66rem;
+    color: rgba(255, 239, 190, 0.82);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-shadow: 0 1px 2px rgba(24, 7, 7, 0.72);
 }
 
 .app-tabs {
@@ -611,6 +616,44 @@ body {
     margin: 0 !important;
     padding: 8px 4px 14px !important;
     overflow: visible !important;
+}
+
+#govTypeChips,
+#ugTypeChips {
+    display: grid !important;
+    align-items: stretch;
+    width: 100%;
+    gap: 10px !important;
+}
+
+#govTypeChips {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#ugTypeChips {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+#ugTypeChips > .choice-chip {
+    grid-column: span 2;
+}
+
+#ugTypeChips > .choice-chip:nth-child(4) {
+    grid-column: 2 / span 2;
+}
+
+#ugTypeChips > .choice-chip:nth-child(5) {
+    grid-column: 4 / span 2;
+}
+
+#govTypeChips > .choice-chip,
+#ugTypeChips > .choice-chip {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 9px 8px;
+    white-space: normal;
+    line-height: 1.3;
 }
 
 .choice-chip.chip-bon:not(.active) {

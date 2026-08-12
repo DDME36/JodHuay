@@ -18,8 +18,8 @@ html[data-motion='full'] .motion-reveal.is-visible {
 }
 
 html[data-motion='full'] .sacred-header .brand-title {
-    animation: jh-brand-breathe 4.2s ease-in-out infinite !important;
-    animation-duration: 4.2s !important;
+    animation: jh-brand-glow 5.2s ease-in-out infinite !important;
+    animation-duration: 5.2s !important;
 }
 
 html[data-motion='full'] .brand-flourish {
@@ -35,6 +35,12 @@ html[data-motion='full'] .brand-flourish-mirror {
 html[data-motion='full'] .header-divider i {
     animation: jh-divider-pulse 2.8s ease-in-out infinite !important;
     animation-duration: 2.8s !important;
+}
+
+html[data-motion='full'] .header-blessing {
+    animation: jh-blessing-breathe 4.6s ease-in-out infinite !important;
+    animation-duration: 4.6s !important;
+    will-change: transform, opacity;
 }
 
 html[data-motion='full'] .brand-seal {
@@ -126,9 +132,9 @@ html[data-motion='full'] .list-item.new-entry {
     animation-duration: 0.44s !important;
 }
 
-@keyframes jh-brand-breathe {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-4px) scale(1.02); }
+@keyframes jh-brand-glow {
+    0%, 100% { opacity: 0.88; }
+    50% { opacity: 1; }
 }
 
 @keyframes jh-flourish-float {
@@ -144,6 +150,11 @@ html[data-motion='full'] .list-item.new-entry {
 @keyframes jh-divider-pulse {
     0%, 100% { opacity: 0.55; transform: scale(0.85) rotate(45deg); }
     50% { opacity: 1; transform: scale(1.12) rotate(45deg); }
+}
+
+@keyframes jh-blessing-breathe {
+    0%, 100% { opacity: 0.66; transform: translateY(1px) scale(0.99); }
+    50% { opacity: 1; transform: translateY(-1px) scale(1.015); }
 }
 
 @keyframes jh-seal-float {
@@ -170,4 +181,13 @@ html[data-motion='full'] .list-item.new-entry {
 @keyframes jh-number-pop {
     0% { opacity: 0.45; transform: translateY(5px) scale(0.95); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html[data-motion='full'] .sacred-header .brand-title,
+    html[data-motion='full'] .header-blessing {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+    }
 }

@@ -1738,12 +1738,15 @@ function renderUnderground() {
         const escapedPrice = escapeHtml(item.price);
         return `
         <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}" style="animation-delay: ${index * 0.03}s" data-item-id="${escapeHtml(String(item.id))}">
-            <div class="flex items-center justify-between w-full">
-                <div class="flex items-center gap-4">
-                    <span class="text-3xl font-bold text-gold-700 tracking-widest">${escapedNumber}</span>
-                    <div class="text-left">
+            <div class="saved-entry-row">
+                <div class="saved-entry-main">
+                    <span class="saved-entry-number text-3xl font-bold text-gold-700">${escapedNumber}</span>
+                    <div class="saved-entry-meta text-left">
                         <span class="${getTypeClass(item.type)}">${escapedTypeName}</span>
-                        <div class="text-sm text-gray-700 font-semibold mt-1">${escapedPrice}</div>
+                    </div>
+                    <div class="saved-entry-value">
+                        <small>ราคา</small>
+                        <strong>${escapedPrice}</strong>
                     </div>
                 </div>
                 <button type="button" data-delete-item class="delete-btn" aria-label="ลบเลข ${escapedNumber}">&times;</button>
@@ -2020,13 +2023,16 @@ function renderGovernment() {
         const isNewest = index === filteredData.length - 1 && !searchTerm;
         const escapedNumber = escapeHtml(item.number);
         const escapedTypeName = escapeHtml(typeNames[item.type] || '');
-        const qtyText = item.qty > 1 ? ` (${parseInt(item.qty, 10)} ใบ)` : '';
         return `
         <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}" style="animation-delay: ${index * 0.03}s" data-item-id="${escapeHtml(String(item.id))}">
-            <div class="flex items-center justify-between w-full">
-                <div class="flex items-center gap-4">
-                    <span class="text-3xl font-bold text-gold-700 tracking-widest">${escapedNumber}</span>
-                    <span class="text-sm text-gray-500">${escapedTypeName}${qtyText}</span>
+            <div class="saved-entry-row">
+                <div class="saved-entry-main saved-entry-main-government">
+                    <span class="saved-entry-number text-3xl font-bold text-gold-700">${escapedNumber}</span>
+                    <span class="saved-entry-government-type text-sm text-gray-500">${escapedTypeName}</span>
+                    <div class="saved-entry-value">
+                        <small>จำนวน</small>
+                        <strong>${parseInt(item.qty, 10)} ใบ</strong>
+                    </div>
                 </div>
                 <button type="button" data-delete-item class="delete-btn" aria-label="ลบเลข ${escapedNumber}">&times;</button>
             </div>
