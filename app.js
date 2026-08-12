@@ -2263,6 +2263,7 @@ function applyExportSheetLayout(itemCount, groupCount) {
 
     sheet.classList.remove(
         'export-sheet-empty',
+        'export-sheet-mini',
         'export-sheet-compact',
         'export-sheet-balanced',
         'export-sheet-a4',
@@ -2274,7 +2275,8 @@ function applyExportSheetLayout(itemCount, groupCount) {
 
     let layout = 'a4';
     if (itemCount === 0) layout = 'empty';
-    else if (itemCount <= 5) layout = 'compact';
+    else if (itemCount <= 2) layout = 'mini';
+    else if (itemCount <= 6) layout = 'compact';
     else if (itemCount <= 14) layout = 'balanced';
 
     sheet.classList.add(`export-sheet-${layout}`);

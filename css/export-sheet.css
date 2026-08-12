@@ -51,17 +51,36 @@
 }
 
 /* Short slips shrink to their content; fuller slips grow up to A4 width. */
-.export-sheet-empty { max-width: 340px; min-height: 180px; }
-.export-sheet-compact { max-width: 380px; min-height: 0; }
-.export-sheet-balanced { max-width: 500px; min-height: 0; }
-.export-sheet-a4 { max-width: 680px; min-height: 0; }
+.export-sheet-empty { max-width: 280px; min-height: 180px; }
+.export-sheet-mini { max-width: 245px !important; min-height: 0; }
+.export-sheet-compact { max-width: 295px !important; min-height: 0; }
+.export-sheet-balanced { max-width: 440px !important; min-height: 0; }
+.export-sheet-a4 { max-width: 620px !important; min-height: 0; }
+
+.export-sheet-mini .export-header {
+    padding: 14px 12px 6px !important;
+}
+.export-sheet-mini .export-brand-mark {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 2px;
+    font-size: 11px;
+}
+.export-sheet-mini .export-brand-name { font-size: 17px; letter-spacing: 0.05em; }
+.export-sheet-mini .export-content { padding: 6px 12px 8px !important; }
+.export-sheet-mini .export-groups { gap: 8px 10px; }
+.export-sheet-mini .export-groups-single { width: 100%; }
+.export-sheet-mini .export-number-row {
+    min-height: 24px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.export-sheet-mini .export-summary { margin-top: 8px; padding-top: 8px; }
+.export-sheet-mini .export-footer { padding: 7px 12px 9px; }
 
 .export-sheet-compact .export-header {
-    padding: 12px 18px 6px;
+    padding: 14px 14px 5px !important;
 }
-
-.export-sheet-compact .export-header::before,
-.export-sheet-compact .export-header::after { top: 15px; }
 
 .export-sheet-compact .export-brand-mark {
     width: 24px;
@@ -70,11 +89,11 @@
     font-size: 12px;
 }
 
-.export-sheet-compact .export-brand-name { font-size: 20px; }
+.export-sheet-compact .export-brand-name { font-size: 19px; }
 .export-sheet-compact .export-header-ornament { margin-top: 4px; }
 .export-sheet-compact .export-meta { padding-top: 3px; }
-.export-sheet-compact .export-content { padding: 8px 18px 9px; }
-.export-sheet-compact .export-groups { gap: 11px 16px; }
+.export-sheet-compact .export-content { padding: 6px 14px 8px !important; }
+.export-sheet-compact .export-groups { gap: 10px 12px; }
 .export-sheet-compact .export-groups-single { width: 100%; }
 .export-sheet-compact .export-number-row {
     min-height: 25px;
@@ -82,7 +101,7 @@
     padding-bottom: 4px;
 }
 .export-sheet-compact .export-summary { margin-top: 7px; padding-top: 7px; }
-.export-sheet-compact .export-footer { padding: 6px 18px 8px; }
+.export-sheet-compact .export-footer { padding: 7px 14px 8px; }
 
 .export-sheet-no-meta .export-header { padding-bottom: 2px !important; }
 .export-sheet-no-meta .export-header-ornament { margin-top: 3px; }
@@ -194,10 +213,10 @@
 .export-brand-name {
     margin: 0;
     color: #765118;
-    font-family: 'Marcellus', Georgia, serif;
-    font-size: 23px;
-    font-weight: 700;
-    letter-spacing: 0.07em;
+    font-family: 'Cinzel Decorative', 'Marcellus', Georgia, serif !important;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
     line-height: 1.05;
 }
 
