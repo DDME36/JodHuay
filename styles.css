@@ -13,6 +13,20 @@
     box-sizing: border-box;
 }
 
+/* App-like interaction: labels and cards should not become highlighted when
+   dragging, while editable fields must keep normal caret/selection behavior. */
+body {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
 /* Accessible focus styles - only hide outline for mouse users */
 *:focus:not(:focus-visible) {
     outline: none;
