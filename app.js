@@ -1354,11 +1354,36 @@ function applyNumberInputLength(input, realMaxLength) {
     syncNumberInputReadonly(input);
 }
 
+// เปลี่ยนสถานะ "กำลังแก้ไข" และปุ่มในฟอร์มให้ตรงกัน
+function setEditing(tab, id) {
+    editingIds[tab] = id;
+    const prefix = tab === 'underground' ? 'ug' : 'gov';
+    const addBtn = document.getElementById(`${prefix}AddBtn`);
+    if (addBtn) addBtn.textContent = id ? 'บันทึกการแก้ไข' : 'เพิ่มรายการ';
+    document.getElementById(`${prefix}CancelEditBtn`)?.classList.toggle('hidden', !id);
+}
+
+function cancelEdit(tab) {
+    if (!editingIds[tab]) return;
+    setEditing(tab, null);
+    if (tab === 'underground') {
+        clearUndergroundForm();
+        renderUnderground();
+    } else {
+        const numberInput = document.getElementById('govNumber');
+        if (numberInput) numberInput.value = '';
+        renderGovernment();
+    }
+    showToast('ยกเลิกการแก้ไขแล้ว');
+}
+
+window.cancelEdit = cancelEdit;
+
 // บันทึกรายการใหม่ หรือแทนที่รายการที่กำลังแก้ไขในตำแหน่งเดิม
 function upsertEntry(tab, entry) {
     const data = getTabData(tab);
     const index = data.findIndex(item => item.id === editingIds[tab]);
-    editingIds[tab] = null;
+    setEditing(tab, null);
     if (index === -1) {
         data.push({ id: generateUniqueId(), ...entry });
         return false;
@@ -1505,7 +1530,7 @@ function deleteEntry(tab, id) {
         } else {
             governmentData = governmentData.filter(i => i.id !== id);
         }
-        if (editingIds[tab] === id) editingIds[tab] = null;
+        if (editingIds[tab] === id) setEditing(tab, null);
         saveData();
         renderAll();
 
@@ -1768,10 +1793,10 @@ function editUnderground(id) {
             }
         }
 
-        editingIds.underground = id;
+        setEditing('underground', id);
         renderUnderground();
 
-        showToast(`กำลังแก้ไข "${item.number}" · กดเพิ่มเพื่อบันทึก`);
+        showToast(`กำลังแก้ไข "${item.number}"`);
     } catch (error) {
         console.error('Edit underground error:', error);
         showToast('⚠️ ไม่สามารถแก้ไขรายการได้');
@@ -1946,10 +1971,10 @@ function editGovernment(id) {
     qtyChips.querySelector(`[data-value="${item.qty}"]`)?.classList.add('active');
     document.getElementById('govQty').value = item.qty;
 
-    editingIds.government = id;
+    setEditing('government', id);
     renderGovernment();
 
-    showToast(`กำลังแก้ไข "${item.number}" · กดเพิ่มเพื่อบันทึก`);
+    showToast(`กำลังแก้ไข "${item.number}"`);
 }
 
 window.editGovernment = editGovernment;
@@ -2285,6 +2310,100 @@ function renderGovernmentPreview(data, container) {
     ], 'government');
 }
 
+// ============================================
+// IMAGE EXPORT (ใช้ร่วมกันระหว่าง "บันทึกรูป" และ "แชร์รูป")
+// ============================================
+
+const isIOSDevice = () => /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+// แสดงสถานะกำลังทำงานบนปุ่ม แล้วคืนค่าเดิมเมื่อเสร็จ
+async function withBusyButton(button, busyText, task) {
+    const label = button?.querySelector('span');
+    const originalText = label?.textContent;
+    if (button) button.disabled = true;
+    const setLabel = text => { if (label) label.textContent = text; };
+    setLabel(busyText);
+    try {
+        return await task(setLabel);
+    } finally {
+        if (button) button.disabled = false;
+        if (label && originalText) label.textContent = originalText;
+    }
+}
+
+// สร้างรูปใบโพยจาก preview ที่เลือกไว้
+async function renderSlipImage(setLabel = () => {}) {
+    // The pixel-matched renderer is bundled with the app. Load the legacy
+    // renderer only when the modern renderer is unavailable.
+    if (typeof window.modernScreenshot === 'undefined' && typeof html2canvas === 'undefined') {
+        setLabel('กำลังโหลด...');
+        if (!(await ensureHtml2Canvas())) throw new Error('html2canvas library not loaded');
+        setLabel('กำลังสร้างรูป...');
+    }
+
+    const canvas = await createExportCanvas(document.getElementById('a4Preview'), isIOSDevice());
+    if (!canvas || canvas.width === 0 || canvas.height === 0) {
+        throw new Error('Canvas creation failed - invalid dimensions');
+    }
+
+    const dataUrl = canvas.toDataURL('image/png');
+    const fileName = getSlipFileName();
+    const blob = await (await fetch(dataUrl)).blob();
+    return { dataUrl, fileName, file: new File([blob], fileName, { type: 'image/png' }) };
+}
+
+function canShareFile(file) {
+    return Boolean(navigator.share && navigator.canShare?.({ files: [file] }));
+}
+
+function handleImageExportError(error, defaultMessage) {
+    console.error('Image export error:', error);
+    let message = defaultMessage;
+    let showFallback = true;
+
+    if (error.message?.includes('html2canvas')) message = 'ไม่สามารถโหลดไลบรารีได้';
+    else if (error.message?.includes('Canvas')) message = 'ไม่สามารถสร้างรูปภาพได้';
+    else if (error.name === 'SecurityError') message = 'ไม่สามารถเข้าถึงรูปภาพได้';
+    else if (error.name === 'DOMException') message = 'รูปภาพมีขนาดใหญ่เกินไป ลองลดจำนวนรายการ';
+    else showFallback = false;
+
+    showToast(`⚠️ ${message}`);
+    if (showFallback && isIOSDevice()) setTimeout(() => showScreenshotFallback(), 500);
+}
+
+// iOS Safari ดาวน์โหลดไฟล์ตรง ๆ ไม่ได้ จึงเปิดรูปในแท็บใหม่ให้กดค้างบันทึก
+function openImageInNewTab(dataUrl) {
+    const newWindow = window.open();
+    if (newWindow) {
+        newWindow.document.write(`
+            <html>
+            <head>
+                <title>JodHuay - บันทึกรูป</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body { margin: 0; padding: 20px; background: #f5f5f5; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+                    img { max-width: 100%; height: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px; background: white; }
+                    .info { margin: 20px 0; color: #666; font-size: 14px; }
+                    .btn { display: inline-block; margin: 10px; padding: 12px 24px; background: #DAA520; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; }
+                </style>
+            </head>
+            <body>
+                <h2>🎉 สร้างรูปสำเร็จ!</h2>
+                <p class="info">กดค้างที่รูป แล้วเลือก "บันทึกรูปภาพ"</p>
+                <img src="${dataUrl}" alt="JodHuay">
+                <br>
+                <a href="#" onclick="window.close()" class="btn">ปิดหน้าต่าง</a>
+            </body>
+            </html>
+        `);
+        showToast('✓ เปิดรูปในแท็บใหม่แล้ว');
+        // ไม่ปิด modal - ให้ผู้ใช้ปิดเองหรือบันทึกต่อ
+    } else {
+        showToast('⚠️ กรุณาอนุญาตให้เปิดหน้าต่างใหม่');
+        // ไม่ปิด modal เพื่อให้ผู้ใช้ลองใหม่
+    }
+}
+
 // Save image
 async function saveImage() {
     if (selectedItems.size === 0) {
@@ -2292,147 +2411,43 @@ async function saveImage() {
         return;
     }
 
-    const preview = document.getElementById('a4Preview');
-    const saveBtn = document.querySelector('[onclick="handleCopyOrSave()"]');
-    const originalText = saveBtn?.querySelector('span')?.textContent;
+    await withBusyButton(document.getElementById('btnCopyOrSave'), 'กำลังสร้าง...', async setLabel => {
+        try {
+            const { dataUrl, fileName, file } = await renderSlipImage(setLabel);
 
-    // Show loading
-    if (saveBtn) {
-        saveBtn.disabled = true;
-        const span = saveBtn.querySelector('span');
-        if (span) span.textContent = 'กำลังสร้าง...';
-    }
-
-    try {
-        // The pixel-matched renderer is bundled with the app. Load the legacy
-        // renderer only when the modern renderer is unavailable.
-        if (typeof window.modernScreenshot === 'undefined' && typeof html2canvas === 'undefined') {
-            const span = saveBtn?.querySelector('span');
-            if (span) span.textContent = 'กำลังโหลด...';
-
-            const loaded = await ensureHtml2Canvas();
-            if (!loaded) {
-                throw new Error('html2canvas library not loaded');
-            }
-        }
-
-        // iOS specific: ใช้ options ที่เหมาะสมกับ iOS Safari
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        const canvas = await createExportCanvas(preview, isIOS);
-
-        if (!canvas || canvas.width === 0 || canvas.height === 0) {
-            throw new Error('Canvas creation failed - invalid dimensions');
-        }
-
-        const dataUrl = canvas.toDataURL('image/png', 0.95); // เพิ่ม quality parameter
-        const fileName = getSlipFileName();
-
-        // iOS: พยายามใช้ Web Share API ก่อน
-        if (isIOS) {
-            try {
-                const blob = await (await fetch(dataUrl)).blob();
-                const file = new File([blob], fileName, { type: 'image/png' });
-
-                // ลองใช้ Share API
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        files: [file],
-                        title: 'JodHuay - จดหวย'
-                    });
-                    showToast('✓ บันทึกแล้ว');
-                    closePreviewModal();
-                    return;
+            if (isIOSDevice()) {
+                // iOS: พยายามใช้ Web Share API ก่อน
+                if (canShareFile(file)) {
+                    try {
+                        await navigator.share({ files: [file], title: 'JodHuay - จดหวย' });
+                        showToast('✓ บันทึกแล้ว');
+                        closePreviewModal();
+                        return;
+                    } catch (e) {
+                        // ผู้ใช้ยกเลิก Share: อยู่ที่ modal เดิม
+                        if (e.name === 'AbortError') return;
+                        console.log('Share failed, opening image instead:', e);
+                    }
                 }
-            } catch (e) {
-                // ถ้าผู้ใช้ยกเลิก Share ให้อยู่ที่ modal เดิม (ไม่ปิด)
-                if (e.name === 'AbortError') {
-                    // ไม่ทำอะไร - ให้ผู้ใช้อยู่ที่หน้า modal
-                    return;
-                }
-                // ถ้า Share ไม่ได้ด้วยเหตุผลอื่น ให้ลองดาวน์โหลดแทน
-                console.log('Share failed, trying download:', e);
+                openImageInNewTab(dataUrl);
+                return;
             }
 
-            // ถ้า Share ไม่ได้ ให้เปิดรูปในแท็บใหม่แทน (iOS Safari)
-            const newWindow = window.open();
-            if (newWindow) {
-                newWindow.document.write(`
-                    <html>
-                    <head>
-                        <title>JodHuay - บันทึกรูป</title>
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <style>
-                            body { margin: 0; padding: 20px; background: #f5f5f5; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-                            img { max-width: 100%; height: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px; background: white; }
-                            .info { margin: 20px 0; color: #666; font-size: 14px; }
-                            .btn { display: inline-block; margin: 10px; padding: 12px 24px; background: #DAA520; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; }
-                        </style>
-                    </head>
-                    <body>
-                        <h2>🎉 สร้างรูปสำเร็จ!</h2>
-                        <p class="info">กดค้างที่รูป แล้วเลือก "บันทึกรูปภาพ"</p>
-                        <img src="${dataUrl}" alt="JodHuay">
-                        <br>
-                        <a href="#" onclick="window.close()" class="btn">ปิดหน้าต่าง</a>
-                    </body>
-                    </html>
-                `);
-                showToast('✓ เปิดรูปในแท็บใหม่แล้ว');
-                // ไม่ปิด modal - ให้ผู้ใช้ปิดเองหรือบันทึกต่อ
-            } else {
-                showToast('⚠️ กรุณาอนุญาตให้เปิดหน้าต่างใหม่');
-                // ไม่ปิด modal เพื่อให้ผู้ใช้ลองใหม่
-            }
-            return;
+            // Desktop/Android: Download โดยตรง
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            selectedItems.clear();
+            showToast('✓ บันทึกแล้ว');
+            closePreviewModal();
+        } catch (e) {
+            handleImageExportError(e, 'เกิดข้อผิดพลาด');
         }
-
-        // Desktop/Android: Download โดยตรง
-        const link = document.createElement('a');
-        link.download = fileName;
-        link.href = dataUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        // Clear selected items after save
-        selectedItems.clear();
-
-        showToast('✓ บันทึกแล้ว');
-        closePreviewModal();
-
-    } catch (e) {
-        console.error('Save image error:', e);
-        let errorMsg = '⚠️ เกิดข้อผิดพลาด';
-        let showFallback = false;
-
-        if (e.message && e.message.includes('html2canvas')) {
-            errorMsg = '⚠️ ไม่สามารถโหลดไลบรารีได้';
-            showFallback = true;
-        } else if (e.message && e.message.includes('Canvas')) {
-            errorMsg = '⚠️ ไม่สามารถสร้างรูปภาพได้';
-            showFallback = true;
-        } else if (e.name === 'SecurityError') {
-            errorMsg = '⚠️ ไม่สามารถเข้าถึงรูปภาพได้';
-            showFallback = true;
-        } else if (e.name === 'DOMException') {
-            errorMsg = '⚠️ รูปภาพมีขนาดใหญ่เกินไป ลองลดจำนวนรายการ';
-            showFallback = true;
-        }
-
-        showToast(errorMsg);
-        
-        // แสดง fallback UI สำหรับ iOS
-        if (showFallback && /iPad|iPhone|iPod/.test(navigator.userAgent)) {
-            setTimeout(() => showScreenshotFallback(), 500);
-        }
-    } finally {
-        // Reset button
-        if (saveBtn) {
-            saveBtn.disabled = false;
-            const span = saveBtn.querySelector('span');
-            if (span && originalText) span.textContent = originalText;
-        }
-    }
+    });
 }
 
 // Generic Custom Confirm Modal (Promise-based)
@@ -2523,7 +2538,7 @@ async function clearData() {
 
     if (currentTab === 'underground') undergroundData = [];
     else governmentData = [];
-    editingIds[currentTab] = null;
+    setEditing(currentTab, null);
 
     saveData();
     renderAll();
@@ -2610,8 +2625,8 @@ function importData(file) {
                 // Import ข้อมูลใหม่
                 undergroundData = undergroundValid;
                 governmentData = governmentValid;
-                editingIds.underground = null;
-                editingIds.government = null;
+                setEditing('underground', null);
+                setEditing('government', null);
                 if (imported.meta) {
                     slipMeta = sanitizeSlipMeta(imported.meta);
                     saveSlipMeta();
@@ -2858,89 +2873,19 @@ async function shareAsImage() {
         return;
     }
 
-    const preview = document.getElementById('a4Preview');
-    const shareBtn = document.querySelector('[onclick="handleShare()"]');
-    const originalHTML = shareBtn?.innerHTML;
-
-    // Show loading
-    if (shareBtn) {
-        shareBtn.disabled = true;
-        shareBtn.innerHTML = '<span class="animate-pulse text-xs">กำลังสร้างรูป...</span>';
-    }
-
-    try {
-        // The pixel-matched renderer is bundled with the app. Load the legacy
-        // renderer only when the modern renderer is unavailable.
-        if (typeof window.modernScreenshot === 'undefined' && typeof html2canvas === 'undefined') {
-            if (shareBtn) {
-                shareBtn.innerHTML = '<span class="animate-pulse text-xs">กำลังโหลด...</span>';
+    await withBusyButton(document.getElementById('btnShare'), 'กำลังสร้างรูป...', async setLabel => {
+        try {
+            const { file } = await renderSlipImage(setLabel);
+            if (!canShareFile(file)) {
+                showToast('เบราว์เซอร์ไม่รองรับการแชร์รูป');
+                return;
             }
-
-            const loaded = await ensureHtml2Canvas();
-            if (!loaded) {
-                throw new Error('html2canvas library not loaded');
-            }
-
-            if (shareBtn) {
-                shareBtn.innerHTML = '<span class="animate-pulse text-xs">กำลังสร้างรูป...</span>';
-            }
-        }
-
-        // iOS specific: ใช้ options ที่เหมาะสมกับ iOS Safari
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        const canvas = await createExportCanvas(preview, isIOS);
-
-        if (!canvas || canvas.width === 0 || canvas.height === 0) {
-            throw new Error('Canvas creation failed - invalid dimensions');
-        }
-
-        const blob = await (await fetch(canvas.toDataURL('image/png', 0.95))).blob();
-        const fileName = getSlipFileName();
-        const file = new File([blob], fileName, { type: 'image/png' });
-
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-                files: [file],
-                title: 'JodHuay - จดหวย'
-            });
+            await navigator.share({ files: [file], title: 'JodHuay - จดหวย' });
             showToast('✓ แชร์แล้ว');
-        } else {
-            showToast('เบราว์เซอร์ไม่รองรับการแชร์รูป');
+        } catch (e) {
+            if (e.name !== 'AbortError') handleImageExportError(e, 'ไม่สามารถแชร์ได้');
         }
-
-    } catch (e) {
-        if (e.name !== 'AbortError') {
-            console.error('Share image error:', e);
-            let errorMsg = 'ไม่สามารถแชร์ได้';
-            let showFallback = false;
-
-            if (e.message && e.message.includes('html2canvas')) {
-                errorMsg = 'ไม่สามารถโหลดไลบรารีได้';
-                showFallback = true;
-            } else if (e.message && e.message.includes('Canvas')) {
-                errorMsg = 'ไม่สามารถสร้างรูปภาพได้';
-                showFallback = true;
-            } else if (e.name === 'SecurityError') {
-                errorMsg = 'ไม่สามารถเข้าถึงรูปภาพได้';
-                showFallback = true;
-            } else if (e.name === 'DOMException') {
-                errorMsg = 'รูปภาพมีขนาดใหญ่เกินไป ลองลดจำนวนรายการ';
-                showFallback = true;
-            }
-
-            showToast(errorMsg);
-            
-            // แสดง fallback UI สำหรับ iOS
-            if (showFallback && /iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                setTimeout(() => showScreenshotFallback(), 500);
-            }
-        }
-    } finally {
-        if (shareBtn && originalHTML) {
-            shareBtn.disabled = false;
-            shareBtn.innerHTML = originalHTML;
-        }
-    }
+    });
 }
 
 window.shareAsText = shareAsText;

@@ -264,11 +264,22 @@
     overflow: hidden;
 }
 
-/* รายการที่กำลังแก้ไขอยู่ในฟอร์มด้านบน */
-.list-item.is-editing {
-    outline: 2px dashed var(--jh-gold);
-    outline-offset: -2px;
-    background-color: rgba(235, 217, 173, 0.35);
+.edit-cancel-btn {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 16px;
+    border: 1px solid var(--jh-line);
+    border-radius: 12px;
+    background: var(--jh-paper);
+    color: var(--jh-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.edit-cancel-btn.hidden {
+    display: none;
 }
 
 .saved-entry-row {

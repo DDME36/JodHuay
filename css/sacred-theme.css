@@ -992,6 +992,13 @@ body.numpad-open #pwaInstallBanner {
     border-color: rgba(125, 87, 13, 0.13) !important;
 }
 
+/* รายการที่กำลังแก้ไขอยู่ในฟอร์มด้านบน (outline ถูกปิดทั้งแอป จึงใช้ box-shadow แทน) */
+.list-item.is-editing {
+    background: rgba(246, 237, 217, 0.95) !important;
+    border-color: var(--jh-gold) !important;
+    box-shadow: inset 0 0 0 2px var(--jh-gold) !important;
+}
+
 .device-vault {
     overflow: hidden;
     color: var(--jh-ink);

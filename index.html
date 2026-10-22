@@ -215,10 +215,12 @@
                     <input type="hidden" id="govQty" value="1">
                 </div>
 
-                <button onclick="addGovernment()"
+                <button id="govAddBtn" onclick="addGovernment()"
                     class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg shadow-lg">
                     เพิ่มรายการ
                 </button>
+                <button type="button" id="govCancelEditBtn" onclick="cancelEdit('government')"
+                    class="edit-cancel-btn hidden">ยกเลิกการแก้ไข</button>
             </div>
 
             <!-- List -->
@@ -376,10 +378,12 @@
                     <p class="text-xs text-gray-400 mt-3 text-center">ก.3 = กลับ 3 ชุด | ก.6 = กลับ 6 ชุด</p>
                 </div>
 
-                <button onclick="addUnderground()"
+                <button id="ugAddBtn" onclick="addUnderground()"
                     class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg shadow-lg">
                     เพิ่มรายการ
                 </button>
+                <button type="button" id="ugCancelEditBtn" onclick="cancelEdit('underground')"
+                    class="edit-cancel-btn hidden">ยกเลิกการแก้ไข</button>
             </div>
 
             <!-- List -->
