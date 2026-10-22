@@ -9,7 +9,17 @@
 ```
 JodHuay/
 ├── index.html              # หน้าหลักของแอป
-├── app.js                  # JavaScript หลัก
+├── js/                     # JavaScript (ES modules)
+│   ├── main.js            # จุดเริ่มต้น: init + ผูกปุ่ม data-action
+│   ├── state.js           # state กลางและค่าคงที่
+│   ├── utils.js           # helper ทั่วไป (toast, confirm, clipboard ฯลฯ)
+│   ├── storage.js         # localStorage, migrate, สำรอง/กู้คืน JSON
+│   ├── entries.js         # ฟอร์มและรายการ (เพิ่ม/แก้ไข/ลบ)
+│   ├── numpad.js          # แป้นตัวเลขบนมือถือ
+│   ├── preview.js         # หน้าต่างบันทึก/แชร์ เป็นข้อความหรือรูป
+│   ├── slip-meta.js       # ข้อมูลหัวโพยและงวดวันที่
+│   ├── motion.js          # animation และการสลับแท็บ
+│   └── shell.js           # service worker, offline, ติดตั้ง PWA
 ├── styles.css              # CSS เดิมของแอป (legacy)
 ├── manifest.json           # PWA manifest
 ├── sw.js                   # Service Worker
@@ -30,7 +40,9 @@ JodHuay/
 │   └── export-sheet.css   # ใบโพยสำหรับบันทึกและแชร์เป็นรูป
 │
 └── tests/
-    └── browser-smoke.mjs  # ทดสอบ flow หลักผ่าน Chromium DevTools
+    ├── validate-static.mjs     # ตรวจไฟล์อ้างอิง, CSS, import ของโมดูล
+    ├── browser-smoke.mjs       # ทดสอบ flow หลักผ่าน Chromium DevTools
+    └── tab-transition-smoke.mjs # ทดสอบ animation สลับแท็บ
 ```
 
 ## คุณสมบัติ
@@ -97,7 +109,9 @@ JodHuay/
 
 ### การแก้ไขโค้ด
 
-1. แก้ไขไฟล์ `app.js`, `styles.css`, หรือ `index.html` ตามต้องการ
+1. แก้ไขไฟล์ใน `js/`, `css/` หรือ `index.html` ตามต้องการ
+   - ปุ่มใน HTML ใช้ `data-action="ชื่อฟังก์ชัน"` (และ `data-arg`) แล้วลงทะเบียนใน `actions` ที่ `js/main.js`
+   - ลองเรียกฟังก์ชันจาก console ได้ผ่าน `JodHuay.<ชื่อฟังก์ชัน>()` และดู state ที่ `JodHuay.state`
 2. สไตล์ใหม่ควรเพิ่มใน `css/` ตามหมวด แทนการเพิ่มทุกอย่างใน `styles.css`
 3. เพิ่มเวอร์ชัน cache ใน `sw.js` เมื่อเปลี่ยน asset ที่ต้องใช้แบบออฟไลน์
 4. รีเฟรชเบราว์เซอร์

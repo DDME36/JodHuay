@@ -70,12 +70,12 @@ const result = await evaluate(`
     const metaCollapsedByDefault = document.getElementById('slipMetaToggle').getAttribute('aria-expanded') === 'false'
         && document.getElementById('slipMetaPanel').inert
         && document.getElementById('slipDrawDate').value === '';
-    toggleSlipMeta();
+    JodHuay.toggleSlipMeta();
     const metaPanelOpens = document.getElementById('slipMetaToggle').getAttribute('aria-expanded') === 'true'
         && !document.getElementById('slipMetaPanel').inert;
-    const augustDraws = getThaiLotteryDrawSuggestions(new Date('2026-08-12T12:00:00+07:00'));
-    const januaryDraws = getThaiLotteryDrawSuggestions(new Date('2026-01-01T12:00:00+07:00'));
-    const mayDraws = getThaiLotteryDrawSuggestions(new Date('2026-05-01T12:00:00+07:00'));
+    const augustDraws = JodHuay.getThaiLotteryDrawSuggestions(new Date('2026-08-12T12:00:00+07:00'));
+    const januaryDraws = JodHuay.getThaiLotteryDrawSuggestions(new Date('2026-01-01T12:00:00+07:00'));
+    const mayDraws = JodHuay.getThaiLotteryDrawSuggestions(new Date('2026-05-01T12:00:00+07:00'));
     const officialThaiDrawRules = augustDraws.previous === '2026-08-01'
         && augustDraws.next === '2026-08-16'
         && januaryDraws.previous === '2025-12-30'
@@ -89,11 +89,11 @@ const result = await evaluate(`
     const vaultCompactByDefault = !vault.classList.contains('is-open')
         && document.getElementById('deviceVaultPanel').inert
         && vault.getBoundingClientRect().height < 75;
-    toggleDeviceVault();
+    JodHuay.toggleDeviceVault();
     const vaultOpens = vault.classList.contains('is-open')
         && !document.getElementById('deviceVaultPanel').inert;
-    toggleDeviceVault(false);
-    setMotionMode('full');
+    JodHuay.toggleDeviceVault(false);
+    JodHuay.setMotionMode('full');
     const brandMotionStyle = getComputedStyle(document.querySelector('.brand-title'));
     const fullMotionCanBeForced = document.documentElement.dataset.motion === 'full'
         && brandMotionStyle.animationName.includes('jh-brand-breathe')
@@ -108,43 +108,43 @@ const result = await evaluate(`
     const reducedMotionRequested = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const motionStylesLoaded = reducedMotionRequested || getComputedStyle(document.querySelector('.choice-chip.active'))
         .animationName.includes('jh-chip-select');
-    openNumpad('govNumber', 'หมายเลข 6 ตัว', 6, () => {});
+    JodHuay.openNumpad('govNumber', 'หมายเลข 6 ตัว', 6, () => {});
     const numpadSuppressesInstallBanner = document.body.classList.contains('numpad-open');
-    closeNumpad();
+    JodHuay.closeNumpad();
 
     input('slipOwner', 'แม่');
     input('slipReceiver', 'ร้านพี่แหม่ม');
 
     input('govNumber', '123456');
-    addGovernment();
+    JodHuay.addGovernment();
     const governmentAdded = document.querySelectorAll('#govList [data-item-id]').length === 1;
     document.querySelector('#govList [data-item-id]').click();
     // Editing keeps the original entry (highlighted) until it is saved again.
     const governmentEdited = document.getElementById('govNumber').value.replace(/\\s/g, '') === '123456'
         && document.querySelectorAll('#govList [data-item-id].is-editing').length === 1;
-    addGovernment();
+    JodHuay.addGovernment();
     const governmentEditReplaced = document.querySelectorAll('#govList [data-item-id]').length === 1
         && !document.querySelector('#govList .is-editing');
     document.querySelector('#govList [data-delete-item]').click();
     const governmentDeleted = document.querySelectorAll('#govList [data-item-id]').length === 0;
 
-    await switchTab('underground');
+    await JodHuay.switchTab('underground');
     input('ugNumber', '123');
     input('ugPriceDirect', '50');
-    addUnderground();
+    JodHuay.addUnderground();
     const undergroundAdded = document.querySelectorAll('#ugList [data-item-id]').length === 1;
     document.querySelector('#ugList [data-item-id]').click();
     // Editing keeps the original entry (highlighted) until it is saved again.
     const undergroundEdited = document.getElementById('ugNumber').value.replace(/\\s/g, '') === '123'
         && document.querySelectorAll('#ugList [data-item-id].is-editing').length === 1;
-    addUnderground();
+    JodHuay.addUnderground();
     const undergroundEditReplaced = document.querySelectorAll('#ugList [data-item-id]').length === 1
         && !document.querySelector('#ugList .is-editing');
     document.querySelector('#ugList [data-delete-item]').click();
     const undergroundDeleted = document.querySelectorAll('#ugList [data-item-id]').length === 0;
 
-    await switchTab('government');
-    const transitionPromise = switchTab('underground');
+    await JodHuay.switchTab('government');
+    const transitionPromise = JodHuay.switchTab('underground');
     await new Promise(resolve => setTimeout(resolve, 100));
     const visibleDuringTransition = document.querySelectorAll('.section-content:not(.hidden)').length === 2;
     const transitionIsAnimated = document.getElementById('lotterySectionsStage').classList.contains('is-switching')
@@ -156,11 +156,11 @@ const result = await evaluate(`
         && document.getElementById('governmentSection').classList.contains('hidden') === true
         && document.getElementById('lotterySectionsStage').style.height === 'auto';
 
-    const rapidFirst = switchTab('government');
-    switchTab('underground');
+    const rapidFirst = JodHuay.switchTab('government');
+    JodHuay.switchTab('underground');
     await rapidFirst;
     await new Promise(resolve => setTimeout(resolve, 650));
-    const rapidTabSwitchSettles = currentTab === 'underground'
+    const rapidTabSwitchSettles = JodHuay.state.currentTab === 'underground'
         && document.getElementById('tabUnderground').getAttribute('aria-selected') === 'true'
         && !document.body.classList.contains('transitioning');
 
@@ -207,13 +207,13 @@ await new Promise(resolve => setTimeout(resolve, 800));
 
 const security = await evaluate(`
     const governmentItem = document.querySelector('#govList [data-item-id]');
-    openPreviewModal();
+    JodHuay.openPreviewModal();
     return {
         unsafeIdReplaced: Boolean(governmentItem) && /^[A-Za-z0-9_-]+$/.test(governmentItem.dataset.itemId),
         unsafePriceDiscarded: document.querySelectorAll('#ugList [data-item-id]').length === 0,
         noScriptExecuted: window.__xss !== 1,
         previewHasOwner: document.getElementById('previewOwner').textContent.includes('แม่'),
-        sharedTextHasReceiver: buildSlipText(governmentData).includes('ร้านพี่แหม่ม'),
+        sharedTextHasReceiver: JodHuay.buildSlipText(JodHuay.state.governmentData).includes('ร้านพี่แหม่ม'),
         exportHasStructuredSummary: document.querySelector('.export-summary')?.textContent.includes('1 ใบ') === true,
         singleExportGroupIsCentered: document.querySelector('.export-groups')?.classList.contains('export-groups-single') === true
     };
