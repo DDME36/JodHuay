@@ -92,17 +92,6 @@ body {
 }
 
 /* Sacred Glow - รัศมีทอง */
-.sacred-glow {
-    position: absolute;
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    height: 200px;
-    background: radial-gradient(ellipse, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: -1;
-}
 
 /* Header section */
 header {
@@ -153,61 +142,8 @@ header {
 }
 
 /* Floating Symbol - สัญลักษณ์ลอย */
-.floating-symbol {
-    display: inline-block;
-    animation: floating 3s ease-in-out infinite;
-    will-change: transform;
-    /* GPU acceleration */
-}
-
-.floating-symbol:last-child {
-    animation: floatingFlipped 3s ease-in-out infinite;
-}
-
-@keyframes floating {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-5px);
-    }
-}
-
-@keyframes floatingFlipped {
-
-    0%,
-    100% {
-        transform: translateY(0) scaleX(-1);
-    }
-
-    50% {
-        transform: translateY(-5px) scaleX(-1);
-    }
-}
 
 /* Pulse Dots - จุดเต้น */
-.pulse-dot {
-    animation: pulseDot 2s ease-in-out infinite;
-    will-change: transform, opacity;
-    /* GPU acceleration */
-}
-
-@keyframes pulseDot {
-
-    0%,
-    100% {
-        transform: scale(1);
-        opacity: 0.6;
-    }
-
-    50% {
-        transform: scale(1.3);
-        opacity: 1;
-    }
-}
 
 /* Brand Subtitle */
 .brand-subtitle {
@@ -219,69 +155,10 @@ header {
 }
 
 /* Sacred Divider - เส้นคั่นศักดิ์สิทธิ์ */
-.sacred-divider {
-    width: 120px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #DAA520, transparent);
-    position: relative;
-}
-
-.sacred-divider::before {
-    content: '◆';
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    color: #DAA520;
-    font-size: 8px;
-    background: #FDFBF7;
-    padding: 0 8px;
-}
 
 /* Sacred Divider Clean - เส้นแหลมสองข้าง มีเพชรตรงกลาง */
-.sacred-divider-clean {
-    width: 160px;
-    height: 16px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.sacred-divider-clean::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 40%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent 0%, #DAA520 100%);
-    transform: translateY(-50%);
-}
-
-.sacred-divider-clean::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 50%;
-    width: 40%;
-    height: 2px;
-    background: linear-gradient(90deg, #DAA520 0%, transparent 100%);
-    transform: translateY(-50%);
-}
-
-.sacred-divider-clean span {
-    color: #DAA520;
-    font-size: 10px;
-    z-index: 1;
-}
 
 /* Decorative Divider (fallback) */
-.decorative-divider {
-    width: 80px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #C4A052, transparent);
-}
 
 /* Gold Button - ลงรักปิดทอง */
 .gold-btn {
@@ -1041,9 +918,6 @@ input[type="tel"] {
 }
 
 /* Active scale animation */
-.active\:scale-98:active {
-    transform: scale(0.98);
-}
 
 /* Pulse animation for gold button */
 @keyframes pulse-gold {
@@ -1072,42 +946,6 @@ input[type="tel"] {
 }
 
 /* Dashboard Card Animation - Crisp & No-Clip */
-@keyframes dashboardPop {
-    0% {
-        opacity: 0;
-        transform: translate3d(0, 5px, 0) scale(0.97);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1);
-    }
-}
-
-.dashboard-card {
-    position: relative;
-    border: 2px solid #caa045 !important;
-    box-shadow: 0 4px 14px rgba(70, 40, 25, 0.12) !important;
-    overflow: visible !important;
-    transform-origin: center center;
-    backface-visibility: hidden;
-    will-change: transform, opacity;
-    animation: dashboardPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-}
-
-.dashboard-card-grid {
-    overflow: visible !important;
-    margin-bottom: 2rem !important;
-    padding: 2px;
-}
-
-.dashboard-card:nth-child(1) {
-    animation-delay: 0.05s;
-}
-
-.dashboard-card:nth-child(2) {
-    animation-delay: 0.1s;
-}
 
 /* Empty state animation */
 @keyframes float {
@@ -1209,44 +1047,8 @@ input[type="tel"] {
 }
 
 /* Shake animation for errors */
-@keyframes shake {
-
-    0%,
-    100% {
-        transform: translateX(0);
-    }
-
-    25% {
-        transform: translateX(-10px);
-    }
-
-    75% {
-        transform: translateX(10px);
-    }
-}
-
-.shake {
-    animation: shake 0.3s ease-in-out;
-}
 
 /* Success checkmark animation */
-@keyframes checkmark {
-    0% {
-        transform: scale(0) rotate(45deg);
-    }
-
-    50% {
-        transform: scale(1.2) rotate(45deg);
-    }
-
-    100% {
-        transform: scale(1) rotate(45deg);
-    }
-}
-
-.checkmark {
-    animation: checkmark 0.4s ease-out;
-}
 
 /* Bounce animation */
 @keyframes bounce {
@@ -1259,10 +1061,6 @@ input[type="tel"] {
     50% {
         transform: translateY(-5px);
     }
-}
-
-.bounce {
-    animation: bounce 0.5s ease-in-out;
 }
 
 /* iOS Safe Area */
@@ -1305,10 +1103,6 @@ select {
     50% {
         opacity: 0.5;
     }
-}
-
-.animate-pulse {
-    animation: pulse 1.5s ease-in-out infinite;
 }
 
 /* Cursor pointer for clickable items */
@@ -1508,13 +1302,6 @@ body.transitioning .gold-particles {
     }
 
     /* ปรับ dashboard cards */
-    .dashboard-card {
-        padding: 0.75rem !important;
-    }
-
-    .dashboard-card .text-2xl {
-        font-size: 1.5rem;
-    }
 
     /* ปรับ modal buttons */
     .modal-mode-btn {
@@ -1642,10 +1429,6 @@ body.transitioning .gold-particles {
 }
 
 /* Dark mode support (optional) */
-@media (prefers-color-scheme: dark) {
-    /* Keep light theme for now, but structure is ready */
-}
-
 
 /* Quick Price Buttons */
 .quick-price-btn {
@@ -1675,58 +1458,8 @@ body.transitioning .gold-particles {
 }
 
 /* Action Button Animations */
-.action-btn {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-.action-btn::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(218, 165, 32, 0.2);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
-
-.action-btn:active::before {
-    width: 300px;
-    height: 300px;
-}
-
-.action-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(218, 165, 32, 0.25);
-    border-color: #B8860B;
-}
-
-.action-btn:active {
-    transform: translateY(0) scale(0.95);
-}
 
 /* Success Animation */
-@keyframes successPulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-    }
-
-    70% {
-        box-shadow: 0 0 0 15px rgba(34, 197, 94, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-    }
-}
-
-.success-flash {
-    animation: successPulse 0.6s ease-out;
-}
 
 /* Hero Number Input - Remove focus outline */
 .hero-input-container {
@@ -1754,12 +1487,6 @@ body.transitioning .gold-particles {
     }
 
     /* Focus state สำหรับ Desktop */
-    .hero-input-container.input-focused .hero-border {
-        border-color: #DAA520 !important;
-        box-shadow:
-            0 0 0 3px rgba(218, 165, 32, 0.1),
-            0 4px 20px rgba(218, 165, 32, 0.3) !important;
-    }
 }
 
 /* Mobile: ซ่อน cursor และใช้ numpad */
@@ -1813,37 +1540,8 @@ body.transitioning .gold-particles {
 }
 
 /* Hero border using box-shadow - with proper layering */
-.hero-border {
-    border: 2px solid #C4A052;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-    overflow: hidden;
-    position: relative;
-    background: #FFFFFF;
-}
 
 /* Prevent border overflow */
-.hero-border::after {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    pointer-events: none;
-}
-
-.hero-input-container:hover .hero-border {
-    border-color: #DAA520;
-    box-shadow:
-        0 4px 16px rgba(218, 165, 32, 0.2),
-        inset 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.hero-input-container:active .hero-border {
-    border-color: #B8860B;
-    box-shadow:
-        0 2px 8px rgba(218, 165, 32, 0.15),
-        inset 0 1px 3px rgba(0, 0, 0, 0.05);
-}
 
 .hero-input-container:hover {
     transform: scale(1.02);
@@ -1875,25 +1573,6 @@ body.transitioning .gold-particles {
 }
 
 /* Smooth number typing animation */
-@keyframes numberPop {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-
-    50% {
-        transform: scale(1.1);
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.number-pop {
-    animation: numberPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
 
 /* Loading Spinner */
 @keyframes spin {
@@ -1902,54 +1581,7 @@ body.transitioning .gold-particles {
     }
 }
 
-.spinner {
-    animation: spin 1s linear infinite;
-}
-
 /* Stagger animation for list items */
-.stagger-item {
-    animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
-}
-
-.stagger-item:nth-child(1) {
-    animation-delay: 0.05s;
-}
-
-.stagger-item:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-.stagger-item:nth-child(3) {
-    animation-delay: 0.15s;
-}
-
-.stagger-item:nth-child(4) {
-    animation-delay: 0.2s;
-}
-
-.stagger-item:nth-child(5) {
-    animation-delay: 0.25s;
-}
-
-.stagger-item:nth-child(6) {
-    animation-delay: 0.3s;
-}
-
-.stagger-item:nth-child(7) {
-    animation-delay: 0.35s;
-}
-
-.stagger-item:nth-child(8) {
-    animation-delay: 0.4s;
-}
-
-.stagger-item:nth-child(9) {
-    animation-delay: 0.45s;
-}
-
-.stagger-item:nth-child(10) {
-    animation-delay: 0.5s;
-}
 
 /* Glow effect for important elements */
 @keyframes glow {
@@ -1962,10 +1594,6 @@ body.transitioning .gold-particles {
     50% {
         box-shadow: 0 0 20px rgba(218, 165, 32, 0.8), 0 0 30px rgba(255, 215, 0, 0.4);
     }
-}
-
-.glow-effect {
-    animation: glow 2s ease-in-out infinite;
 }
 
 /* Confetti effect (for success actions) */
@@ -2001,8 +1629,7 @@ body.transitioning .gold-particles {
 }
 
 /* Override Tailwind focus styles */
-.focus\:outline-none:focus,
-.focus-visible\:outline-none:focus-visible {
+.focus\:outline-none:focus {
     outline: none !important;
 }
 
@@ -2081,10 +1708,6 @@ input[type="tel"] {
 }
 
 /* Lock icon styling */
-.lock-icon {
-    opacity: 0.4;
-    transition: opacity 0.3s ease;
-}
 
 /* Fix border overflow issues */
 .hero-input-container .absolute {
@@ -2144,7 +1767,6 @@ header,
 .hero-input-container,
 .list-item,
 .gold-btn,
-.action-btn,
 button,
 input,
 select,
@@ -2177,11 +1799,6 @@ span {
 }
 
 /* Tabs container - ensure solid background */
-.flex.mb-8.bg-white {
-    background: #FFFFFF !important;
-    position: relative;
-    z-index: 100;
-}
 
 /* Header - ensure text is visible */
 header {

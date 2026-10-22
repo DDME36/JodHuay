@@ -63,13 +63,13 @@ await evaluate(`
 await new Promise((resolve) => setTimeout(resolve, 900));
 
 if (mode === 'numpad') {
-    await evaluate(`openNumpad('govNumber', 'หมายเลข 6 ตัว', 6, () => {});`);
+    await evaluate(`JodHuay.openNumpad('govNumber', 'หมายเลข 6 ตัว', 6, () => {});`);
     await new Promise((resolve) => setTimeout(resolve, 450));
 } else if (mode === 'numpad-price') {
-    await evaluate(`openNumpad('ugPriceDirect', 'ราคาเต็ม', 6, () => {});`);
+    await evaluate(`JodHuay.openNumpad('ugPriceDirect', 'ราคาเต็ม', 6, () => {});`);
     await new Promise((resolve) => setTimeout(resolve, 450));
 } else if (mode === 'device') {
-    await evaluate(`setMotionMode('full'); toggleDeviceVault(true);`);
+    await evaluate(`JodHuay.setMotionMode('full'); JodHuay.toggleDeviceVault(true);`);
     await new Promise((resolve) => setTimeout(resolve, 500));
 } else if (mode === 'hero') {
     await evaluate(`

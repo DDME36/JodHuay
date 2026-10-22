@@ -55,3 +55,12 @@ for (const cssFile of cssFiles) {
     }
 }
 console.log('css local refs ok');
+
+for (const moduleFile of fs.readdirSync('js').filter(name => name.endsWith('.js'))) {
+    const source = fs.readFileSync(`js/${moduleFile}`, 'utf8');
+    for (const [, target] of source.matchAll(/^import [^;]+ from '\.\/([^']+)';$/gm)) {
+        if (!fs.existsSync(`js/${target}`)) throw new Error(`Missing module import: js/${moduleFile} -> ${target}`);
+    }
+    if (!serviceWorker.includes(`'./js/${moduleFile}'`)) throw new Error(`Module not cached by service worker: js/${moduleFile}`);
+}
+console.log('module imports ok');

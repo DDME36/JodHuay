@@ -1,9 +1,9 @@
-const CACHE_NAME = 'jodhuay-v90';
+const CACHE_NAME = 'jodhuay-v98';
 const RUNTIME_CACHE = 'jodhuay-runtime-v1';
 const urlsToCache = [
     './',
     './index.html',
-    './styles.css',  // Fixed: was ./css/styles.css
+    './styles.css',
     './css/tailwind-built.css',
     './css/fonts.css',
     './css/tokens.css',
@@ -12,7 +12,16 @@ const urlsToCache = [
     './css/sacred-theme.css',
     './css/motion.css',
     './css/export-sheet.css',
-    './app.js',
+    './js/main.js',
+    './js/state.js',
+    './js/utils.js',
+    './js/motion.js',
+    './js/storage.js',
+    './js/slip-meta.js',
+    './js/numpad.js',
+    './js/entries.js',
+    './js/preview.js',
+    './js/shell.js',
     './assets/vendor/html2canvas.min.js',
     './assets/vendor/modern-screenshot.min.js',
     './assets/fonts/prompt-thai-300-normal.woff2',

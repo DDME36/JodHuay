@@ -8,10 +8,6 @@ html[data-motion='full'] .motion-reveal {
     will-change: transform, opacity;
 }
 
-html[data-motion='full'] .motion-reveal.motion-from-left {
-    transform: translate3d(-16px, 0, 0) scale(0.99);
-}
-
 html[data-motion='full'] .motion-reveal.is-visible {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
@@ -190,4 +186,32 @@ html[data-motion='full'] .list-item.new-entry {
         opacity: 1;
         transform: none;
     }
+}
+
+/* Moved from app.js (was injected at runtime) */
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 2s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+}
+
+.list-item {
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }

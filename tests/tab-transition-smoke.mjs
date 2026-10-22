@@ -47,8 +47,8 @@ await command('Runtime.enable');
 await new Promise(resolve => setTimeout(resolve, 700));
 
 const result = await evaluate(`
-    setMotionMode('full');
-    const promise = switchTab('underground');
+    JodHuay.setMotionMode('full');
+    const promise = JodHuay.switchTab('underground');
     await new Promise(resolve => setTimeout(resolve, 110));
     const stage = document.getElementById('lotterySectionsStage');
     const government = document.getElementById('governmentSection');
@@ -70,11 +70,11 @@ const result = await evaluate(`
         tabStateAccessible: document.getElementById('tabUnderground').getAttribute('aria-selected') === 'true'
     };
 
-    const first = switchTab('government');
-    switchTab('underground');
+    const first = JodHuay.switchTab('government');
+    JodHuay.switchTab('underground');
     await first;
     await new Promise(resolve => setTimeout(resolve, 650));
-    const rapidSwitchSettled = currentTab === 'underground'
+    const rapidSwitchSettled = JodHuay.state.currentTab === 'underground'
         && !underground.classList.contains('hidden')
         && government.classList.contains('hidden')
         && !document.body.classList.contains('transitioning');

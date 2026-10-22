@@ -604,8 +604,6 @@ body {
     box-shadow: 0 0 0 2px rgba(183, 132, 23, 0.09) !important;
 }
 
-.hero-border { display: none !important; }
-
 .gold-btn {
     color: #fff8e7 !important;
     background: linear-gradient(135deg, #5d3024 0%, #4c271e 55%, #351914 100%) !important;
@@ -724,11 +722,6 @@ body {
     background: #752a31 !important;
 }
 
-#confirmModalContent .bg-red-100 {
-    background: #f7e8e5 !important;
-}
-
-#confirmModalContent .text-red-600,
 #confirmModalContent .text-red-500 {
     color: #8c3035 !important;
 }
@@ -743,10 +736,6 @@ body {
     color: #65252b;
     background: #fbefed;
     border-color: #b87978;
-}
-
-.confirm-danger-btn {
-    background: linear-gradient(135deg, #9b3f43, #70262c) !important;
 }
 
 .modal-overlay {
@@ -982,14 +971,16 @@ body.numpad-open #pwaInstallBanner {
     box-shadow: 0 7px 16px rgba(53, 17, 21, 0.18);
 }
 
-.dashboard-card {
-    background: linear-gradient(145deg, #fffaf0, #efe0c1) !important;
-    border-color: rgba(185, 144, 61, 0.55) !important;
-}
-
 .list-item {
     background: rgba(255, 253, 247, 0.80) !important;
     border-color: rgba(125, 87, 13, 0.13) !important;
+}
+
+/* รายการที่กำลังแก้ไขอยู่ในฟอร์มด้านบน (outline ถูกปิดทั้งแอป จึงใช้ box-shadow แทน) */
+.list-item.is-editing {
+    background: rgba(246, 237, 217, 0.95) !important;
+    border-color: var(--jh-gold) !important;
+    box-shadow: inset 0 0 0 2px var(--jh-gold) !important;
 }
 
 .device-vault {
@@ -1297,4 +1288,252 @@ footer {
     background: linear-gradient(135deg, #b9903d 0%, #8c6721 100%) !important;
     border: 1px solid #f3d790 !important;
     box-shadow: 0 4px 14px rgba(185, 144, 61, 0.35) !important;
+}
+
+/* ============================================
+   UX polish: readability, clarity, accessibility
+   ============================================ */
+
+/* A lottery number is one unit: never break "123456" across lines */
+.saved-entry-number {
+    white-space: nowrap;
+    overflow-wrap: normal !important;
+    font-variant-numeric: tabular-nums;
+}
+
+#ugTotal,
+.saved-entry-value strong,
+.export-number,
+.export-summary-value {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Thai placeholder text must not be letter-spaced ("ร ะ บุ ร า ค า") */
+#ugPriceDirect:placeholder-shown,
+#ugPriceTod:placeholder-shown,
+#ugPriceDirect::placeholder,
+#ugPriceTod::placeholder {
+    letter-spacing: normal;
+}
+
+/* Tod toggle: a labelled button instead of a bare "+" circle */
+.tod-toggle-btn {
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 1.5px dashed rgba(148, 97, 22, 0.55);
+    border-radius: 999px;
+    background: rgba(252, 248, 238, 0.9);
+    color: var(--jh-gold-deep);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tod-toggle-btn[aria-expanded="true"] {
+    border-style: solid;
+    color: var(--jh-muted);
+}
+
+/* Toast with an action (e.g. undo delete) must be tappable */
+#toast {
+    width: max-content;
+    max-width: calc(100vw - 32px);
+}
+
+#toast.has-action {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    pointer-events: auto;
+}
+
+.toast-action {
+    flex-shrink: 0;
+    min-height: 36px;
+    padding: 6px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.toast-action.hidden {
+    display: none;
+}
+
+/* Keyboard users need to see where focus is (earlier rules removed it) */
+.tab-btn:focus-visible,
+.choice-chip:focus-visible,
+.filter-chip:focus-visible,
+.numpad-btn:focus-visible,
+.gold-btn:focus-visible,
+.danger-btn:focus-visible,
+.tod-toggle-btn:focus-visible,
+.edit-cancel-btn:focus-visible,
+.toast-action:focus-visible,
+.list-item:focus-visible {
+    outline: 2px solid #b7862b !important;
+    outline-offset: 2px !important;
+}
+
+/* Scrolling inside a sheet should not scroll the page behind it */
+.modal-content,
+#selectionList,
+.numpad-overlay {
+    overscroll-behavior: contain;
+}
+
+/* Respect the system "reduce motion" setting */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ============================================
+   Compact header: the form is the first thing on screen
+   ============================================ */
+.app-shell > .sacred-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px !important;
+    padding: 12px 16px !important;
+    overflow: hidden !important;
+    text-align: left;
+    border-radius: 18px !important;
+}
+
+.app-shell > .sacred-header::before,
+.app-shell > .sacred-header::after,
+.sacred-header .header-kicker,
+.sacred-header .header-divider,
+.sacred-header .header-blessing,
+.sacred-header .brand-flourish {
+    display: none;
+}
+
+.sacred-header .brand-seal {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    font-size: 16px;
+}
+
+.sacred-header .sacred-brand-row {
+    justify-content: flex-start;
+}
+
+.sacred-header .brand-title {
+    font-size: 1.6rem !important;
+    line-height: 1.1;
+}
+
+.sacred-header .brand-subtitle {
+    margin: 0 0 0 auto;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.sacred-header .header-mandala {
+    left: 18%;
+    opacity: 0.5;
+}
+
+@media (max-width: 440px) {
+    .sacred-header .brand-subtitle {
+        display: none;
+    }
+}
+
+/* ============================================
+   Tod type chips (โต๊ด / กลับ 3 / กลับ 6)
+   ============================================ */
+.tod-type-chips {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.tod-type-chips .choice-chip {
+    min-width: 76px;
+}
+
+.tod-glab-hint {
+    max-width: 24rem;
+    margin: 4px auto 0;
+    padding: 10px 14px;
+    border: 1px dashed rgba(148, 97, 22, 0.45);
+    border-radius: 12px;
+    color: var(--jh-gold-deep);
+    background: rgba(252, 248, 238, 0.9);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* ============================================
+   Underground total: the one place the sum is shown
+   ============================================ */
+#ugSummary > div {
+    align-items: baseline;
+}
+
+.ug-summary-label {
+    color: var(--jh-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.ug-summary-total {
+    color: var(--jh-gold-deep);
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.tod-copy-btn {
+    min-height: 36px;
+    padding: 6px 14px;
+    border: 1px solid rgba(148, 97, 22, 0.35);
+    border-radius: 999px;
+    background: rgba(246, 237, 217, 0.9);
+    color: var(--jh-gold-deep);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ============================================
+   Readable small text: nothing below 12px on a phone
+   (Thai vowels/tone marks become illegible below that)
+   ============================================ */
+.slip-meta-eyebrow,
+.entry-heading > span,
+.saved-entry-value small,
+#drawDatePrevious > span,
+#drawDateNext > span {
+    font-size: 0.75rem !important;
+}
+
+#slipMetaSummary,
+.draw-date-manual-label,
+#drawDateRuleHint,
+#slipMetaStatus,
+.slip-meta-footer button,
+.entry-heading p,
+.device-vault-copy small,
+.device-vault-note,
+.data-tool-btn {
+    font-size: 0.8125rem !important;
 }
