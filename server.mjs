@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 import { spawn } from 'node:child_process';
 import { readFile, stat } from 'node:fs/promises';
-import { extname, join, normalize, resolve } from 'node:path';
+import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('.', import.meta.url)));
@@ -35,7 +35,7 @@ function safePath(urlPath) {
     const decoded = decodeURIComponent(urlPath.split('?')[0]);
     const relative = normalize(decoded === '/' ? 'index.html' : decoded.replace(/^\/+/, ''));
     const target = resolve(join(root, relative));
-    return target === root || target.startsWith(`${root}\\`) ? target : null;
+    return target === root || target.startsWith(root + sep) ? target : null;
 }
 
 const server = createServer(async (request, response) => {

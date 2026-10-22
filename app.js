@@ -5,16 +5,10 @@ let selectedItems = new Set();
 let showTodPrice = false;
 let currentFilter = 'all';
 let slipMeta = { owner: '', receiver: '', drawDate: '' };
+// รายการที่กำลังแก้ไข: เก็บไว้ในลิสต์จนกว่าจะกดเพิ่ม เพื่อไม่ให้ข้อมูลหายถ้าเผลอแตะ
+const editingIds = { underground: null, government: null };
 
 const SLIP_META_KEY = 'lottery_slip_meta';
-
-function getMotionMode() {
-    return 'full';
-}
-
-function getEffectiveMotionMode() {
-    return 'full';
-}
 
 function applyMotionPreference() {
     document.documentElement.dataset.motion = 'full';
@@ -93,9 +87,6 @@ applyMotionPreference();
 window.setMotionMode = setMotionMode;
 window.toggleDeviceVault = toggleDeviceVault;
 
-// Offline detection
-let isOnline = navigator.onLine;
-
 // ============================================
 // SECURITY: HTML Escape Function
 // ============================================
@@ -107,6 +98,65 @@ function escapeHtml(str) {
 }
 
 // ============================================
+// SHARED HELPERS
+// ============================================
+const NUMBER_LENGTHS = {
+    underground: { '3bon': 3, '2bon': 2, '2lang': 2, 'runBon': 1, 'runLang': 1 },
+    government: { '6': 6, 'front3': 3, 'back3': 3, 'back2': 2 }
+};
+
+function getNumberLength(tab, type) {
+    return NUMBER_LENGTHS[tab][type] || 0;
+}
+
+function getTabData(tab = currentTab) {
+    return tab === 'underground' ? undergroundData : governmentData;
+}
+
+function getTabName(tab = currentTab) {
+    return tab === 'underground' ? 'ใต้ดิน' : 'รัฐบาล';
+}
+
+function vibrate(pattern) {
+    try {
+        navigator.vibrate?.(pattern);
+    } catch { /* Vibration is optional. */ }
+}
+
+// มือถือ/iOS ใช้ numpad ของแอปแทนคีย์บอร์ดระบบ
+function usesCustomNumpad() {
+    return isIOS() || !isDesktop();
+}
+
+function syncNumberInputReadonly(input) {
+    if (!input) return;
+    if (usesCustomNumpad()) input.setAttribute('readonly', 'readonly');
+    else input.removeAttribute('readonly');
+}
+
+async function copyText(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        return true;
+    } catch {
+        // Fallback for browsers without async clipboard permission
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            return document.execCommand('copy');
+        } catch {
+            return false;
+        } finally {
+            textarea.remove();
+        }
+    }
+}
+
+// ============================================
 // ID GENERATION: Unique ID Generator
 // ============================================
 function generateUniqueId() {
@@ -115,7 +165,7 @@ function generateUniqueId() {
         return crypto.randomUUID();
     }
     // Fallback: timestamp + random + counter
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${Math.random().toString(36).substr(2, 9)}`;
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}-${Math.random().toString(36).slice(2, 11)}`;
 }
 
 // Initialize
@@ -130,8 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Setup Choice Chips
         setupChoiceChips();
 
-        // Setup Auto Jump for number inputs
-        setupAutoJump();
+        setupNumberInputs();
 
         // Setup event listeners
         const ugPriceDirect = document.getElementById('ugPriceDirect');
@@ -203,29 +252,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Update readonly state for inputs based on platform
 function updateInputReadonlyState() {
-    try {
-        const govNumber = document.getElementById('govNumber');
-        const ugNumber = document.getElementById('ugNumber');
-        const shouldBeReadonly = isIOS() || !isDesktop();
-
-        if (govNumber) {
-            if (shouldBeReadonly) {
-                govNumber.setAttribute('readonly', 'readonly');
-            } else {
-                govNumber.removeAttribute('readonly');
-            }
-        }
-
-        if (ugNumber) {
-            if (shouldBeReadonly) {
-                ugNumber.setAttribute('readonly', 'readonly');
-            } else {
-                ugNumber.removeAttribute('readonly');
-            }
-        }
-    } catch (error) {
-        console.error('updateInputReadonlyState error:', error);
-    }
+    syncNumberInputReadonly(document.getElementById('govNumber'));
+    syncNumberInputReadonly(document.getElementById('ugNumber'));
 }
 
 // Setup Choice Chips
@@ -306,15 +334,10 @@ function setupChoiceChips() {
     }
 }
 
-// Setup Auto Jump - jump to next field when input is complete
-function setupAutoJump() {
-    // NumPad handles auto jump now
-}
-
 // Open NumPad for Government
 function openGovNumpad() {
     const type = document.getElementById('govType').value;
-    const maxLen = type === '6' ? 6 : (type === 'front3' || type === 'back3') ? 3 : 2;
+    const maxLen = getNumberLength('government', type);
     const label = typeNames[type] || 'กรอกเลข';
     openNumpad('govNumber', label, maxLen);
 }
@@ -322,7 +345,7 @@ function openGovNumpad() {
 // Open NumPad for Underground
 function openUgNumpad() {
     const type = document.getElementById('ugType').value;
-    const maxLen = type === '3bon' ? 3 : (type === '2bon' || type === '2lang') ? 2 : 1;
+    const maxLen = getNumberLength('underground', type);
     const label = typeNames[type] || 'กรอกเลข';
     openNumpad('ugNumber', label, maxLen, () => {
         // Auto focus to price after number input
@@ -368,7 +391,7 @@ function handleNumberInput(inputId) {
         }
 
         // iOS หรือ Mobile: บังคับใช้ numpad เสมอ
-        if (isIOS() || !isDesktop()) {
+        if (usesCustomNumpad()) {
             // ป้องกัน system keyboard บน iOS
             input.blur();
             input.setAttribute('readonly', 'readonly');
@@ -454,56 +477,18 @@ function formatNumberInput(input) {
     }
 }
 
-// เพิ่ม event listener สำหรับ input
-document.addEventListener('DOMContentLoaded', function () {
-    try {
-        const govNumber = document.getElementById('govNumber');
-        const ugNumber = document.getElementById('ugNumber');
-        
-        // ตั้งค่า readonly สำหรับ iOS/Mobile
-        const shouldBeReadonly = isIOS() || !isDesktop();
-        
-        if (govNumber) {
-            // เก็บ maxLength จริงไว้
-            const originalMaxLength = govNumber.maxLength || 6;
-            govNumber.setAttribute('data-max-length', originalMaxLength);
-            // เพิ่ม maxLength ให้มากพอสำหรับช่องว่าง (เลข + ช่องว่าง)
-            govNumber.maxLength = originalMaxLength * 2 - 1;
-            
-            // ตั้งค่า readonly สำหรับ iOS/Mobile
-            if (shouldBeReadonly) {
-                govNumber.setAttribute('readonly', 'readonly');
-            }
-            
-            govNumber.addEventListener('input', function () {
-                formatNumberInput(this);
-            });
-        } else {
-            console.warn('govNumber element not found');
-        }
-        
-        if (ugNumber) {
-            // เก็บ maxLength จริงไว้
-            const originalMaxLength = ugNumber.maxLength || 3;
-            ugNumber.setAttribute('data-max-length', originalMaxLength);
-            // เพิ่ม maxLength ให้มากพอสำหรับช่องว่าง (เลข + ช่องว่าง)
-            ugNumber.maxLength = originalMaxLength * 2 - 1;
-            
-            // ตั้งค่า readonly สำหรับ iOS/Mobile
-            if (shouldBeReadonly) {
-                ugNumber.setAttribute('readonly', 'readonly');
-            }
-            
-            ugNumber.addEventListener('input', function () {
-                formatNumberInput(this);
-            });
-        } else {
-            console.warn('ugNumber element not found');
-        }
-    } catch (error) {
-        console.error('DOMContentLoaded input setup error:', error);
-    }
-});
+// ตั้งค่าช่องกรอกเลข: เผื่อ maxLength สำหรับช่องว่าง และล็อกคีย์บอร์ดบนมือถือ
+function setupNumberInputs() {
+    [['govNumber', 6], ['ugNumber', 3]].forEach(([id, fallbackLength]) => {
+        const input = document.getElementById(id);
+        if (!input) return;
+        const realMaxLength = input.maxLength > 0 ? input.maxLength : fallbackLength;
+        input.setAttribute('data-max-length', realMaxLength);
+        input.maxLength = realMaxLength * 2 - 1;
+        syncNumberInputReadonly(input);
+        input.addEventListener('input', () => formatNumberInput(input));
+    });
+}
 
 window.handleNumberInput = handleNumberInput;
 window.handleKeyPress = handleKeyPress;
@@ -529,7 +514,7 @@ function setTabState(tab) {
 }
 
 function animateTabTap(button) {
-    if (!button || getEffectiveMotionMode() !== 'full' || !button.animate) return;
+    if (!button?.animate) return;
     button.animate([
         { transform: 'scale(1.02)' },
         { transform: 'scale(0.975)', offset: 0.42 },
@@ -563,7 +548,7 @@ async function switchTab(tab) {
     document.body.classList.add('transitioning');
     stage.classList.add('is-switching');
 
-    const finishImmediately = getEffectiveMotionMode() !== 'full' || !Element.prototype.animate;
+    const finishImmediately = !Element.prototype.animate;
     if (finishImmediately) {
         fromSection.classList.add('hidden');
         toSection.classList.remove('hidden');
@@ -869,7 +854,7 @@ function setSlipDrawDate(value) {
     if (value && !/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
     input.value = value || '';
     input.dispatchEvent(new Event('input', { bubbles: true }));
-    if (navigator.vibrate) navigator.vibrate(8);
+    vibrate(8);
 }
 
 function selectSuggestedDrawDate(kind) {
@@ -1079,9 +1064,7 @@ function validateAndFixData(data, type) {
     if (!Array.isArray(data)) return [];
 
     const seenIds = new Set();
-    const numberLengths = type === 'underground'
-        ? { '3bon': 3, '2bon': 2, '2lang': 2, 'runBon': 1, 'runLang': 1 }
-        : { '6': 6, 'front3': 3, 'back3': 3, 'back2': 2 };
+    const numberLengths = NUMBER_LENGTHS[type];
 
     return data.filter(item => {
         // ตรวจสอบ required fields
@@ -1280,7 +1263,7 @@ function copyPriceToTod() {
     if (todInput) todInput.value = directPrice;
 
     // สั่นนิดนึง
-    if (navigator.vibrate) navigator.vibrate(50);
+    vibrate(50);
 
     showToast('คัดลอกราคาแล้ว');
 }
@@ -1327,14 +1310,6 @@ function openTodNumpad() {
 
 window.openTodNumpad = openTodNumpad;
 
-// Handle กลับ selection - REMOVED (no longer used for Direct field)
-function onGlabChange(field) {
-    // This function is no longer needed for Direct field
-    // Kept for backward compatibility
-}
-
-window.onGlabChange = onGlabChange;
-
 // Underground type change
 function onUgTypeChange() {
     try {
@@ -1346,29 +1321,7 @@ function onUgTypeChange() {
             return;
         }
 
-        let realMaxLength;
-        if (type === '3bon') {
-            realMaxLength = 3;
-            input.placeholder = '_ _ _';
-        } else if (type === '2bon' || type === '2lang') {
-            realMaxLength = 2;
-            input.placeholder = '_ _';
-        } else {
-            // วิ่ง
-            realMaxLength = 1;
-            input.placeholder = '_';
-        }
-        
-        // เก็บ maxLength จริง
-        input.setAttribute('data-max-length', realMaxLength);
-        // ตั้ง maxLength ให้มากพอสำหรับช่องว่าง
-        input.maxLength = realMaxLength * 2 - 1;
-        input.value = '';
-        
-        // รักษา readonly state สำหรับ iOS/Mobile
-        if (isIOS() || !isDesktop()) {
-            input.setAttribute('readonly', 'readonly');
-        }
+        applyNumberInputLength(input, getNumberLength('underground', type));
     } catch (error) {
         console.error('onUgTypeChange error:', error);
     }
@@ -1385,31 +1338,33 @@ function onGovTypeChange() {
             return;
         }
         
-        let realMaxLength;
-        if (type === '6') {
-            realMaxLength = 6;
-            input.placeholder = '_ _ _ _ _ _';
-        } else if (type === 'front3' || type === 'back3') {
-            realMaxLength = 3;
-            input.placeholder = '_ _ _';
-        } else {
-            realMaxLength = 2;
-            input.placeholder = '_ _';
-        }
-        
-        // เก็บ maxLength จริง
-        input.setAttribute('data-max-length', realMaxLength);
-        // ตั้ง maxLength ให้มากพอสำหรับช่องว่าง
-        input.maxLength = realMaxLength * 2 - 1;
-        input.value = '';
-        
-        // รักษา readonly state สำหรับ iOS/Mobile
-        if (isIOS() || !isDesktop()) {
-            input.setAttribute('readonly', 'readonly');
-        }
+        applyNumberInputLength(input, getNumberLength('government', type));
     } catch (error) {
         console.error('onGovTypeChange error:', error);
     }
+}
+
+// ปรับช่องกรอกเลขตามจำนวนหลัก (เช่น 3 หลัก → placeholder "_ _ _")
+function applyNumberInputLength(input, realMaxLength) {
+    input.placeholder = Array(realMaxLength).fill('_').join(' ');
+    input.setAttribute('data-max-length', realMaxLength);
+    // ตั้ง maxLength ให้มากพอสำหรับช่องว่าง
+    input.maxLength = realMaxLength * 2 - 1;
+    input.value = '';
+    syncNumberInputReadonly(input);
+}
+
+// บันทึกรายการใหม่ หรือแทนที่รายการที่กำลังแก้ไขในตำแหน่งเดิม
+function upsertEntry(tab, entry) {
+    const data = getTabData(tab);
+    const index = data.findIndex(item => item.id === editingIds[tab]);
+    editingIds[tab] = null;
+    if (index === -1) {
+        data.push({ id: generateUniqueId(), ...entry });
+        return false;
+    }
+    data[index] = { ...data[index], ...entry };
+    return true;
 }
 
 // Add underground
@@ -1423,7 +1378,7 @@ function addUnderground() {
     const todTypeSelect = document.getElementById('ugTodType');
 
     // Validate number length
-    const expectedLen = type === '3bon' ? 3 : (type === '2bon' || type === '2lang') ? 2 : 1;
+    const expectedLen = getNumberLength('underground', type);
 
     if (!number || number.length !== expectedLen || !/^\d+$/.test(number)) {
         showToast(`กรุณากรอกเลข ${expectedLen} หลัก`);
@@ -1483,28 +1438,17 @@ function addUnderground() {
     }
 
     try {
-        // Add entry
-        undergroundData.push({
-            id: generateUniqueId(),
-            type,
-            number: number,
-            price: priceStr,
-            amount: amount
-        });
+        const updated = upsertEntry('underground', { type, number, price: priceStr, amount });
 
         saveData();
         renderUnderground();
 
-        // Success feedback: Haptic + Sound
-        if (navigator.vibrate) navigator.vibrate([50, 30, 50]); // Pattern: vibrate-pause-vibrate
+        // Success feedback: vibrate-pause-vibrate
+        vibrate([50, 30, 50]);
 
-        // Clear form
         clearUndergroundForm();
-
-        // Show confetti
         showConfetti();
-
-        showToast('✓ เพิ่มแล้ว');
+        showToast(updated ? '✓ แก้ไขแล้ว' : '✓ เพิ่มแล้ว');
     } catch (error) {
         console.error('Add underground error:', error);
         showToast('⚠️ ไม่สามารถเพิ่มรายการได้');
@@ -1521,10 +1465,7 @@ function clearUndergroundForm() {
         // เคลียร์เลข
         if (ugNumberEl) {
             ugNumberEl.value = '';
-            // รักษา readonly state สำหรับ iOS/Mobile
-            if (isIOS() || !isDesktop()) {
-                ugNumberEl.setAttribute('readonly', 'readonly');
-            }
+            syncNumberInputReadonly(ugNumberEl);
         }
 
         // เคลียร์ราคาเต็ง
@@ -1551,32 +1492,33 @@ function clearUndergroundForm() {
     }
 }
 
-function deleteUnderground(id) {
+function deleteEntry(tab, id) {
     try {
-        const item = undergroundData.find(i => i.id === id);
+        const item = getTabData(tab).find(i => i.id === id);
         if (!item) {
-            console.warn('deleteUnderground: item not found', id);
+            console.warn('deleteEntry: item not found', tab, id);
             return;
         }
 
-        // Delete immediately
-        undergroundData = undergroundData.filter(i => i.id !== id);
+        if (tab === 'underground') {
+            undergroundData = undergroundData.filter(i => i.id !== id);
+        } else {
+            governmentData = governmentData.filter(i => i.id !== id);
+        }
+        if (editingIds[tab] === id) editingIds[tab] = null;
         saveData();
-        renderUnderground();
+        renderAll();
 
         showToast(`ลบ "${item.number}" แล้ว`);
-
-        if (navigator.vibrate) {
-            try {
-                navigator.vibrate(50);
-            } catch (e) {
-                // Vibrate not supported, ignore
-            }
-        }
+        vibrate(50);
     } catch (error) {
-        console.error('deleteUnderground error:', error);
+        console.error('deleteEntry error:', error);
         showToast('⚠️ ไม่สามารถลบรายการได้');
     }
+}
+
+function deleteUnderground(id) {
+    deleteEntry('underground', id);
 }
 
 function bindListItemActions(list, editHandler, deleteHandler) {
@@ -1655,44 +1597,7 @@ function renderUnderground() {
 
     count.textContent = `${filteredData.length}/${undergroundData.length} รายการ`;
 
-    // Calculate total using stored amount or parse from price
-    let total = 0;
-    try {
-        undergroundData.forEach(item => {
-            if (item.amount && !isNaN(item.amount)) {
-                // ใช้ amount ที่เก็บไว้ (ถูกต้องแล้ว)
-                total += item.amount;
-            } else {
-                // Fallback for old data - parse from price string
-                const prices = item.price.split(' x ');
-                const firstPrice = parseInt(prices[0].trim(), 10);
-
-                if (prices.length === 1) {
-                    // มีแค่เต็งอย่างเดียว
-                    if (!isNaN(firstPrice)) total += firstPrice;
-                } else if (prices.length === 2) {
-                    const secondPart = prices[1].trim();
-
-                    if (secondPart === 'กลับ 3') {
-                        // กลับ 3: เอาเต็งคูณ 3
-                        total += firstPrice * 3;
-                    } else if (secondPart === 'กลับ 6') {
-                        // กลับ 6: เอาเต็งคูณ 6
-                        total += firstPrice * 6;
-                    } else {
-                        // ตัวเลขธรรมดา: บวกกัน
-                        const secondPrice = parseInt(secondPart, 10);
-                        if (!isNaN(firstPrice) && !isNaN(secondPrice)) {
-                            total += firstPrice + secondPrice;
-                        }
-                    }
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Calculate total error:', error);
-        total = 0;
-    }
+    const total = getUndergroundTotal(undergroundData);
 
     // Update Dashboard
     if (dashTotal) {
@@ -1736,8 +1641,9 @@ function renderUnderground() {
         const escapedNumber = escapeHtml(item.number);
         const escapedTypeName = escapeHtml(typeNames[item.type] || '');
         const escapedPrice = escapeHtml(item.price);
+        const editingClass = item.id === editingIds.underground ? ' is-editing' : '';
         return `
-        <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}" style="animation-delay: ${index * 0.03}s" data-item-id="${escapeHtml(String(item.id))}">
+        <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}${editingClass}" style="animation-delay: ${index * 0.03}s" data-item-id="${escapeHtml(String(item.id))}">
             <div class="saved-entry-row">
                 <div class="saved-entry-main">
                     <span class="saved-entry-number text-3xl font-bold text-gold-700">${escapedNumber}</span>
@@ -1761,6 +1667,10 @@ function renderUnderground() {
             list.innerHTML = '<p class="text-red-500 text-center py-6 text-sm">⚠️ เกิดข้อผิดพลาดในการแสดงผล</p>';
         }
     }
+}
+
+function getUndergroundTotal(items) {
+    return items.reduce((sum, item) => sum + (Number(item.amount) || calculateAmountFromPrice(item.price)), 0);
 }
 
 // Animate number rolling effect
@@ -1821,10 +1731,7 @@ function editUnderground(id) {
         const numberInput = document.getElementById('ugNumber');
         if (numberInput) {
             numberInput.value = item.number;
-            // รักษา readonly state สำหรับ iOS/Mobile
-            if (isIOS() || !isDesktop()) {
-                numberInput.setAttribute('readonly', 'readonly');
-            }
+            syncNumberInputReadonly(numberInput);
         }
 
         // Parse price (e.g., "100 x 50" or "50 x กลับ 3")
@@ -1861,12 +1768,10 @@ function editUnderground(id) {
             }
         }
 
-        // Delete old entry
-        undergroundData = undergroundData.filter(i => i.id !== id);
-        saveData();
+        editingIds.underground = id;
         renderUnderground();
 
-        showToast('แก้ไขรายการ');
+        showToast(`กำลังแก้ไข "${item.number}" · กดเพิ่มเพื่อบันทึก`);
     } catch (error) {
         console.error('Edit underground error:', error);
         showToast('⚠️ ไม่สามารถแก้ไขรายการได้');
@@ -1890,7 +1795,7 @@ function addGovernment() {
             return;
         }
 
-        const expectedLen = type === '6' ? 6 : (type === 'front3' || type === 'back3') ? 3 : 2;
+        const expectedLen = getNumberLength('government', type);
 
         if (!number || number.length !== expectedLen || !/^\d+$/.test(number)) {
             showToast(`กรุณากรอกเลข ${expectedLen} หลัก`);
@@ -1902,19 +1807,15 @@ function addGovernment() {
             return;
         }
 
-        governmentData.push({ id: generateUniqueId(), type, number, qty });
+        const updated = upsertEntry('government', { type, number, qty });
         saveData();
         renderGovernment();
 
         const numberInput = document.getElementById('govNumber');
         if (numberInput) {
             numberInput.value = '';
-            // รักษา readonly state สำหรับ iOS/Mobile
-            if (isIOS() || !isDesktop()) {
-                numberInput.setAttribute('readonly', 'readonly');
-            } else {
-                numberInput.focus();
-            }
+            syncNumberInputReadonly(numberInput);
+            if (!usesCustomNumpad()) numberInput.focus();
         }
 
         // Reset qty to 1
@@ -1928,13 +1829,9 @@ function addGovernment() {
             if (qtyInputEl) qtyInputEl.value = '1';
         }
 
-        // Success feedback: Haptic
-        if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
-
-        // Show confetti
+        vibrate([50, 30, 50]);
         showConfetti();
-
-        showToast('✓ เพิ่มแล้ว');
+        showToast(updated ? '✓ แก้ไขแล้ว' : '✓ เพิ่มแล้ว');
     } catch (error) {
         console.error('Add government error:', error);
         showToast('⚠️ ไม่สามารถเพิ่มรายการได้');
@@ -1942,31 +1839,7 @@ function addGovernment() {
 }
 
 function deleteGovernment(id) {
-    try {
-        const item = governmentData.find(i => i.id === id);
-        if (!item) {
-            console.warn('deleteGovernment: item not found', id);
-            return;
-        }
-
-        // Delete immediately
-        governmentData = governmentData.filter(i => i.id !== id);
-        saveData();
-        renderGovernment();
-
-        showToast(`ลบ "${item.number}" แล้ว`);
-
-        if (navigator.vibrate) {
-            try {
-                navigator.vibrate(50);
-            } catch (e) {
-                // Vibrate not supported, ignore
-            }
-        }
-    } catch (error) {
-        console.error('deleteGovernment error:', error);
-        showToast('⚠️ ไม่สามารถลบรายการได้');
-    }
+    deleteEntry('government', id);
 }
 
 function renderGovernment() {
@@ -2023,8 +1896,9 @@ function renderGovernment() {
         const isNewest = index === filteredData.length - 1 && !searchTerm;
         const escapedNumber = escapeHtml(item.number);
         const escapedTypeName = escapeHtml(typeNames[item.type] || '');
+        const editingClass = item.id === editingIds.government ? ' is-editing' : '';
         return `
-        <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}" style="animation-delay: ${index * 0.03}s" data-item-id="${escapeHtml(String(item.id))}">
+        <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}${editingClass}" style="animation-delay: ${index * 0.03}s" data-item-id="${escapeHtml(String(item.id))}">
             <div class="saved-entry-row">
                 <div class="saved-entry-main saved-entry-main-government">
                     <span class="saved-entry-number text-3xl font-bold text-gold-700">${escapedNumber}</span>
@@ -2063,10 +1937,7 @@ function editGovernment(id) {
     const numberInput = document.getElementById('govNumber');
     if (numberInput) {
         numberInput.value = item.number;
-        // รักษา readonly state สำหรับ iOS/Mobile
-        if (isIOS() || !isDesktop()) {
-            numberInput.setAttribute('readonly', 'readonly');
-        }
+        syncNumberInputReadonly(numberInput);
     }
 
     // Set qty chip
@@ -2075,12 +1946,10 @@ function editGovernment(id) {
     qtyChips.querySelector(`[data-value="${item.qty}"]`)?.classList.add('active');
     document.getElementById('govQty').value = item.qty;
 
-    // Delete old entry
-    governmentData = governmentData.filter(i => i.id !== id);
-    saveData();
+    editingIds.government = id;
     renderGovernment();
 
-    showToast('แก้ไขรายการ');
+    showToast(`กำลังแก้ไข "${item.number}" · กดเพิ่มเพื่อบันทึก`);
 }
 
 window.editGovernment = editGovernment;
@@ -2095,7 +1964,7 @@ function renderAll() {
 // ============================================
 
 function openPreviewModal() {
-    const data = currentTab === 'underground' ? undergroundData : governmentData;
+    const data = getTabData();
     if (data.length === 0) {
         showToast('ไม่มีรายการ');
         return;
@@ -2120,7 +1989,7 @@ function closePreviewModal() {
 }
 
 function selectAll() {
-    const data = currentTab === 'underground' ? undergroundData : governmentData;
+    const data = getTabData();
     selectedItems = new Set(data.map(i => i.id));
     renderSelectionList();
     renderPreview();
@@ -2147,7 +2016,7 @@ function toggleItem(id) {
 }
 
 function renderSelectionList() {
-    const data = currentTab === 'underground' ? undergroundData : governmentData;
+    const data = getTabData();
     const container = document.getElementById('selectionList');
 
     // Group by type
@@ -2189,7 +2058,7 @@ function renderSelectionList() {
 }
 
 function renderPreview() {
-    const data = currentTab === 'underground' ? undergroundData : governmentData;
+    const data = getTabData();
     const selected = data.filter(i => selectedItems.has(i.id));
     const container = document.getElementById('previewContent');
     renderPreviewMeta();
@@ -2236,7 +2105,7 @@ function renderExportGroups(data, container, sections, tab) {
     }).join('');
 
     const totalValue = tab === 'underground'
-        ? `${data.reduce((sum, item) => sum + calculateAmountFromPrice(item.price), 0).toLocaleString('th-TH')} บาท`
+        ? `${getUndergroundTotal(data).toLocaleString('th-TH')} บาท`
         : `${data.reduce((sum, item) => sum + Number.parseInt(item.qty, 10), 0).toLocaleString('th-TH')} ใบ`;
     const totalLabel = tab === 'underground' ? 'ยอดรวม' : 'จำนวนสลากรวม';
 
@@ -2613,6 +2482,7 @@ function showCustomConfirm({
                 modal.classList.add('hidden');
                 okBtn.removeEventListener('click', onOk);
                 cancelBtn.removeEventListener('click', onCancel);
+                document.removeEventListener('keydown', onKeydown);
                 resolve(result);
             }, 180);
         };
@@ -2620,15 +2490,21 @@ function showCustomConfirm({
         const onOk = () => cleanup(true);
         const onCancel = () => cleanup(false);
 
+        const onKeydown = event => {
+            if (event.key === 'Escape') onCancel();
+        };
+
         okBtn.addEventListener('click', onOk);
         cancelBtn.addEventListener('click', onCancel);
+        document.addEventListener('keydown', onKeydown);
+        okBtn.focus({ preventScroll: true });
     });
 }
 
 // Clear data
 async function clearData() {
-    const data = currentTab === 'underground' ? undergroundData : governmentData;
-    const tabName = currentTab === 'underground' ? 'ใต้ดิน' : 'รัฐบาล';
+    const data = getTabData();
+    const tabName = getTabName();
     if (!data.length) {
         showToast('ไม่มีรายการ');
         return;
@@ -2647,10 +2523,11 @@ async function clearData() {
 
     if (currentTab === 'underground') undergroundData = [];
     else governmentData = [];
+    editingIds[currentTab] = null;
 
     saveData();
     renderAll();
-    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+    vibrate([100, 50, 100]);
     showToast('ล้างข้อมูลแล้ว');
 }
 
@@ -2733,6 +2610,8 @@ function importData(file) {
                 // Import ข้อมูลใหม่
                 undergroundData = undergroundValid;
                 governmentData = governmentValid;
+                editingIds.underground = null;
+                editingIds.government = null;
                 if (imported.meta) {
                     slipMeta = sanitizeSlipMeta(imported.meta);
                     saveSlipMeta();
@@ -2876,87 +2755,6 @@ window.JodHuayDebug = {
 
 console.log('💡 Debug Tools: พิมพ์ JodHuayDebug ใน console เพื่อดูคำสั่ง');
 
-// Copy all to clipboard
-function copyAllToClipboard() {
-    const data = currentTab === 'underground' ? undergroundData : governmentData;
-
-    if (data.length === 0) {
-        showToast('ไม่มีรายการ');
-        return;
-    }
-
-    let text = `📝 รายการหวย${currentTab === 'underground' ? 'ใต้ดิน' : 'รัฐบาล'}\n`;
-    text += `${'─'.repeat(30)}\n\n`;
-
-    if (currentTab === 'underground') {
-        data.forEach((item, index) => {
-            text += `${index + 1}. ${item.number} - ${typeNames[item.type]}\n`;
-            text += `   ราคา: ${item.price}\n\n`;
-        });
-
-        // Calculate total
-        let total = 0;
-        data.forEach(item => {
-            if (item.amount) total += item.amount;
-        });
-        text += `${'─'.repeat(30)}\n`;
-        text += `ยอดรวม: ${total.toLocaleString()} บาท`;
-    } else {
-        data.forEach((item, index) => {
-            text += `${index + 1}. ${item.number} - ${typeNames[item.type]}`;
-            if (item.qty > 1) text += ` (${item.qty} ใบ)`;
-            text += '\n';
-        });
-    }
-
-    navigator.clipboard.writeText(text).then(() => {
-        showToast('✓ คัดลอกแล้ว');
-        if (navigator.vibrate) navigator.vibrate(50);
-    }).catch(() => {
-        showToast('ไม่สามารถคัดลอกได้');
-    });
-}
-
-// Share list
-async function shareList() {
-    const data = currentTab === 'underground' ? undergroundData : governmentData;
-
-    if (data.length === 0) {
-        showToast('ไม่มีรายการ');
-        return;
-    }
-
-    let text = `📝 รายการหวย${currentTab === 'underground' ? 'ใต้ดิน' : 'รัฐบาล'}\n\n`;
-
-    if (currentTab === 'underground') {
-        data.forEach((item, index) => {
-            text += `${index + 1}. ${item.number} - ${typeNames[item.type]} (${item.price})\n`;
-        });
-    } else {
-        data.forEach((item, index) => {
-            text += `${index + 1}. ${item.number} - ${typeNames[item.type]}`;
-            if (item.qty > 1) text += ` (${item.qty} ใบ)`;
-            text += '\n';
-        });
-    }
-
-    if (navigator.share) {
-        try {
-            await navigator.share({
-                title: 'รายการหวย - JodHuay',
-                text: text
-            });
-            showToast('✓ แชร์แล้ว');
-        } catch (err) {
-            if (err.name !== 'AbortError') {
-                copyAllToClipboard();
-            }
-        }
-    } else {
-        copyAllToClipboard();
-    }
-}
-
 // Filter state
 
 // Filter underground by type
@@ -2972,8 +2770,7 @@ function filterByType(type) {
     });
 
     renderUnderground();
-
-    if (navigator.vibrate) navigator.vibrate(30);
+    vibrate(30);
 }
 
 // Filter underground by search
@@ -2986,8 +2783,6 @@ function filterGovernment() {
     renderGovernment();
 }
 
-window.copyAllToClipboard = copyAllToClipboard;
-window.shareList = shareList;
 window.filterByType = filterByType;
 window.filterUnderground = filterUnderground;
 window.filterGovernment = filterGovernment;
@@ -3019,14 +2814,14 @@ function buildSlipText(items, tab = currentTab) {
 
     text += `\n─────────────\nรวม ${items.length} รายการ\n`;
     if (tab === 'underground') {
-        const total = items.reduce((sum, item) => sum + calculateAmountFromPrice(item.price), 0);
+        const total = getUndergroundTotal(items);
         text += `ยอดรวม: ${total.toLocaleString()} บาท\n`;
     }
     return text.trim();
 }
 
 async function shareAsText() {
-    const data = currentTab === 'underground' ? undergroundData : governmentData;
+    const data = getTabData();
     const selected = data.filter(i => selectedItems.has(i.id));
 
     if (selected.length === 0) {
@@ -3045,19 +2840,11 @@ async function shareAsText() {
             showToast('✓ แชร์แล้ว');
         } catch (err) {
             if (err.name !== 'AbortError') {
-                // Fallback to copy
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast('คัดลอกแล้ว (ไม่สามารถแชร์ได้)');
-                });
+                showToast(await copyText(text) ? 'คัดลอกแล้ว (ไม่สามารถแชร์ได้)' : 'ไม่สามารถคัดลอกได้');
             }
         }
     } else {
-        // Fallback to copy
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('คัดลอกแล้ว (ไม่รองรับการแชร์)');
-        }).catch(() => {
-            showToast('ไม่สามารถคัดลอกได้');
-        });
+        showToast(await copyText(text) ? 'คัดลอกแล้ว (ไม่รองรับการแชร์)' : 'ไม่สามารถคัดลอกได้');
     }
 }
 
@@ -3186,7 +2973,7 @@ function switchModalMode(mode) {
     }
 
     // Haptic feedback
-    if (navigator.vibrate) navigator.vibrate(30);
+    vibrate(30);
 }
 
 function handleCopyOrSave() {
@@ -3237,9 +3024,12 @@ window.toggleSelectionPanel = toggleSelectionPanel;
 
 function showToast(msg) {
     const toast = document.getElementById('toast');
-    document.getElementById('toastMessage').textContent = msg;
+    const message = document.getElementById('toastMessage');
+    if (!toast || !message) return;
+    message.textContent = msg;
     toast.classList.add('toast-show');
-    setTimeout(() => toast.classList.remove('toast-show'), 2000);
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => toast.classList.remove('toast-show'), 2000);
 }
 
 function registerServiceWorker() {
@@ -3255,15 +3045,12 @@ function registerServiceWorker() {
 }
 
 // Global
-window.switchTab = switchTab;
 window.addUnderground = addUnderground;
 window.deleteUnderground = deleteUnderground;
 window.addGovernment = addGovernment;
 window.deleteGovernment = deleteGovernment;
-window.clearData = clearData;
 window.onUgTypeChange = onUgTypeChange;
 window.onGovTypeChange = onGovTypeChange;
-window.toggleTodPrice = toggleTodPrice;
 window.openPreviewModal = openPreviewModal;
 window.closePreviewModal = closePreviewModal;
 window.selectAll = selectAll;
@@ -3275,38 +3062,16 @@ window.saveImage = saveImage;
 // COPY AS TEXT
 // ============================================
 
-function copyAsText() {
+async function copyAsText() {
     try {
-        const data = currentTab === 'underground' ? undergroundData : governmentData;
-        const selected = data.filter(i => selectedItems.has(i.id));
+        const selected = getTabData().filter(i => selectedItems.has(i.id));
 
         if (selected.length === 0) {
             showToast('กรุณาเลือกรายการ');
             return;
         }
 
-        const text = buildSlipText(selected);
-
-        // Copy to clipboard
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('คัดลอกแล้ว');
-        }).catch(() => {
-            // Fallback for older browsers
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                showToast('คัดลอกแล้ว');
-            } catch (err) {
-                console.error('Copy failed:', err);
-                showToast('⚠️ ไม่สามารถคัดลอกได้');
-            }
-            document.body.removeChild(textarea);
-        });
+        showToast(await copyText(buildSlipText(selected)) ? 'คัดลอกแล้ว' : '⚠️ ไม่สามารถคัดลอกได้');
     } catch (error) {
         console.error('Copy as text error:', error);
         showToast('⚠️ เกิดข้อผิดพลาด');
@@ -3427,7 +3192,7 @@ function numpadPress(num) {
         animateNumpadValue();
 
         // Haptic feedback - สั่นเบาๆ
-        if (navigator.vibrate) navigator.vibrate(10);
+        vibrate(10);
 
         // Auto confirm เมื่อกรอกครบ (เฉพาะเลขหวย ไม่ใช่ราคา)
         if (!numpadIsPrice && numpadValue.length >= numpadMaxLength) {
@@ -3452,7 +3217,7 @@ function numpadClear() {
             }
         }
         animateNumpadValue();
-        if (navigator.vibrate) navigator.vibrate(20);
+        vibrate(20);
     } catch (error) {
         console.error('Numpad clear error:', error);
     }
@@ -3476,7 +3241,7 @@ function numpadBackspace() {
             }
         }
         animateNumpadValue();
-        if (navigator.vibrate) navigator.vibrate(10);
+        vibrate(10);
     } catch (error) {
         console.error('Numpad backspace error:', error);
     }
@@ -3507,7 +3272,7 @@ function quickPrice(amount) {
         const valueDisplay = document.getElementById('numpadValue');
         if (valueDisplay) valueDisplay.textContent = numpadValue;
         animateNumpadValue();
-        if (navigator.vibrate) navigator.vibrate(10);
+        vibrate(10);
         setTimeout(() => confirmNumpad(), 100);
     } catch (error) {
         console.error('Quick price error:', error);
@@ -3621,10 +3386,8 @@ function setupOfflineDetection() {
     const indicator = document.getElementById('offlineIndicator');
 
     function updateOnlineStatus() {
-        isOnline = navigator.onLine;
-
         if (indicator) {
-            if (isOnline) {
+            if (navigator.onLine) {
                 indicator.classList.add('hidden');
             } else {
                 indicator.classList.remove('hidden');
@@ -3640,7 +3403,7 @@ function setupOfflineDetection() {
 
     window.addEventListener('offline', () => {
         updateOnlineStatus();
-        showToast('⚠ ออฟไลน์ - ข้อมูลจะถูกบันทึกเมื่อกลับมาออนไลน์');
+        showToast('⚠ ออฟไลน์ - ยังจดและบันทึกในเครื่องได้ตามปกติ');
     });
 
     // Initial check
@@ -3653,20 +3416,30 @@ function setupOfflineDetection() {
 
 function setupSwipeToDelete() {
     let touchStartX = 0;
+    let touchStartY = 0;
     let touchEndX = 0;
     let currentElement = null;
 
     document.addEventListener('touchstart', (e) => {
         const listItem = e.target.closest('.list-item');
-        if (listItem) {
+        if (listItem && !e.target.closest('[data-delete-item]')) {
             currentElement = listItem;
-            touchStartX = e.changedTouches[0].screenX;
+            touchStartX = touchEndX = e.changedTouches[0].clientX;
+            touchStartY = e.changedTouches[0].clientY;
         }
     }, { passive: true });
 
     document.addEventListener('touchmove', (e) => {
         if (currentElement) {
-            touchEndX = e.changedTouches[0].screenX;
+            const touch = e.changedTouches[0];
+            // เลื่อนแนวตั้ง (scroll) ไม่นับเป็นการปัดลบ
+            if (Math.abs(touch.clientY - touchStartY) > Math.abs(touch.clientX - touchStartX)) {
+                currentElement.style.transform = 'translateX(0)';
+                currentElement.style.opacity = '1';
+                currentElement = null;
+                return;
+            }
+            touchEndX = touch.clientX;
             const diff = touchEndX - touchStartX;
 
             // Only allow left swipe
@@ -3683,18 +3456,11 @@ function setupSwipeToDelete() {
 
             // If swiped more than 100px, delete
             if (diff < -100) {
-                currentElement.style.transform = 'translateX(-100%)';
-                currentElement.style.opacity = '0';
+                const swipedElement = currentElement;
+                swipedElement.style.transform = 'translateX(-100%)';
+                swipedElement.style.opacity = '0';
 
-                setTimeout(() => {
-                    // Extract ID and delete
-                    if (currentElement) {
-                        const deleteBtn = currentElement.querySelector('.delete-btn');
-                        if (deleteBtn) {
-                            deleteBtn.click();
-                        }
-                    }
-                }, 300);
+                setTimeout(() => swipedElement.querySelector('.delete-btn')?.click(), 300);
             } else {
                 // Reset position
                 currentElement.style.transform = 'translateX(0)';
@@ -3731,104 +3497,27 @@ function getEnhancedEmptyState(type) {
 }
 
 // ============================================
-// ERROR HANDLING & VALIDATION
-// ============================================
-
-function validateData() {
-    try {
-        // Check localStorage availability
-        if (!window.localStorage) {
-            throw new Error('LocalStorage ไม่พร้อมใช้งาน');
-        }
-
-        // Check data integrity
-        if (!Array.isArray(undergroundData)) {
-            undergroundData = [];
-        }
-        if (!Array.isArray(governmentData)) {
-            governmentData = [];
-        }
-
-        return true;
-    } catch (error) {
-        console.error('Data validation error:', error);
-        showToast('⚠ เกิดข้อผิดพลาดในการตรวจสอบข้อมูล');
-        return false;
-    }
-}
-
-function safeExecute(fn, errorMessage = 'เกิดข้อผิดพลาด') {
-    try {
-        return fn();
-    } catch (error) {
-        console.error(error);
-        showToast(`⚠ ${errorMessage}`);
-        return null;
-    }
-}
-
-// ============================================
-// PERFORMANCE OPTIMIZATION
-// ============================================
-
-// Debounce function for search
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// ============================================
 // LAZY LOADING - html2canvas
 // ============================================
 
-let html2canvasLoaded = false;
-let html2canvasLoading = false;
+let html2canvasPromise = null;
 
 // Load the pinned local build only when needed. Keeping the capture engine in
 // the app avoids CDN/version differences and keeps image export available offline.
-async function loadHtml2Canvas() {
-    if (html2canvasLoaded) return true;
-    if (html2canvasLoading) {
-        // Wait for existing load to complete
-        return new Promise((resolve) => {
-            const checkLoaded = setInterval(() => {
-                if (html2canvasLoaded) {
-                    clearInterval(checkLoaded);
-                    resolve(true);
-                }
-            }, 100);
-        });
-    }
-
-    html2canvasLoading = true;
-
-    return new Promise((resolve, reject) => {
+function loadHtml2Canvas() {
+    html2canvasPromise ??= new Promise((resolve, reject) => {
         const script = document.createElement('script');
         script.src = './assets/vendor/html2canvas.min.js';
         script.async = true;
-
-        script.onload = () => {
-            html2canvasLoaded = true;
-            html2canvasLoading = false;
-            console.log('✓ html2canvas loaded on-demand');
-            resolve(true);
-        };
-
+        script.onload = () => resolve(true);
         script.onerror = () => {
-            html2canvasLoading = false;
-            console.error('Failed to load html2canvas');
+            html2canvasPromise = null; // allow a retry later
+            script.remove();
             reject(new Error('Failed to load html2canvas library'));
         };
-
         document.head.appendChild(script);
     });
+    return html2canvasPromise;
 }
 
 // Wrapper function to ensure html2canvas is loaded before use
@@ -3938,16 +3627,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Log initial load performance
-if (typeof performance !== 'undefined' && performance.timing) {
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            const timing = performance.timing;
-            const loadTime = timing.loadEventEnd - timing.navigationStart;
-            console.log(`📊 Page load time: ${loadTime}ms`);
-        }, 0);
-    });
-}
 // ============================================
 // PWA CUSTOM INSTALL PROMPT
 // ============================================

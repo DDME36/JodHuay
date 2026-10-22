@@ -1,9 +1,9 @@
-const CACHE_NAME = 'jodhuay-v90';
+const CACHE_NAME = 'jodhuay-v91';
 const RUNTIME_CACHE = 'jodhuay-runtime-v1';
 const urlsToCache = [
     './',
     './index.html',
-    './styles.css',  // Fixed: was ./css/styles.css
+    './styles.css',
     './css/tailwind-built.css',
     './css/fonts.css',
     './css/tokens.css',

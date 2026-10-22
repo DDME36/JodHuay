@@ -119,9 +119,12 @@ const result = await evaluate(`
     addGovernment();
     const governmentAdded = document.querySelectorAll('#govList [data-item-id]').length === 1;
     document.querySelector('#govList [data-item-id]').click();
+    // Editing keeps the original entry (highlighted) until it is saved again.
     const governmentEdited = document.getElementById('govNumber').value.replace(/\\s/g, '') === '123456'
-        && document.querySelectorAll('#govList [data-item-id]').length === 0;
+        && document.querySelectorAll('#govList [data-item-id].is-editing').length === 1;
     addGovernment();
+    const governmentEditReplaced = document.querySelectorAll('#govList [data-item-id]').length === 1
+        && !document.querySelector('#govList .is-editing');
     document.querySelector('#govList [data-delete-item]').click();
     const governmentDeleted = document.querySelectorAll('#govList [data-item-id]').length === 0;
 
@@ -131,9 +134,12 @@ const result = await evaluate(`
     addUnderground();
     const undergroundAdded = document.querySelectorAll('#ugList [data-item-id]').length === 1;
     document.querySelector('#ugList [data-item-id]').click();
+    // Editing keeps the original entry (highlighted) until it is saved again.
     const undergroundEdited = document.getElementById('ugNumber').value.replace(/\\s/g, '') === '123'
-        && document.querySelectorAll('#ugList [data-item-id]').length === 0;
+        && document.querySelectorAll('#ugList [data-item-id].is-editing').length === 1;
     addUnderground();
+    const undergroundEditReplaced = document.querySelectorAll('#ugList [data-item-id]').length === 1
+        && !document.querySelector('#ugList .is-editing');
     document.querySelector('#ugList [data-delete-item]').click();
     const undergroundDeleted = document.querySelectorAll('#ugList [data-item-id]').length === 0;
 
@@ -161,9 +167,11 @@ const result = await evaluate(`
     return {
         governmentAdded,
         governmentEdited,
+        governmentEditReplaced,
         governmentDeleted,
         undergroundAdded,
         undergroundEdited,
+        undergroundEditReplaced,
         undergroundDeleted,
         metaCollapsedByDefault,
         metaPanelOpens,

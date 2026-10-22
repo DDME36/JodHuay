@@ -264,6 +264,13 @@
     overflow: hidden;
 }
 
+/* รายการที่กำลังแก้ไขอยู่ในฟอร์มด้านบน */
+.list-item.is-editing {
+    outline: 2px dashed var(--jh-gold);
+    outline-offset: -2px;
+    background-color: rgba(235, 217, 173, 0.35);
+}
+
 .saved-entry-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 40px;
