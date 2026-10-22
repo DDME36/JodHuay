@@ -1,14 +1,20 @@
 // Scroll-reveal motion, tab switching animation, ripple and confetti effects.
 import { state } from './state.js';
 
-export function applyMotionPreference() {
-    document.documentElement.dataset.motion = 'full';
-    document.documentElement.dataset.motionChoice = 'full';
-    return 'full';
+const prefersReducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+// 'full' = มี animation, 'reduced' = ผู้ใช้ตั้งค่าเครื่องให้ลดการเคลื่อนไหว
+export function applyMotionPreference(mode) {
+    const effective = mode === 'full' || mode === 'reduced' ? mode : (prefersReducedMotion() ? 'reduced' : 'full');
+    document.documentElement.dataset.motion = effective;
+    document.documentElement.dataset.motionChoice = effective;
+    return effective;
 }
 
-export function setMotionMode() {
-    applyMotionPreference();
+const motionEnabled = () => document.documentElement.dataset.motion === 'full';
+
+export function setMotionMode(mode) {
+    applyMotionPreference(mode);
     setupScrollMotion(true);
     replayMotionWithin(document.querySelector('.app-shell'));
 }
@@ -73,10 +79,13 @@ export function setTabState(tab) {
         button?.classList.toggle('active', isActive);
         button?.setAttribute('aria-selected', String(isActive));
     });
+    // ปุ่มล้างข้อมูลล้างเฉพาะแท็บที่เปิดอยู่ จึงบอกชื่อแท็บให้ชัด
+    const clearButton = document.getElementById('clearDataBtn');
+    if (clearButton) clearButton.textContent = `ล้างรายการหวย${tab === 'underground' ? 'ใต้ดิน' : 'รัฐบาล'}`;
 }
 
 export function animateTabTap(button) {
-    if (!button?.animate) return;
+    if (!button?.animate || !motionEnabled()) return;
     button.animate([
         { transform: 'scale(1.02)' },
         { transform: 'scale(0.975)', offset: 0.42 },
@@ -110,7 +119,7 @@ export async function switchTab(tab) {
     document.body.classList.add('transitioning');
     stage.classList.add('is-switching');
 
-    const finishImmediately = !Element.prototype.animate;
+    const finishImmediately = !Element.prototype.animate || !motionEnabled();
     if (finishImmediately) {
         fromSection.classList.add('hidden');
         toSection.classList.remove('hidden');
@@ -282,6 +291,7 @@ document.addEventListener('click', function (e) {
 // ============================================
 
 export function showConfetti() {
+    if (!motionEnabled()) return;
     const canvas = document.getElementById('confetti');
     if (!canvas) return;
 

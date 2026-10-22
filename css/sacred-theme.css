@@ -1294,3 +1294,112 @@ footer {
     border: 1px solid #f3d790 !important;
     box-shadow: 0 4px 14px rgba(185, 144, 61, 0.35) !important;
 }
+
+/* ============================================
+   UX polish: readability, clarity, accessibility
+   ============================================ */
+
+/* A lottery number is one unit: never break "123456" across lines */
+.saved-entry-number {
+    white-space: nowrap;
+    overflow-wrap: normal !important;
+    font-variant-numeric: tabular-nums;
+}
+
+#ugTotal,
+#ugDashTotal,
+#ugDashAmount,
+.saved-entry-value strong,
+.export-number,
+.export-summary-value {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Thai placeholder text must not be letter-spaced ("ร ะ บุ ร า ค า") */
+#ugPriceDirect:placeholder-shown,
+#ugPriceTod:placeholder-shown,
+#ugPriceDirect::placeholder,
+#ugPriceTod::placeholder {
+    letter-spacing: normal;
+}
+
+/* Tod toggle: a labelled button instead of a bare "+" circle */
+.tod-toggle-btn {
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 1.5px dashed rgba(148, 97, 22, 0.55);
+    border-radius: 999px;
+    background: rgba(252, 248, 238, 0.9);
+    color: var(--jh-gold-deep);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tod-toggle-btn[aria-expanded="true"] {
+    border-style: solid;
+    color: var(--jh-muted);
+}
+
+/* Toast with an action (e.g. undo delete) must be tappable */
+#toast {
+    width: max-content;
+    max-width: calc(100vw - 32px);
+}
+
+#toast.has-action {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    pointer-events: auto;
+}
+
+.toast-action {
+    flex-shrink: 0;
+    min-height: 36px;
+    padding: 6px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.toast-action.hidden {
+    display: none;
+}
+
+/* Keyboard users need to see where focus is (earlier rules removed it) */
+.tab-btn:focus-visible,
+.choice-chip:focus-visible,
+.filter-chip:focus-visible,
+.numpad-btn:focus-visible,
+.gold-btn:focus-visible,
+.danger-btn:focus-visible,
+.tod-toggle-btn:focus-visible,
+.edit-cancel-btn:focus-visible,
+.toast-action:focus-visible,
+.list-item:focus-visible {
+    outline: 2px solid #b7862b !important;
+    outline-offset: 2px !important;
+}
+
+/* Scrolling inside a sheet should not scroll the page behind it */
+.modal-content,
+#selectionList,
+.numpad-overlay {
+    overscroll-behavior: contain;
+}
+
+/* Respect the system "reduce motion" setting */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

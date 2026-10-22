@@ -354,9 +354,9 @@ export async function renderSlipImage(setLabel = () => {}) {
     // The pixel-matched renderer is bundled with the app. Load the legacy
     // renderer only when the modern renderer is unavailable.
     if (typeof window.modernScreenshot === 'undefined' && typeof html2canvas === 'undefined') {
-        setLabel('กำลังโหลด...');
+        setLabel('กำลังโหลด…');
         if (!(await ensureHtml2Canvas())) throw new Error('html2canvas library not loaded');
-        setLabel('กำลังสร้างรูป...');
+        setLabel('กำลังสร้างรูป…');
     }
 
     const canvas = await createExportCanvas(document.getElementById('a4Preview'), isIOSDevice());
@@ -429,7 +429,7 @@ export async function saveImage() {
         return;
     }
 
-    await withBusyButton(document.getElementById('btnCopyOrSave'), 'กำลังสร้าง...', async setLabel => {
+    await withBusyButton(document.getElementById('btnCopyOrSave'), 'กำลังสร้าง…', async setLabel => {
         try {
             const { dataUrl, fileName, file } = await renderSlipImage(setLabel);
 
@@ -539,7 +539,7 @@ export async function shareAsImage() {
         return;
     }
 
-    await withBusyButton(document.getElementById('btnShare'), 'กำลังสร้างรูป...', async setLabel => {
+    await withBusyButton(document.getElementById('btnShare'), 'กำลังสร้างรูป…', async setLabel => {
         try {
             const { file } = await renderSlipImage(setLabel);
             if (!canShareFile(file)) {

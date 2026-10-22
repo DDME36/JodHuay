@@ -233,7 +233,7 @@
                 <!-- Search Bar -->
                 <div id="govSearchBar" class="hidden mb-3">
                     <div class="relative">
-                        <input type="text" id="govSearchInput" placeholder="ค้นหาเลข..."
+                        <input type="text" id="govSearchInput" placeholder="ค้นหาเลข…"
                             class="w-full px-4 py-2 pl-10 rounded-xl border-2 border-gray-200 focus:border-gold-400 focus:outline-none text-sm">
                         <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -326,10 +326,8 @@
 
                     <!-- ปุ่ม +/- โต๊ด -->
                     <div class="flex items-center justify-center my-4">
-                        <button id="addTodBtn" data-action="toggleTodPrice"
-                            class="w-10 h-10 rounded-full border-2 border-gold-300 bg-gold-50 text-gold-600 font-bold text-xl flex items-center justify-center hover:bg-gold-100 transition-all shadow-sm">
-                            +
-                        </button>
+                        <button type="button" id="addTodBtn" data-action="toggleTodPrice" class="tod-toggle-btn"
+                            aria-expanded="false" aria-controls="todPriceSection">+ เพิ่มโต๊ด</button>
                     </div>
 
                     <!-- ปุ่มคัดลอกราคา (แสดงเมื่อเปิดโต๊ด) -->
@@ -340,7 +338,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                             </svg>
-                            เท่ากัน
+                            โต๊ดเท่าเต็ง
                         </button>
                     </div>
 
@@ -393,7 +391,7 @@
                 <!-- Search Bar -->
                 <div id="ugSearchBar" class="hidden mb-3">
                     <div class="relative">
-                        <input type="text" id="ugSearchInput" placeholder="ค้นหาเลข..."
+                        <input type="text" id="ugSearchInput" placeholder="ค้นหาเลข…"
                             class="w-full px-4 py-2 pl-10 rounded-xl border-2 border-gray-200 focus:border-gold-400 focus:outline-none text-sm">
                         <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -442,9 +440,9 @@
                 บันทึก / แชร์
             </button>
 
-            <button data-action="clearData"
+            <button type="button" id="clearDataBtn" data-action="clearData"
                 class="danger-btn w-full py-4 rounded-2xl font-medium transition-all">
-                ล้างข้อมูลทั้งหมด
+                ล้างรายการหวยรัฐบาล
             </button>
 
             <div class="device-vault" id="deviceVault">
@@ -475,7 +473,7 @@
         </div>
 
         <!-- Custom NumPad -->
-        <div id="numpadOverlay" class="numpad-overlay hidden">
+        <div id="numpadOverlay" class="numpad-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="numpadLabel">
             <div class="numpad-container">
                 <div class="numpad-display">
                     <span id="numpadValue" class="text-3xl font-bold text-gold-700 tracking-widest"></span>
@@ -498,9 +496,9 @@
                     <button class="numpad-btn" data-action="numpadPress" data-arg="7">7</button>
                     <button class="numpad-btn" data-action="numpadPress" data-arg="8">8</button>
                     <button class="numpad-btn" data-action="numpadPress" data-arg="9">9</button>
-                    <button class="numpad-btn numpad-special" data-action="numpadClear">C</button>
+                    <button type="button" class="numpad-btn numpad-special" data-action="numpadClear" aria-label="ล้างตัวเลขทั้งหมด">C</button>
                     <button class="numpad-btn" data-action="numpadPress" data-arg="0">0</button>
-                    <button class="numpad-btn numpad-special" data-action="numpadBackspace">
+                    <button type="button" class="numpad-btn numpad-special" data-action="numpadBackspace" aria-label="ลบตัวเลขล่าสุด">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             style="display:inline-block;vertical-align:middle;">
@@ -530,21 +528,20 @@
                 ขอให้โชคดี เฮง ๆ ร่ำรวย
                 <span class="text-lg">๙</span>
             </p>
-            <p class="text-gold-500 text-xs mt-2 opacity-60">&copy; JodHuay</p>
-            <p class="text-gold-400 text-xs mt-1 opacity-50">Developed by PUNN</p>
+            <p class="text-gold-600 text-xs mt-2">&copy; JodHuay · Developed by PUNN</p>
         </footer>
     </div>
 
     <!-- Preview Modal -->
-    <div id="previewModal" class="modal-overlay fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div id="previewModal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle" class="modal-overlay fixed inset-0 z-50 hidden flex items-center justify-center p-4">
         <div class="modal-content rounded-3xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
             <!-- Modal Header -->
             <div class="preview-modal-head p-4 flex justify-between items-center">
                 <div>
-                    <h2 class="text-lg font-bold text-gold-700">บันทึก / แชร์</h2>
+                    <h2 id="previewModalTitle" class="text-lg font-bold text-gold-700">บันทึก / แชร์</h2>
                     <p class="text-xs text-gray-500">เลือกรายการที่ต้องการ</p>
                 </div>
-                <button data-action="closePreviewModal"
+                <button type="button" data-action="closePreviewModal" aria-label="ปิด"
                     class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 text-2xl font-bold transition-all hover:scale-110">&times;</button>
             </div>
 
@@ -663,13 +660,15 @@
     </div>
 
     <!-- Toast -->
-    <div id="toast"
-        class="fixed bottom-24 left-1/2 transform -translate-x-1/2 text-white px-8 py-4 rounded-2xl shadow-2xl opacity-0 transition-all duration-300 pointer-events-none z-50">
+    <div id="toast" role="status" aria-live="polite"
+        class="fixed bottom-24 text-white px-8 py-4 rounded-2xl shadow-2xl opacity-0 transition-all duration-300 pointer-events-none z-50">
         <span id="toastMessage" class="font-medium"></span>
+        <button type="button" id="toastAction" class="toast-action hidden"></button>
     </div>
 
     <!-- Custom Confirm Modal -->
-    <div id="confirmModal"
+    <div id="confirmModal" role="alertdialog" aria-modal="true"
+        aria-labelledby="confirmModalTitle" aria-describedby="confirmModalText"
         class="sacred-confirm-backdrop fixed inset-0 z-50 hidden flex items-center justify-center p-4">
         <div class="sacred-confirm-card shadow-2xl transform transition-all scale-95 opacity-0"
             id="confirmModalContent">

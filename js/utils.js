@@ -176,12 +176,25 @@ export function showCustomConfirm({
     });
 }
 
-export function showToast(msg) {
+// แสดงข้อความสั้น ๆ; ใส่ actionLabel/onAction เพื่อให้มีปุ่ม เช่น "เลิกทำ"
+export function showToast(msg, { actionLabel, onAction } = {}) {
     const toast = document.getElementById('toast');
     const message = document.getElementById('toastMessage');
+    const actionButton = document.getElementById('toastAction');
     if (!toast || !message) return;
     message.textContent = msg;
+
+    const hasAction = Boolean(actionButton && actionLabel && onAction);
+    if (actionButton) {
+        actionButton.classList.toggle('hidden', !hasAction);
+        actionButton.textContent = hasAction ? actionLabel : '';
+        actionButton.onclick = hasAction ? () => {
+            toast.classList.remove('toast-show', 'has-action');
+            onAction();
+        } : null;
+    }
+    toast.classList.toggle('has-action', hasAction);
     toast.classList.add('toast-show');
     clearTimeout(showToast.timer);
-    showToast.timer = setTimeout(() => toast.classList.remove('toast-show'), 2000);
+    showToast.timer = setTimeout(() => toast.classList.remove('toast-show', 'has-action'), hasAction ? 5000 : 2000);
 }

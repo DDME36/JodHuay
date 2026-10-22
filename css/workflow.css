@@ -215,7 +215,7 @@
 
 .saved-entry-main {
     display: grid;
-    grid-template-columns: minmax(54px, auto) minmax(76px, 1fr) auto;
+    grid-template-columns: max-content minmax(0, 1fr) auto;
     align-items: center;
     gap: 12px;
     min-width: 0;
@@ -263,7 +263,7 @@
     }
 
     .saved-entry-main {
-        grid-template-columns: minmax(46px, auto) minmax(62px, 1fr) auto;
+        grid-template-columns: max-content minmax(0, 1fr) auto;
         gap: 8px;
     }
 
@@ -341,7 +341,7 @@
     }
 
     .saved-entry-main {
-        grid-template-columns: minmax(50px, auto) minmax(0, 1fr);
+        grid-template-columns: max-content minmax(0, 1fr);
         grid-template-areas:
             "number meta"
             "number value";

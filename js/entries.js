@@ -207,13 +207,14 @@ export function toggleTodPrice() {
 
     if (!section || !btn) return;
 
+    btn.setAttribute('aria-expanded', String(state.showTodPrice));
     if (state.showTodPrice) {
         section.classList.remove('hidden');
-        btn.textContent = '−';
+        btn.textContent = '− ไม่ใส่โต๊ด';
         if (copyBtn) copyBtn.classList.remove('hidden');
     } else {
         section.classList.add('hidden');
-        btn.textContent = '+';
+        btn.textContent = '+ เพิ่มโต๊ด';
         if (copyBtn) copyBtn.classList.add('hidden');
         const todInput = document.getElementById('ugPriceTod');
         if (todInput) todInput.value = '';
@@ -473,7 +474,8 @@ export function clearUndergroundForm() {
 
 export function deleteEntry(tab, id) {
     try {
-        const item = getTabData(tab).find(i => i.id === id);
+        const index = getTabData(tab).findIndex(i => i.id === id);
+        const item = getTabData(tab)[index];
         if (!item) {
             console.warn('deleteEntry: item not found', tab, id);
             return;
@@ -488,12 +490,25 @@ export function deleteEntry(tab, id) {
         saveData();
         renderAll();
 
-        showToast(`ลบ "${item.number}" แล้ว`);
+        // ลบทันทีแต่ให้กดเลิกทำได้ เผื่อเผลอแตะ × หรือปัดโดนรายการ
+        showToast(`ลบ "${item.number}" แล้ว`, {
+            actionLabel: 'เลิกทำ',
+            onAction: () => restoreEntry(tab, item, index)
+        });
         vibrate(50);
     } catch (error) {
         console.error('deleteEntry error:', error);
         showToast('⚠️ ไม่สามารถลบรายการได้');
     }
+}
+
+function restoreEntry(tab, item, index) {
+    const data = getTabData(tab);
+    if (data.some(i => i.id === item.id)) return;
+    data.splice(Math.min(index, data.length), 0, item);
+    saveData();
+    renderAll();
+    showToast(`นำ "${item.number}" กลับมาแล้ว`);
 }
 
 export function deleteUnderground(id) {
@@ -504,6 +519,11 @@ export function bindListItemActions(list, editHandler, deleteHandler) {
     list.querySelectorAll('[data-item-id]').forEach(element => {
         const id = element.dataset.itemId;
         element.addEventListener('click', () => editHandler(id));
+        element.addEventListener('keydown', event => {
+            if (event.target !== element || (event.key !== 'Enter' && event.key !== ' ')) return;
+            event.preventDefault();
+            editHandler(id);
+        });
 
         const deleteButton = element.querySelector('[data-delete-item]');
         if (deleteButton) {
@@ -622,7 +642,7 @@ export function renderUnderground() {
         const escapedPrice = escapeHtml(item.price);
         const editingClass = item.id === state.editingIds.underground ? ' is-editing' : '';
         return `
-        <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}${editingClass}" style="animation-delay: ${index * 0.03}s" data-item-id="${escapeHtml(String(item.id))}">
+        <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}${editingClass}" style="animation-delay: ${index * 0.03}s" data-item-id="${escapeHtml(String(item.id))}" tabindex="0" aria-label="แก้ไขเลข ${escapedNumber}">
             <div class="saved-entry-row">
                 <div class="saved-entry-main">
                     <span class="saved-entry-number text-3xl font-bold text-gold-700">${escapedNumber}</span>
@@ -843,7 +863,7 @@ export function renderGovernment() {
         const escapedTypeName = escapeHtml(typeNames[item.type] || '');
         const editingClass = item.id === state.editingIds.government ? ' is-editing' : '';
         return `
-        <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}${editingClass}" style="animation-delay: ${index * 0.03}s" data-item-id="${escapeHtml(String(item.id))}">
+        <div class="list-item cursor-pointer ${isNewest ? 'new-entry' : 'fade-in'}${editingClass}" style="animation-delay: ${index * 0.03}s" data-item-id="${escapeHtml(String(item.id))}" tabindex="0" aria-label="แก้ไขเลข ${escapedNumber}">
             <div class="saved-entry-row">
                 <div class="saved-entry-main saved-entry-main-government">
                     <span class="saved-entry-number text-3xl font-bold text-gold-700">${escapedNumber}</span>

@@ -35,7 +35,7 @@ export function migrateData() {
         console.log('Migration completed successfully');
     } catch (error) {
         console.error('Migration error:', error);
-        showToast('⚠️ กำลังอัปเดตข้อมูล...');
+        showToast('⚠️ กำลังอัปเดตข้อมูล…');
     }
 }
 
@@ -174,7 +174,7 @@ export function loadData() {
         state.undergroundData = [];
         state.governmentData = [];
 
-        showToast('⚠️ พบข้อมูลเสียหาย กำลังรีเซ็ต...');
+        showToast('⚠️ พบข้อมูลเสียหาย กำลังรีเซ็ต…');
     }
 }
 
