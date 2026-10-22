@@ -182,12 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setupNumberInputs();
 
-        // Setup event listeners
-        const ugPriceDirect = document.getElementById('ugPriceDirect');
-        const govNumber = document.getElementById('govNumber');
-
-        if (ugPriceDirect) ugPriceDirect.addEventListener('keypress', e => { if (e.key === 'Enter') addUnderground(); });
-        if (govNumber) govNumber.addEventListener('keypress', e => { if (e.key === 'Enter') addGovernment(); });
+        setupActions();
 
         // Setup offline detection
         setupOfflineDetection();
@@ -2788,19 +2783,7 @@ function filterByType(type) {
     vibrate(30);
 }
 
-// Filter underground by search
-function filterUnderground() {
-    renderUnderground();
-}
-
-// Filter government by search
-function filterGovernment() {
-    renderGovernment();
-}
-
 window.filterByType = filterByType;
-window.filterUnderground = filterUnderground;
-window.filterGovernment = filterGovernment;
 
 // ============================================
 // SHARE AS TEXT (from Modal)
@@ -3514,7 +3497,7 @@ function showScreenshotFallback() {
                         </li>
                     </ol>
                 </div>
-                <button onclick="this.closest('.fixed').remove()" 
+                <button type="button" data-close-fallback
                     class="w-full py-3 bg-gold-500 text-white rounded-xl font-semibold hover:bg-gold-600 transition-colors">
                     เข้าใจแล้ว
                 </button>
@@ -3522,55 +3505,81 @@ function showScreenshotFallback() {
         </div>
     `;
     document.body.appendChild(modal);
-    
-    // Close on backdrop click
+
+    // Close on button or backdrop click
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+        if (e.target === modal || e.target.closest('[data-close-fallback]')) {
             modal.remove();
         }
     });
 }
 
-// Add CSS for new animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes bounce-slow {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-    
-    .animate-bounce-slow {
-        animation: bounce-slow 2s ease-in-out infinite;
-    }
-    
-    @keyframes scale-in {
-        from { transform: scale(0.9); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-    
-    .animate-scale-in {
-        animation: scale-in 0.3s ease-out;
-    }
-    
-    @keyframes fade-in {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    
-    .animate-fade-in {
-        animation: fade-in 0.5s ease-out;
-    }
-    
-    .list-item {
-        transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-`;
-document.head.appendChild(style);
+
+// ============================================
+// UI EVENT WIRING (แทน onclick ใน HTML)
+// ============================================
+
+// ปุ่มใน HTML ระบุ data-action="ชื่อ" (และ data-arg ถ้ามีค่าที่ต้องส่ง)
+const actions = {
+    addGovernment,
+    addUnderground,
+    cancelEdit,
+    clearData,
+    clearSlipMeta,
+    closeNumpad,
+    closePreviewModal,
+    confirmNumpad,
+    copyPriceToTod,
+    dismissInstallBanner,
+    exportData,
+    filterByType,
+    handleCopyOrSave,
+    handleNumberInput,
+    handleShare,
+    numpadBackspace,
+    numpadClear,
+    numpadPress,
+    openImportDialog,
+    openPreviewModal,
+    openThaiDatePicker,
+    openTodNumpad,
+    quickPrice,
+    selectAll,
+    selectNone,
+    selectSuggestedDrawDate,
+    switchModalMode,
+    switchTab,
+    toggleDeviceVault,
+    toggleSelectionPanel,
+    toggleSlipMeta,
+    toggleTodPrice,
+    triggerInstall,
+    openPriceNumpad: () => openPriceNumpad('ugPriceDirect', 'ราคาเต็ง'),
+    dismissFileNotice: (_arg, element) => element.parentElement?.remove()
+};
+
+function setupActions() {
+    document.addEventListener('click', event => {
+        const element = event.target.closest('[data-action]');
+        const action = actions[element?.dataset.action];
+        if (action) action(element.dataset.arg, element);
+    });
+
+    [['govNumber', 'government'], ['ugNumber', 'underground']].forEach(([id, type]) => {
+        const input = document.getElementById(id);
+        const container = input?.closest('.hero-input-container');
+        input?.addEventListener('keypress', event => handleKeyPress(event, type));
+        input?.addEventListener('focus', () => container?.classList.add('input-focused'));
+        input?.addEventListener('blur', () => container?.classList.remove('input-focused'));
+    });
+
+    document.getElementById('ugPriceDirect')?.addEventListener('keypress', event => {
+        if (event.key === 'Enter') addUnderground();
+    });
+    document.getElementById('govSearchInput')?.addEventListener('input', () => renderGovernment());
+    document.getElementById('ugSearchInput')?.addEventListener('input', () => renderUnderground());
+    document.getElementById('ugTodType')?.addEventListener('change', onTodGlabChange);
+}
 
 // ============================================
 // PWA CUSTOM INSTALL PROMPT

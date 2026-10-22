@@ -41,7 +41,7 @@
             <strong>เปิดผ่าน Local App เพื่อใช้งานครบ</strong>
             <span>กรุณาดับเบิลคลิกไฟล์ start-jodhuay.cmd แทนการเปิด index.html โดยตรง</span>
         </div>
-        <button type="button" onclick="this.parentElement.remove()" aria-label="ปิดคำแนะนำ">×</button>
+        <button type="button" data-action="dismissFileNotice" aria-label="ปิดคำแนะนำ">×</button>
     </div>
     <!-- ละอองทองศักดิ์สิทธิ์ -->
     <div class="gold-particles">
@@ -73,12 +73,12 @@
         <!-- Tabs -->
         <div class="app-tabs flex mb-5 bg-white rounded-2xl shadow-lg p-1.5 border border-gold-100"
             role="tablist" aria-label="ประเภทหวย">
-            <button id="tabGovernment" onclick="switchTab('government')"
+            <button id="tabGovernment" data-action="switchTab" data-arg="government"
                 class="tab-btn flex-1 py-3.5 rounded-xl font-semibold active" role="tab"
                 aria-selected="true" aria-controls="governmentSection">
                 หวยรัฐบาล
             </button>
-            <button id="tabUnderground" onclick="switchTab('underground')"
+            <button id="tabUnderground" data-action="switchTab" data-arg="underground"
                 class="tab-btn flex-1 py-3.5 rounded-xl font-semibold" role="tab"
                 aria-selected="false" aria-controls="undergroundSection">
                 หวยใต้ดิน
@@ -87,7 +87,7 @@
 
         <!-- Slip information shared by both lottery types -->
         <section class="slip-meta-card is-collapsed" id="slipMetaCard">
-            <button type="button" class="slip-meta-toggle" id="slipMetaToggle" onclick="toggleSlipMeta()"
+            <button type="button" class="slip-meta-toggle" id="slipMetaToggle" data-action="toggleSlipMeta"
                 aria-expanded="false" aria-controls="slipMetaPanel">
                 <span class="slip-meta-icon" aria-hidden="true">✦</span>
                 <span class="slip-meta-toggle-copy">
@@ -114,18 +114,18 @@
                             <label for="slipDrawDate">งวดวันที่</label>
                             <div class="draw-date-quick" id="drawDateQuickChoices" aria-label="เลือกงวดหวยไทย">
                                 <button type="button" id="drawDatePrevious" class="draw-date-choice"
-                                    onclick="selectSuggestedDrawDate('previous')">
+                                    data-action="selectSuggestedDrawDate" data-arg="previous">
                                     <span>งวดล่าสุด</span>
                                     <strong id="drawDatePreviousText">—</strong>
                                 </button>
                                 <button type="button" id="drawDateNext" class="draw-date-choice is-recommended"
-                                    onclick="selectSuggestedDrawDate('next')">
+                                    data-action="selectSuggestedDrawDate" data-arg="next">
                                     <span>งวดถัดไป</span>
                                     <strong id="drawDateNextText">—</strong>
                                 </button>
                             </div>
                             <div class="draw-date-manual">
-                                <div class="thai-date-container" onclick="openThaiDatePicker()">
+                                <div class="thai-date-container" data-action="openThaiDatePicker">
                                     <span class="draw-date-calendar" aria-hidden="true">
                                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -147,7 +147,7 @@
                     </div>
                     <div class="slip-meta-footer">
                         <span id="slipMetaStatus">บันทึกอัตโนมัติในเครื่องนี้</span>
-                        <button type="button" onclick="clearSlipMeta()">ล้างข้อมูลส่วนนี้</button>
+                        <button type="button" data-action="clearSlipMeta">ล้างข้อมูลส่วนนี้</button>
                     </div>
                 </div>
             </div>
@@ -184,15 +184,12 @@
 
                 <!-- เลข - Hero Display -->
                 <div class="mb-6">
-                    <div class="hero-input-container relative group" onclick="handleNumberInput('govNumber')">
+                    <div class="hero-input-container relative group" data-action="handleNumberInput" data-arg="govNumber">
                         <div class="relative py-8 text-center">
                             <label
                                 class="block text-gold-500 text-xs mb-2 font-medium tracking-widest uppercase">หมายเลข</label>
                             <input type="tel" id="govNumber" maxlength="6" placeholder="_ _ _ _ _ _"
-                                class="w-full bg-white text-center text-5xl font-bold text-gold-700 placeholder-gold-300 border-0 outline-none"
-                                onkeypress="handleKeyPress(event, 'government')"
-                                onfocus="this.closest('.hero-input-container').classList.add('input-focused')"
-                                onblur="this.closest('.hero-input-container').classList.remove('input-focused')">
+                                class="w-full bg-white text-center text-5xl font-bold text-gold-700 placeholder-gold-300 border-0 outline-none">
                             <p class="text-xs text-gold-400 mt-3 font-light desktop-hint">
                                 พิมพ์เลขหรือแตะเพื่อเปิดแป้นตัวเลข</p>
                         </div>
@@ -215,11 +212,11 @@
                     <input type="hidden" id="govQty" value="1">
                 </div>
 
-                <button id="govAddBtn" onclick="addGovernment()"
+                <button id="govAddBtn" data-action="addGovernment"
                     class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg shadow-lg">
                     เพิ่มรายการ
                 </button>
-                <button type="button" id="govCancelEditBtn" onclick="cancelEdit('government')"
+                <button type="button" id="govCancelEditBtn" data-action="cancelEdit" data-arg="government"
                     class="edit-cancel-btn hidden">ยกเลิกการแก้ไข</button>
             </div>
 
@@ -236,7 +233,7 @@
                 <!-- Search Bar -->
                 <div id="govSearchBar" class="hidden mb-3">
                     <div class="relative">
-                        <input type="text" id="govSearchInput" placeholder="ค้นหาเลข..." oninput="filterGovernment()"
+                        <input type="text" id="govSearchInput" placeholder="ค้นหาเลข..."
                             class="w-full px-4 py-2 pl-10 rounded-xl border-2 border-gray-200 focus:border-gold-400 focus:outline-none text-sm">
                         <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -300,15 +297,12 @@
 
                 <!-- เลข - Hero Display -->
                 <div class="mb-6">
-                    <div class="hero-input-container relative group" onclick="handleNumberInput('ugNumber')">
+                    <div class="hero-input-container relative group" data-action="handleNumberInput" data-arg="ugNumber">
                         <div class="relative py-8 text-center">
                             <label
                                 class="block text-gold-500 text-xs mb-2 font-medium tracking-widest uppercase">หมายเลข</label>
                             <input type="tel" id="ugNumber" maxlength="3" placeholder="_ _ _"
-                                class="w-full bg-white text-center text-5xl font-bold text-gold-700 placeholder-gold-300 border-0 outline-none"
-                                onkeypress="handleKeyPress(event, 'underground')"
-                                onfocus="this.closest('.hero-input-container').classList.add('input-focused')"
-                                onblur="this.closest('.hero-input-container').classList.remove('input-focused')">
+                                class="w-full bg-white text-center text-5xl font-bold text-gold-700 placeholder-gold-300 border-0 outline-none">
                             <p class="text-xs text-gold-400 mt-3 font-light desktop-hint">
                                 พิมพ์เลขหรือแตะเพื่อเปิดแป้นตัวเลข</p>
                         </div>
@@ -324,7 +318,7 @@
                         <label class="block text-gray-500 text-xs mb-1.5 text-center font-medium">เต็ง</label>
                         <div class="relative max-w-sm mx-auto">
                             <input type="tel" id="ugPriceDirect" placeholder="ระบุราคา" readonly
-                                onclick="openPriceNumpad('ugPriceDirect', 'ราคาเต็ง')"
+                                data-action="openPriceNumpad"
                                 class="w-full py-3 rounded-xl border-2 border-gray-300 text-center text-xl font-bold cursor-pointer bg-white text-gray-900 placeholder-gray-400"
                                 style="caret-color: transparent;">
                         </div>
@@ -332,7 +326,7 @@
 
                     <!-- ปุ่ม +/- โต๊ด -->
                     <div class="flex items-center justify-center my-4">
-                        <button id="addTodBtn" onclick="toggleTodPrice()"
+                        <button id="addTodBtn" data-action="toggleTodPrice"
                             class="w-10 h-10 rounded-full border-2 border-gold-300 bg-gold-50 text-gold-600 font-bold text-xl flex items-center justify-center hover:bg-gold-100 transition-all shadow-sm">
                             +
                         </button>
@@ -340,7 +334,7 @@
 
                     <!-- ปุ่มคัดลอกราคา (แสดงเมื่อเปิดโต๊ด) -->
                     <div id="copyPriceBtn" class="hidden flex justify-center items-center mb-3">
-                        <button type="button" onclick="copyPriceToTod()"
+                        <button type="button" data-action="copyPriceToTod"
                             class="bg-gold-100 hover:bg-gold-200 border border-gold-300 text-gold-700 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform transition hover:scale-110 flex items-center gap-1">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -354,11 +348,11 @@
                     <div id="todPriceSection" class="hidden">
                         <label class="block text-gray-500 text-xs mb-1.5 text-center font-medium">โต๊ด</label>
                         <div class="relative max-w-sm mx-auto">
-                            <input type="tel" id="ugPriceTod" placeholder="ระบุราคา" readonly onclick="openTodNumpad()"
+                            <input type="tel" id="ugPriceTod" placeholder="ระบุราคา" readonly data-action="openTodNumpad"
                                 class="w-full py-3 rounded-xl border-2 border-gray-300 text-center text-xl font-bold cursor-pointer bg-white text-gray-900 placeholder-gray-400"
                                 style="caret-color: transparent; padding-left: 100px; padding-right: 100px;">
                             <div class="absolute right-2 top-1/2 transform -translate-y-1/2">
-                                <select id="ugTodType" onchange="onTodGlabChange()"
+                                <select id="ugTodType"
                                     class="py-2 px-3 rounded-lg bg-gray-50 text-sm font-bold text-gray-600 border-2 border-gray-300 cursor-pointer appearance-none pr-8">
                                     <option value="">-</option>
                                     <option value="ก.3">ก.3</option>
@@ -378,11 +372,11 @@
                     <p class="text-xs text-gray-400 mt-3 text-center">ก.3 = กลับ 3 ชุด | ก.6 = กลับ 6 ชุด</p>
                 </div>
 
-                <button id="ugAddBtn" onclick="addUnderground()"
+                <button id="ugAddBtn" data-action="addUnderground"
                     class="gold-btn w-full py-4 rounded-xl font-semibold text-white text-lg shadow-lg">
                     เพิ่มรายการ
                 </button>
-                <button type="button" id="ugCancelEditBtn" onclick="cancelEdit('underground')"
+                <button type="button" id="ugCancelEditBtn" data-action="cancelEdit" data-arg="underground"
                     class="edit-cancel-btn hidden">ยกเลิกการแก้ไข</button>
             </div>
 
@@ -399,7 +393,7 @@
                 <!-- Search Bar -->
                 <div id="ugSearchBar" class="hidden mb-3">
                     <div class="relative">
-                        <input type="text" id="ugSearchInput" placeholder="ค้นหาเลข..." oninput="filterUnderground()"
+                        <input type="text" id="ugSearchInput" placeholder="ค้นหาเลข..."
                             class="w-full px-4 py-2 pl-10 rounded-xl border-2 border-gray-200 focus:border-gold-400 focus:outline-none text-sm">
                         <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -409,15 +403,15 @@
                     </div>
                     <!-- Filter Chips -->
                     <div class="filter-strip flex gap-2 mt-2 overflow-x-auto pb-1 scrollbar-hide">
-                        <button onclick="filterByType('all')" class="filter-chip active"
+                        <button data-action="filterByType" data-arg="all" class="filter-chip active"
                             data-filter="all">ทั้งหมด</button>
-                        <button onclick="filterByType('3bon')" class="filter-chip" data-filter="3bon">3 ตัวบน</button>
-                        <button onclick="filterByType('2bon')" class="filter-chip" data-filter="2bon">2 ตัวบน</button>
-                        <button onclick="filterByType('2lang')" class="filter-chip" data-filter="2lang">2
+                        <button data-action="filterByType" data-arg="3bon" class="filter-chip" data-filter="3bon">3 ตัวบน</button>
+                        <button data-action="filterByType" data-arg="2bon" class="filter-chip" data-filter="2bon">2 ตัวบน</button>
+                        <button data-action="filterByType" data-arg="2lang" class="filter-chip" data-filter="2lang">2
                             ตัวล่าง</button>
-                        <button onclick="filterByType('runBon')" class="filter-chip"
+                        <button data-action="filterByType" data-arg="runBon" class="filter-chip"
                             data-filter="runBon">วิ่งบน</button>
-                        <button onclick="filterByType('runLang')" class="filter-chip"
+                        <button data-action="filterByType" data-arg="runLang" class="filter-chip"
                             data-filter="runLang">วิ่งล่าง</button>
                     </div>
                 </div>
@@ -438,7 +432,7 @@
 
         <!-- Action Buttons -->
         <div class="mt-8 space-y-4">
-            <button onclick="openPreviewModal()"
+            <button data-action="openPreviewModal"
                 class="gold-btn w-full py-5 rounded-2xl font-semibold text-white text-lg flex items-center justify-center gap-3 shadow-xl">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -448,14 +442,14 @@
                 บันทึก / แชร์
             </button>
 
-            <button onclick="clearData()"
+            <button data-action="clearData"
                 class="danger-btn w-full py-4 rounded-2xl font-medium transition-all">
                 ล้างข้อมูลทั้งหมด
             </button>
 
             <div class="device-vault" id="deviceVault">
                 <button type="button" class="device-vault-toggle" id="deviceVaultToggle"
-                    onclick="toggleDeviceVault()" aria-expanded="false" aria-controls="deviceVaultPanel">
+                    data-action="toggleDeviceVault" aria-expanded="false" aria-controls="deviceVaultPanel">
                     <span class="device-vault-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                             <path d="M5 7.5A2.5 2.5 0 0 1 7.5 5h9A2.5 2.5 0 0 1 19 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 5 16.5z"/>
@@ -472,8 +466,8 @@
                     <div class="device-vault-panel-inner">
                         <p class="device-vault-note">ข้อมูลเก็บเฉพาะบนอุปกรณ์นี้ ควรสำรองก่อนล้างเบราว์เซอร์หรือเปลี่ยนมือถือ</p>
                         <div class="data-tools-actions">
-                            <button type="button" onclick="exportData()" class="data-tool-btn">สำรอง JSON</button>
-                            <button type="button" onclick="openImportDialog()" class="data-tool-btn">กู้คืนข้อมูล</button>
+                            <button type="button" data-action="exportData" class="data-tool-btn">สำรอง JSON</button>
+                            <button type="button" data-action="openImportDialog" class="data-tool-btn">กู้คืนข้อมูล</button>
                         </div>
                     </div>
                 </div>
@@ -489,24 +483,24 @@
                 </div>
                 <!-- ปุ่มราคาด่วน -->
                 <div id="quickPriceButtons" class="hidden grid grid-cols-4 gap-2 mb-3">
-                    <button onclick="quickPrice(10)" class="quick-price-btn">10</button>
-                    <button onclick="quickPrice(20)" class="quick-price-btn">20</button>
-                    <button onclick="quickPrice(50)" class="quick-price-btn">50</button>
-                    <button onclick="quickPrice(100)" class="quick-price-btn">100</button>
+                    <button data-action="quickPrice" data-arg="10" class="quick-price-btn">10</button>
+                    <button data-action="quickPrice" data-arg="20" class="quick-price-btn">20</button>
+                    <button data-action="quickPrice" data-arg="50" class="quick-price-btn">50</button>
+                    <button data-action="quickPrice" data-arg="100" class="quick-price-btn">100</button>
                 </div>
                 <div class="numpad-grid">
-                    <button class="numpad-btn" onclick="numpadPress('1')">1</button>
-                    <button class="numpad-btn" onclick="numpadPress('2')">2</button>
-                    <button class="numpad-btn" onclick="numpadPress('3')">3</button>
-                    <button class="numpad-btn" onclick="numpadPress('4')">4</button>
-                    <button class="numpad-btn" onclick="numpadPress('5')">5</button>
-                    <button class="numpad-btn" onclick="numpadPress('6')">6</button>
-                    <button class="numpad-btn" onclick="numpadPress('7')">7</button>
-                    <button class="numpad-btn" onclick="numpadPress('8')">8</button>
-                    <button class="numpad-btn" onclick="numpadPress('9')">9</button>
-                    <button class="numpad-btn numpad-special" onclick="numpadClear()">C</button>
-                    <button class="numpad-btn" onclick="numpadPress('0')">0</button>
-                    <button class="numpad-btn numpad-special" onclick="numpadBackspace()">
+                    <button class="numpad-btn" data-action="numpadPress" data-arg="1">1</button>
+                    <button class="numpad-btn" data-action="numpadPress" data-arg="2">2</button>
+                    <button class="numpad-btn" data-action="numpadPress" data-arg="3">3</button>
+                    <button class="numpad-btn" data-action="numpadPress" data-arg="4">4</button>
+                    <button class="numpad-btn" data-action="numpadPress" data-arg="5">5</button>
+                    <button class="numpad-btn" data-action="numpadPress" data-arg="6">6</button>
+                    <button class="numpad-btn" data-action="numpadPress" data-arg="7">7</button>
+                    <button class="numpad-btn" data-action="numpadPress" data-arg="8">8</button>
+                    <button class="numpad-btn" data-action="numpadPress" data-arg="9">9</button>
+                    <button class="numpad-btn numpad-special" data-action="numpadClear">C</button>
+                    <button class="numpad-btn" data-action="numpadPress" data-arg="0">0</button>
+                    <button class="numpad-btn numpad-special" data-action="numpadBackspace">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             style="display:inline-block;vertical-align:middle;">
@@ -517,9 +511,9 @@
                     </button>
                 </div>
                 <div class="numpad-actions">
-                    <button onclick="closeNumpad()"
+                    <button data-action="closeNumpad"
                         class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold">ยกเลิก</button>
-                    <button onclick="confirmNumpad()"
+                    <button data-action="confirmNumpad"
                         class="numpad-confirm-btn flex-1 py-3 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 text-white font-semibold">ตกลง</button>
                 </div>
             </div>
@@ -550,7 +544,7 @@
                     <h2 class="text-lg font-bold text-gold-700">บันทึก / แชร์</h2>
                     <p class="text-xs text-gray-500">เลือกรายการที่ต้องการ</p>
                 </div>
-                <button onclick="closePreviewModal()"
+                <button data-action="closePreviewModal"
                     class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 text-2xl font-bold transition-all hover:scale-110">&times;</button>
             </div>
 
@@ -566,11 +560,11 @@
                                 class="font-bold text-gold-700">0</span> รายการ</span>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="toggleSelectionPanel()" id="toggleSelectionBtn"
+                        <button data-action="toggleSelectionPanel" id="toggleSelectionBtn"
                             class="px-3 py-1.5 bg-white text-gray-600 rounded-lg text-xs font-semibold border border-gray-300 hover:bg-gray-50 transition-all">
                             แก้ไข
                         </button>
-                        <button onclick="selectAll()"
+                        <button data-action="selectAll"
                             class="px-3 py-1.5 bg-gold-500 text-white rounded-lg text-xs font-semibold hover:bg-gold-600 transition-all">
                             ทั้งหมด
                         </button>
@@ -579,7 +573,7 @@
                 <!-- Expandable Selection List -->
                 <div id="selectionPanel" class="hidden mt-3 pt-3 border-t border-gray-200">
                     <div id="selectionList" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto"></div>
-                    <button onclick="selectNone()"
+                    <button data-action="selectNone"
                         class="mt-2 w-full py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200 transition-all">
                         ยกเลิกทั้งหมด
                     </button>
@@ -618,7 +612,7 @@
             <div class="preview-command-bar p-3">
                 <!-- Mode Toggle -->
                 <div class="flex gap-1.5 mb-2 p-0.5 bg-gray-100 rounded-lg">
-                    <button onclick="switchModalMode('text')" id="modeText"
+                    <button data-action="switchModalMode" data-arg="text" id="modeText"
                         class="modal-mode-btn active flex-1 py-2 rounded-md font-semibold text-xs transition-all flex items-center justify-center gap-1.5">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -627,7 +621,7 @@
                         </svg>
                         ข้อความ
                     </button>
-                    <button onclick="switchModalMode('image')" id="modeImage"
+                    <button data-action="switchModalMode" data-arg="image" id="modeImage"
                         class="modal-mode-btn flex-1 py-2 rounded-md font-semibold text-xs transition-all flex items-center justify-center gap-1.5">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -640,7 +634,7 @@
 
                 <!-- Action Buttons -->
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="handleCopyOrSave()" id="btnCopyOrSave"
+                    <button data-action="handleCopyOrSave" id="btnCopyOrSave"
                         class="py-3 rounded-xl font-semibold border-2 border-gold-300 text-gold-700 hover:bg-gold-50 transition-all text-sm flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -649,7 +643,7 @@
                         </svg>
                         <span id="btnCopyOrSaveText">คัดลอก</span>
                     </button>
-                    <button onclick="handleShare()" id="btnShare"
+                    <button data-action="handleShare" id="btnShare"
                         class="py-3 rounded-xl font-semibold bg-gradient-to-r from-gold-500 to-gold-600 text-white shadow-lg hover:shadow-xl transition-all text-sm flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -660,7 +654,7 @@
                     </button>
                 </div>
 
-                <button onclick="closePreviewModal()"
+                <button data-action="closePreviewModal"
                     class="w-full mt-2 py-2 rounded-xl font-medium border-2 border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm">
                     ปิด
                 </button>
@@ -707,11 +701,11 @@
             </div>
         </div>
         <div class="pwa-install-actions">
-            <button type="button" onclick="dismissInstallBanner()" class="pwa-install-later"
+            <button type="button" data-action="dismissInstallBanner" class="pwa-install-later"
                 aria-label="ไว้ติดตั้งภายหลัง">
                 <span aria-hidden="true">×</span> ไว้ก่อน
             </button>
-            <button type="button" onclick="triggerInstall()" class="pwa-install-confirm">ติดตั้ง</button>
+            <button type="button" data-action="triggerInstall" class="pwa-install-confirm">ติดตั้ง</button>
         </div>
     </aside>
 
