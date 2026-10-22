@@ -604,8 +604,6 @@ body {
     box-shadow: 0 0 0 2px rgba(183, 132, 23, 0.09) !important;
 }
 
-.hero-border { display: none !important; }
-
 .gold-btn {
     color: #fff8e7 !important;
     background: linear-gradient(135deg, #5d3024 0%, #4c271e 55%, #351914 100%) !important;
@@ -724,11 +722,6 @@ body {
     background: #752a31 !important;
 }
 
-#confirmModalContent .bg-red-100 {
-    background: #f7e8e5 !important;
-}
-
-#confirmModalContent .text-red-600,
 #confirmModalContent .text-red-500 {
     color: #8c3035 !important;
 }
@@ -743,10 +736,6 @@ body {
     color: #65252b;
     background: #fbefed;
     border-color: #b87978;
-}
-
-.confirm-danger-btn {
-    background: linear-gradient(135deg, #9b3f43, #70262c) !important;
 }
 
 .modal-overlay {

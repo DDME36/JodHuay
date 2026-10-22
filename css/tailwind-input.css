@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @source "../index.html";
-@source "../app.js";
+@source "../js";
 
 @theme {
     --font-prompt: "Prompt", sans-serif;

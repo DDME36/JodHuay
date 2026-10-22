@@ -53,8 +53,7 @@ body {
 }
 
 .card,
-.slip-meta-card,
-.data-tools {
+.slip-meta-card {
     background: rgba(255, 253, 248, 0.94) !important;
     border: 1px solid var(--jh-line) !important;
     box-shadow: var(--jh-shadow) !important;
