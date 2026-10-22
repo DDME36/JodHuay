@@ -211,13 +211,13 @@ export function toggleTodPrice() {
     if (state.showTodPrice) {
         section.classList.remove('hidden');
         btn.textContent = '− ไม่ใส่โต๊ด';
-        if (copyBtn) copyBtn.classList.remove('hidden');
+        const isGlab = Boolean(document.getElementById('ugTodType')?.value);
+        if (copyBtn) copyBtn.classList.toggle('hidden', isGlab);
     } else {
         section.classList.add('hidden');
         btn.textContent = '+ เพิ่มโต๊ด';
         if (copyBtn) copyBtn.classList.add('hidden');
-        const todInput = document.getElementById('ugPriceTod');
-        if (todInput) todInput.value = '';
+        setTodType('');
     }
 }
 
@@ -245,26 +245,38 @@ export function copyPriceToTod() {
 }
 
 // Handle กลับ selection in Tod field
-export function onTodGlabChange() {
+const GLAB_SETS = { 'ก.3': 3, 'ก.6': 6 };
+
+// เลือกแบบโต๊ด: '' = โต๊ดเป็นเงิน, 'ก.3'/'ก.6' = กลับ 3/กลับ 6 (คิดเงิน = เต็ง × ชุด)
+export function setTodType(value = '') {
+    const type = value in GLAB_SETS ? value : '';
+    const hidden = document.getElementById('ugTodType');
     const input = document.getElementById('ugPriceTod');
-    const select = document.getElementById('ugTodType');
+    if (!hidden || !input) return;
+    hidden.value = type;
 
-    if (!input || !select) return;
+    document.querySelectorAll('#todTypeChips [data-action="setTodType"]').forEach(chip => {
+        const active = (chip.dataset.arg || '') === type;
+        chip.classList.toggle('active', active);
+        chip.setAttribute('aria-pressed', String(active));
+    });
 
-    const value = select.value;
-
-    if (value === 'ก.3' || value === 'ก.6') {
-        // ล็อคช่องและแสดง กลับ 3/กลับ 6
-        const displayText = value === 'ก.3' ? 'กลับ 3' : 'กลับ 6';
-        input.value = displayText;
-        input.disabled = true;
-        input.classList.add('glab-locked');
-    } else {
-        // ปลดล็อคและเคลียร์
-        input.value = '';
-        input.disabled = false;
-        input.classList.remove('glab-locked');
+    const sets = GLAB_SETS[type];
+    const hint = document.getElementById('todGlabHint');
+    document.getElementById('todPriceField')?.classList.toggle('hidden', Boolean(sets));
+    document.getElementById('copyPriceBtn')?.classList.toggle('hidden', Boolean(sets) || !state.showTodPrice);
+    if (hint) {
+        hint.classList.toggle('hidden', !sets);
+        hint.textContent = sets ? `ซื้อทุกการสลับเลข ${sets} ชุด · คิดเงิน = ราคาเต็ง × ${sets}` : '';
     }
+
+    // ค่าในช่องโต๊ดใช้ตอนบันทึก: "กลับ 3"/"กลับ 6" หรือราคาเป็นตัวเลข
+    input.value = sets ? `กลับ ${sets}` : '';
+    input.disabled = Boolean(sets);
+}
+
+export function onTodGlabChange() {
+    setTodType(document.getElementById('ugTodType')?.value);
 }
 
 // Underground type change
@@ -439,8 +451,6 @@ export function clearUndergroundForm() {
     try {
         const ugNumberEl = document.getElementById('ugNumber');
         const ugPriceDirectEl = document.getElementById('ugPriceDirect');
-        const ugPriceTodEl = document.getElementById('ugPriceTod');
-        const ugTodTypeEl = document.getElementById('ugTodType');
 
         // เคลียร์เลข
         if (ugNumberEl) {
@@ -455,13 +465,8 @@ export function clearUndergroundForm() {
             ugPriceDirectEl.classList.remove('glab-locked');
         }
 
-        // รีเซ็ต dropdown โต๊ด และปลดล็อคช่องราคาโต๊ด
-        if (ugTodTypeEl) ugTodTypeEl.value = '';
-        if (ugPriceTodEl) {
-            ugPriceTodEl.value = '';
-            ugPriceTodEl.disabled = false;
-            ugPriceTodEl.classList.remove('glab-locked');
-        }
+        // รีเซ็ตแบบโต๊ดกลับเป็น "โต๊ด" และล้างราคาโต๊ด
+        setTodType('');
 
         // Reset tod price section if open
         if (state.showTodPrice) {
@@ -543,10 +548,6 @@ export function renderUnderground() {
         const totalEl = document.getElementById('ugTotal');
         const searchBar = document.getElementById('ugSearchBar');
 
-        // Update Dashboard
-        const dashTotal = document.getElementById('ugDashTotal');
-        const dashAmount = document.getElementById('ugDashAmount');
-
         if (!list || !count || !summary || !totalEl) {
             console.error('renderUnderground: Required elements not found');
             return;
@@ -557,10 +558,6 @@ export function renderUnderground() {
         count.textContent = '';
         summary.classList.add('hidden');
         if (searchBar) searchBar.classList.add('hidden');
-
-        // Update Dashboard to 0
-        if (dashTotal) dashTotal.textContent = '0';
-        if (dashAmount) dashAmount.textContent = '0฿';
 
         return;
     }
@@ -597,20 +594,6 @@ export function renderUnderground() {
     count.textContent = `${filteredData.length}/${state.undergroundData.length} รายการ`;
 
     const total = getUndergroundTotal(state.undergroundData);
-
-    // Update Dashboard
-    if (dashTotal) {
-        const oldCount = parseInt(dashTotal.textContent, 10) || 0;
-        if (oldCount !== state.undergroundData.length) {
-            animateValue('ugDashTotal', oldCount, state.undergroundData.length, 500, '');
-        }
-    }
-    if (dashAmount) {
-        const oldAmount = parseInt(dashAmount.textContent.replace(/[^\d]/g, ''), 10) || 0;
-        if (oldAmount !== total) {
-            animateValue('ugDashAmount', oldAmount, total, 800, '฿');
-        }
-    }
 
     // Show summary
     summary.classList.remove('hidden');
@@ -715,23 +698,14 @@ export function editUnderground(id) {
             if (!state.showTodPrice) toggleTodPrice();
 
             const todValue = priceParts[1].trim();
-            const todTypeSelect = document.getElementById('ugTodType');
-            const todInput = document.getElementById('ugPriceTod');
-
-            if (!todTypeSelect || !todInput) return;
-
             if (todValue === 'กลับ 3') {
-                todTypeSelect.value = 'ก.3';
-                onTodGlabChange();
+                setTodType('ก.3');
             } else if (todValue === 'กลับ 6') {
-                todTypeSelect.value = 'ก.6';
-                onTodGlabChange();
+                setTodType('ก.6');
             } else {
-                // ตัวเลขธรรมดา
-                todTypeSelect.value = '';
-                todInput.value = todValue;
-                todInput.disabled = false;
-                todInput.classList.remove('glab-locked');
+                setTodType('');
+                const todInput = document.getElementById('ugPriceTod');
+                if (todInput) todInput.value = todValue;
             }
         }
 

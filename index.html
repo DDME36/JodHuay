@@ -251,22 +251,6 @@
 
         <!-- Underground Section -->
         <div id="undergroundSection" class="section-content hidden" role="tabpanel" aria-labelledby="tabUnderground">
-            <!-- Summary Dashboard -->
-            <div class="grid grid-cols-2 gap-3 mb-8 dashboard-card-grid overflow-visible">
-                <div
-                    class="dashboard-card bg-gradient-to-br from-gold-50 to-white rounded-xl p-4 border-2 border-gold-300 shadow-sm">
-                    <p class="text-xs text-gray-500 mb-1 font-medium">รายการทั้งหมด</p>
-                    <p id="ugDashTotal" class="text-2xl font-bold text-gold-700">0</p>
-                    <p class="text-xs text-gold-500 mt-1">รายการ</p>
-                </div>
-                <div
-                    class="dashboard-card bg-gradient-to-br from-gold-50 to-white rounded-xl p-4 border-2 border-gold-300 shadow-sm">
-                    <p class="text-xs text-gray-500 mb-1 font-medium">ยอดเงิน</p>
-                    <p id="ugDashAmount" class="text-2xl font-bold text-gold-700">0฿</p>
-                    <p class="text-xs text-gold-500 mt-1">บาท</p>
-                </div>
-            </div>
-
             <!-- Form -->
             <div class="card rounded-2xl p-5 mb-6">
                 <div class="entry-heading">
@@ -330,44 +314,29 @@
                             aria-expanded="false" aria-controls="todPriceSection">+ เพิ่มโต๊ด</button>
                     </div>
 
-                    <!-- ปุ่มคัดลอกราคา (แสดงเมื่อเปิดโต๊ด) -->
-                    <div id="copyPriceBtn" class="hidden flex justify-center items-center mb-3">
-                        <button type="button" data-action="copyPriceToTod"
-                            class="bg-gold-100 hover:bg-gold-200 border border-gold-300 text-gold-700 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform transition hover:scale-110 flex items-center gap-1">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                            </svg>
-                            โต๊ดเท่าเต็ง
-                        </button>
-                    </div>
-
-                    <!-- โต๊ด (ซ่อนอยู่) -->
+                    <!-- โต๊ด (ซ่อนอยู่): เลือกแบบโต๊ดเป็นเงิน หรือกลับ 3/กลับ 6 -->
                     <div id="todPriceSection" class="hidden">
-                        <label class="block text-gray-500 text-xs mb-1.5 text-center font-medium">โต๊ด</label>
-                        <div class="relative max-w-sm mx-auto">
-                            <input type="tel" id="ugPriceTod" placeholder="ระบุราคา" readonly data-action="openTodNumpad"
+                        <div id="todTypeChips" class="tod-type-chips" role="group" aria-label="แบบโต๊ด">
+                            <button type="button" class="choice-chip active" data-action="setTodType" data-arg=""
+                                aria-pressed="true">โต๊ด</button>
+                            <button type="button" class="choice-chip" data-action="setTodType" data-arg="ก.3"
+                                aria-pressed="false">กลับ 3</button>
+                            <button type="button" class="choice-chip" data-action="setTodType" data-arg="ก.6"
+                                aria-pressed="false">กลับ 6</button>
+                        </div>
+                        <input type="hidden" id="ugTodType" value="">
+                        <div id="todPriceField" class="relative max-w-sm mx-auto">
+                            <input type="tel" id="ugPriceTod" placeholder="ราคาโต๊ด" readonly data-action="openTodNumpad"
+                                aria-label="ราคาโต๊ด"
                                 class="w-full py-3 rounded-xl border-2 border-gray-300 text-center text-xl font-bold cursor-pointer bg-white text-gray-900 placeholder-gray-400"
-                                style="caret-color: transparent; padding-left: 100px; padding-right: 100px;">
-                            <div class="absolute right-2 top-1/2 transform -translate-y-1/2">
-                                <select id="ugTodType"
-                                    class="py-2 px-3 rounded-lg bg-gray-50 text-sm font-bold text-gray-600 border-2 border-gray-300 cursor-pointer appearance-none pr-8">
-                                    <option value="">-</option>
-                                    <option value="ก.3">ก.3</option>
-                                    <option value="ก.6">ก.6</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-                                    <svg class="fill-current h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20">
-                                        <path
-                                            d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                    </svg>
-                                </div>
-                            </div>
+                                style="caret-color: transparent;">
+                        </div>
+                        <p id="todGlabHint" class="tod-glab-hint hidden"></p>
+                        <!-- ปุ่มคัดลอกราคา (แสดงเมื่อเปิดโต๊ด) -->
+                        <div id="copyPriceBtn" class="hidden flex justify-center items-center mt-3">
+                            <button type="button" data-action="copyPriceToTod" class="tod-copy-btn">ใช้ราคาเดียวกับเต็ง</button>
                         </div>
                     </div>
-
-                    <p class="text-xs text-gray-400 mt-3 text-center">ก.3 = กลับ 3 ชุด | ก.6 = กลับ 6 ชุด</p>
                 </div>
 
                 <button id="ugAddBtn" data-action="addUnderground"
@@ -420,8 +389,8 @@
                 <!-- สรุปยอด -->
                 <div id="ugSummary" class="hidden mt-3 pt-3 border-t border-gold-200">
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-600">ยอดรวม</span>
-                        <span id="ugTotal" class="text-lg font-bold text-gold-700">0 บาท</span>
+                        <span class="ug-summary-label">ยอดรวม</span>
+                        <span id="ugTotal" class="ug-summary-total">0 บาท</span>
                     </div>
                 </div>
             </div>

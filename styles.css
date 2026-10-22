@@ -946,42 +946,6 @@ input[type="tel"] {
 }
 
 /* Dashboard Card Animation - Crisp & No-Clip */
-@keyframes dashboardPop {
-    0% {
-        opacity: 0;
-        transform: translate3d(0, 5px, 0) scale(0.97);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1);
-    }
-}
-
-.dashboard-card {
-    position: relative;
-    border: 2px solid #caa045 !important;
-    box-shadow: 0 4px 14px rgba(70, 40, 25, 0.12) !important;
-    overflow: visible !important;
-    transform-origin: center center;
-    backface-visibility: hidden;
-    will-change: transform, opacity;
-    animation: dashboardPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-}
-
-.dashboard-card-grid {
-    overflow: visible !important;
-    margin-bottom: 2rem !important;
-    padding: 2px;
-}
-
-.dashboard-card:nth-child(1) {
-    animation-delay: 0.05s;
-}
-
-.dashboard-card:nth-child(2) {
-    animation-delay: 0.1s;
-}
 
 /* Empty state animation */
 @keyframes float {
@@ -1338,13 +1302,6 @@ body.transitioning .gold-particles {
     }
 
     /* ปรับ dashboard cards */
-    .dashboard-card {
-        padding: 0.75rem !important;
-    }
-
-    .dashboard-card .text-2xl {
-        font-size: 1.5rem;
-    }
 
     /* ปรับ modal buttons */
     .modal-mode-btn {
@@ -1842,11 +1799,6 @@ span {
 }
 
 /* Tabs container - ensure solid background */
-.flex.mb-8.bg-white {
-    background: #FFFFFF !important;
-    position: relative;
-    z-index: 100;
-}
 
 /* Header - ensure text is visible */
 header {

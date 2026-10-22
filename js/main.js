@@ -4,7 +4,7 @@ import { applyMotionPreference, setupScrollMotion, switchTab } from './motion.js
 import { exportData, loadData, openImportDialog } from './storage.js';
 import { clearSlipMeta, loadSlipMeta, openThaiDatePicker, selectSuggestedDrawDate, setupSlipMeta, toggleSlipMeta } from './slip-meta.js';
 import { closeNumpad, confirmNumpad, numpadBackspace, numpadClear, numpadPress, openPriceNumpad, openTodNumpad, quickPrice } from './numpad.js';
-import { addGovernment, addUnderground, cancelEdit, clearData, copyPriceToTod, filterByType, handleKeyPress, handleNumberInput, onTodGlabChange, renderAll, renderGovernment, renderUnderground, setupChoiceChips, setupNumberInputs, setupSwipeToDelete, toggleTodPrice, updateInputReadonlyState } from './entries.js';
+import { addGovernment, addUnderground, cancelEdit, clearData, copyPriceToTod, filterByType, handleKeyPress, handleNumberInput, renderAll, renderGovernment, renderUnderground, setTodType, setupChoiceChips, setupNumberInputs, setupSwipeToDelete, toggleTodPrice, updateInputReadonlyState } from './entries.js';
 import { closePreviewModal, handleCopyOrSave, handleShare, openPreviewModal, selectAll, selectNone, switchModalMode, toggleSelectionPanel } from './preview.js';
 import { dismissInstallBanner, registerServiceWorker, setupOfflineDetection, toggleDeviceVault, triggerInstall } from './shell.js';
 import { state } from './state.js';
@@ -128,6 +128,7 @@ const actions = {
     selectAll,
     selectNone,
     selectSuggestedDrawDate,
+    setTodType,
     switchModalMode,
     switchTab,
     toggleDeviceVault,
@@ -159,7 +160,6 @@ function setupActions() {
     });
     document.getElementById('govSearchInput')?.addEventListener('input', () => renderGovernment());
     document.getElementById('ugSearchInput')?.addEventListener('input', () => renderUnderground());
-    document.getElementById('ugTodType')?.addEventListener('change', onTodGlabChange);
 }
 
 // Console/test hook: module functions as JodHuay.<name>, live state as JodHuay.state

@@ -971,11 +971,6 @@ body.numpad-open #pwaInstallBanner {
     box-shadow: 0 7px 16px rgba(53, 17, 21, 0.18);
 }
 
-.dashboard-card {
-    background: linear-gradient(145deg, #fffaf0, #efe0c1) !important;
-    border-color: rgba(185, 144, 61, 0.55) !important;
-}
-
 .list-item {
     background: rgba(255, 253, 247, 0.80) !important;
     border-color: rgba(125, 87, 13, 0.13) !important;
@@ -1307,8 +1302,6 @@ footer {
 }
 
 #ugTotal,
-#ugDashTotal,
-#ugDashAmount,
 .saved-entry-value strong,
 .export-number,
 .export-summary-value {
@@ -1402,4 +1395,145 @@ footer {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
+}
+
+/* ============================================
+   Compact header: the form is the first thing on screen
+   ============================================ */
+.app-shell > .sacred-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px !important;
+    padding: 12px 16px !important;
+    overflow: hidden !important;
+    text-align: left;
+    border-radius: 18px !important;
+}
+
+.app-shell > .sacred-header::before,
+.app-shell > .sacred-header::after,
+.sacred-header .header-kicker,
+.sacred-header .header-divider,
+.sacred-header .header-blessing,
+.sacred-header .brand-flourish {
+    display: none;
+}
+
+.sacred-header .brand-seal {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    font-size: 16px;
+}
+
+.sacred-header .sacred-brand-row {
+    justify-content: flex-start;
+}
+
+.sacred-header .brand-title {
+    font-size: 1.6rem !important;
+    line-height: 1.1;
+}
+
+.sacred-header .brand-subtitle {
+    margin: 0 0 0 auto;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.sacred-header .header-mandala {
+    left: 18%;
+    opacity: 0.5;
+}
+
+@media (max-width: 440px) {
+    .sacred-header .brand-subtitle {
+        display: none;
+    }
+}
+
+/* ============================================
+   Tod type chips (โต๊ด / กลับ 3 / กลับ 6)
+   ============================================ */
+.tod-type-chips {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.tod-type-chips .choice-chip {
+    min-width: 76px;
+}
+
+.tod-glab-hint {
+    max-width: 24rem;
+    margin: 4px auto 0;
+    padding: 10px 14px;
+    border: 1px dashed rgba(148, 97, 22, 0.45);
+    border-radius: 12px;
+    color: var(--jh-gold-deep);
+    background: rgba(252, 248, 238, 0.9);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* ============================================
+   Underground total: the one place the sum is shown
+   ============================================ */
+#ugSummary > div {
+    align-items: baseline;
+}
+
+.ug-summary-label {
+    color: var(--jh-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.ug-summary-total {
+    color: var(--jh-gold-deep);
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.tod-copy-btn {
+    min-height: 36px;
+    padding: 6px 14px;
+    border: 1px solid rgba(148, 97, 22, 0.35);
+    border-radius: 999px;
+    background: rgba(246, 237, 217, 0.9);
+    color: var(--jh-gold-deep);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ============================================
+   Readable small text: nothing below 12px on a phone
+   (Thai vowels/tone marks become illegible below that)
+   ============================================ */
+.slip-meta-eyebrow,
+.entry-heading > span,
+.saved-entry-value small,
+#drawDatePrevious > span,
+#drawDateNext > span {
+    font-size: 0.75rem !important;
+}
+
+#slipMetaSummary,
+.draw-date-manual-label,
+#drawDateRuleHint,
+#slipMetaStatus,
+.slip-meta-footer button,
+.entry-heading p,
+.device-vault-copy small,
+.device-vault-note,
+.data-tool-btn {
+    font-size: 0.8125rem !important;
 }
