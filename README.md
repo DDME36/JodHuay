@@ -2,7 +2,7 @@
 
 แอปพลิเคชันจดบันทึกหวยใต้ดินและหวยรัฐบาล พร้อมระบบบันทึกเป็นรูปภาพและแชร์
 
-**Developed by PUNN & Zentyr**
+**Developed by Zentyr**
 
 ## โครงสร้างโปรเจค
 
@@ -122,6 +122,6 @@ JodHuay/
 
 ---
 
-**Developers:** PUNN, Zentyr  
+**Developer:** Zentyr  
 **Version:** 1.2.1  
 **Last Updated:** 2026
